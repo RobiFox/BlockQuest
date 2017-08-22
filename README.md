@@ -1,0 +1,1 @@
+Plugin seems abondoned, so feel free to add features, or fix my mistakes.
