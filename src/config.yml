@@ -1,0 +1,33 @@
+# Unsafe save:
+# When it's true, stats will be saved when
+# player leaves (when MySQL is enabled), or
+# when server disables.
+# However, when false, it will save when
+# player finds a reward.
+
+placeholderapi: false
+use-mysql: false
+
+mysql-host: host
+mysql-database: database
+mysql-username: username
+mysql-password: password
+mysql-unsafe-save: true
+
+no-permission: '&cYou don''t have permission for this!'
+
+blocks: []
+
+find-block-commands:
+    - msg %player% %pLocX% %pLocY% %pLocZ% %locX% %locY% %locZ%
+    - msg %player% %blocksLeft% blocks left
+
+all-blocks-found-commands:
+    - msg %player% You found all blocks!
+    - say %player% found all blocks!
+
+already-found-commands:
+    - msg %player% You already found this block!
+
+already-found-all-blocks:
+    - msg %player% You already found all blocks!
