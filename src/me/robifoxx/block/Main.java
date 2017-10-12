@@ -1,6 +1,8 @@
 package me.robifoxx.block;
 
+import com.darkblade12.particleeffect.ParticleEffect;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -35,6 +37,7 @@ public class Main extends JavaPlugin implements Listener {
     boolean unsafeSave = true;
     ArrayList<String> eventReturn = new ArrayList<>();
     boolean placeholder = false;
+    boolean enabledParticle;
 
     public void onEnable() {
         if(!(new File("plugins/BlockQuest/config.yml").exists())) {
@@ -82,6 +85,42 @@ public class Main extends JavaPlugin implements Listener {
                 getLogger().warning("Please install the following plugin:");
                 getLogger().warning("https://www.spigotmc.org/resources/p.6245/");
             }
+        }
+        enabledParticle = getConfig().getBoolean("particles.enabled");
+        if(enabledParticle) {
+            int loop = getConfig().getInt("particles.loop");
+            Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> {
+                for(String s : getConfig().getStringList("blocks")) {
+                    for(Player pl : Bukkit.getOnlinePlayers()) {
+                        if(blocksss.get(pl.getName()) != null) {
+                            //If it was a reload, then dont bother to proceed
+                            boolean found = blocksss.get(pl.getName()).contains(s);
+                            String[] splt = s.split(";");
+                            //x;y;z;w
+                            Location loc = new Location(Bukkit.getWorld(splt[3]), Integer.valueOf(splt[0]) + 0.5, Integer.valueOf(splt[1]) + 0.25, Integer.valueOf(splt[2]) + 0.5);
+                            if(found) {
+                                String f = "found";
+                                ParticleEffect.valueOf(getConfig().getString("particles." + f + ".type")).display(
+                                        Float.valueOf(getConfig().getDouble("particles." + f + ".dx") + ""),
+                                        Float.valueOf(getConfig().getDouble("particles." + f + ".dy") + ""),
+                                        Float.valueOf(getConfig().getDouble("particles." + f + ".dz") + ""),
+                                        Float.valueOf(getConfig().getDouble("particles." + f + ".speed") + ""),
+                                        getConfig().getInt("particles." + f + ".quantity"),
+                                        loc, pl);
+                            } else {
+                                String f = "notfound";
+                                ParticleEffect.valueOf(getConfig().getString("particles." + f + ".type")).display(
+                                        Float.valueOf(getConfig().getDouble("particles." + f + ".dx") + ""),
+                                        Float.valueOf(getConfig().getDouble("particles." + f + ".dy") + ""),
+                                        Float.valueOf(getConfig().getDouble("particles." + f + ".dz") + ""),
+                                        Float.valueOf(getConfig().getDouble("particles." + f + ".speed") + ""),
+                                        getConfig().getInt("particles." + f + ".quantity"),
+                                        loc, pl);
+                            }
+                        }
+                    }
+                }
+            }, loop, loop);
         }
     }
 

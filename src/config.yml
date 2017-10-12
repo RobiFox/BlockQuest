@@ -31,3 +31,21 @@ already-found-commands:
 
 already-found-all-blocks:
     - msg %player% You already found all blocks!
+
+particles:
+    loop: 20
+    enabled: false
+    found:
+        dx: 0.05
+        dy: 0.05
+        dz: 0.05
+        speed: 0.1
+        quantity: 20
+        type: SMOKE_NORMAL
+    notfound:
+        dx: 0.05
+        dy: 0.05
+        dz: 0.05
+        speed: 0.1
+        quantity: 35
+        type: FLAME
