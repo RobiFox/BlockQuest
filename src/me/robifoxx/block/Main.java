@@ -19,6 +19,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 /**
  * Created by RobiFoxx.
@@ -89,39 +90,80 @@ public class Main extends JavaPlugin implements Listener {
         enabledParticle = getConfig().getBoolean("particles.enabled");
         if(enabledParticle) {
             int loop = getConfig().getInt("particles.loop");
+            String f_type;
+            float f_dx;
+            float f_dy;
+            float f_dz;
+            float f_speed;
+            int f_quan;
+            String nf_type;
+            float nf_dx;
+            float nf_dy;
+            float nf_dz;
+            float nf_speed;
+            int nf_quan;
+            {
+                String f = "found";
+                f_type = getConfig().getString("particles." + f + ".type");
+                f_dx = Float.valueOf(getConfig().getDouble("particles." + f + ".dx") + "");
+                f_dy = Float.valueOf(getConfig().getDouble("particles." + f + ".dy") + "");
+                f_dz = Float.valueOf(getConfig().getDouble("particles." + f + ".dz") + "");
+                f_speed = Float.valueOf(getConfig().getDouble("particles." + f + ".speed") + "");
+                f_quan = getConfig().getInt("particles." + f + ".quantity");
+            }
+            {
+                String f = "notfound";
+                nf_type = getConfig().getString("particles." + f + ".type");
+                nf_dx = Float.valueOf(getConfig().getDouble("particles." + f + ".dx") + "");
+                nf_dy = Float.valueOf(getConfig().getDouble("particles." + f + ".dy") + "");
+                nf_dz = Float.valueOf(getConfig().getDouble("particles." + f + ".dz") + "");
+                nf_speed = Float.valueOf(getConfig().getDouble("particles." + f + ".speed") + "");
+                nf_quan = getConfig().getInt("particles." + f + ".quantity");
+            }
             Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> {
                 for(String s : getConfig().getStringList("blocks")) {
                     for(Player pl : Bukkit.getOnlinePlayers()) {
+                        //If it was a reload, then dont bother to proceed
                         if(blocksss.get(pl.getName()) != null) {
-                            //If it was a reload, then dont bother to proceed
                             boolean found = blocksss.get(pl.getName()).contains(s);
                             String[] splt = s.split(";");
                             //x;y;z;w
                             Location loc = new Location(Bukkit.getWorld(splt[3]), Integer.valueOf(splt[0]) + 0.5, Integer.valueOf(splt[1]) + 0.25, Integer.valueOf(splt[2]) + 0.5);
                             if(found) {
-                                String f = "found";
-                                ParticleEffect.valueOf(getConfig().getString("particles." + f + ".type")).display(
-                                        Float.valueOf(getConfig().getDouble("particles." + f + ".dx") + ""),
-                                        Float.valueOf(getConfig().getDouble("particles." + f + ".dy") + ""),
-                                        Float.valueOf(getConfig().getDouble("particles." + f + ".dz") + ""),
-                                        Float.valueOf(getConfig().getDouble("particles." + f + ".speed") + ""),
-                                        getConfig().getInt("particles." + f + ".quantity"),
-                                        loc, pl);
+                                if(!f_type.equalsIgnoreCase("DISABLED")) {
+                                    ParticleEffect.valueOf(f_type).display(
+                                            f_dx,
+                                            f_dy,
+                                            f_dz,
+                                            f_speed,
+                                            f_quan,
+                                            loc, pl);
+                                }
                             } else {
-                                String f = "notfound";
-                                ParticleEffect.valueOf(getConfig().getString("particles." + f + ".type")).display(
-                                        Float.valueOf(getConfig().getDouble("particles." + f + ".dx") + ""),
-                                        Float.valueOf(getConfig().getDouble("particles." + f + ".dy") + ""),
-                                        Float.valueOf(getConfig().getDouble("particles." + f + ".dz") + ""),
-                                        Float.valueOf(getConfig().getDouble("particles." + f + ".speed") + ""),
-                                        getConfig().getInt("particles." + f + ".quantity"),
-                                        loc, pl);
+                                if(!nf_type.equalsIgnoreCase("DISABLED")) {
+                                    ParticleEffect.valueOf(nf_type).display(
+                                            nf_dx,
+                                            nf_dy,
+                                            nf_dz,
+                                            nf_speed,
+                                            nf_quan,
+                                            loc, pl);
+                                }
                             }
                         }
                     }
                 }
             }, loop, loop);
         }
+        Metrics metrics = new Metrics(this);
+
+        // Optional: Add custom charts
+        metrics.addCustomChart(new Metrics.SimplePie("chart_id", new Callable<String>() {
+            @Override
+            public String call() throws Exception {
+                return "My value";
+            }
+        }));
     }
 
     public void createMySQL() {

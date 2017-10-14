@@ -41,7 +41,7 @@ particles:
         dz: 0.05
         speed: 0.1
         quantity: 20
-        type: SMOKE_NORMAL
+        type: DISABLED
     notfound:
         dx: 0.05
         dy: 0.05
