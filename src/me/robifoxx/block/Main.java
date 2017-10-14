@@ -157,6 +157,7 @@ public class Main extends JavaPlugin implements Listener {
             }, loop, loop);
         }
         new Metrics(this);
+        getLogger().info("Enabled Metrics (bStats).");
     }
 
     public void createMySQL() {
@@ -177,6 +178,10 @@ public class Main extends JavaPlugin implements Listener {
                 data.getConfig().set("data." + pl.getUniqueId().toString() + ".z", saved_z.get(pl.getName()));
                 data.getConfig().set("data." + pl.getUniqueId().toString() + ".world", saved_world.get(pl.getName()));
                 data.saveConfig();
+            }
+            if(pl.isOp()) {
+                pl.sendMessage("§c[§2B§alockQuest§c] DO NOT reload!");
+                pl.sendMessage("§c[§2B§alockQuest§c] Use restart instead, as reload messes up player stats.");
             }
         }
     }
