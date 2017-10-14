@@ -19,6 +19,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 /**
@@ -155,15 +156,7 @@ public class Main extends JavaPlugin implements Listener {
                 }
             }, loop, loop);
         }
-        Metrics metrics = new Metrics(this);
-
-        // Optional: Add custom charts
-        metrics.addCustomChart(new Metrics.SimplePie("chart_id", new Callable<String>() {
-            @Override
-            public String call() throws Exception {
-                return "My value";
-            }
-        }));
+        new Metrics(this);
     }
 
     public void createMySQL() {
