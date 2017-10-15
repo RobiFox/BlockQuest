@@ -28,26 +28,6 @@ public class Config {
 
 		String actualpath = path;
 		String actualfilename = fileName;
-		
-		/*actualpath.replaceAll("\\", "/");
-		
-		if(path.startsWith("/")) {
-			
-			actualpath.replaceFirst("/", "");
-			
-		}
-		
-		if(!path.contains("plugins")) {
-			
-			actualpath = "plugins/" + actualpath;
-			
-		}
-		
-		if(!fileName.contains(".")) {
-			
-			actualfilename = fileName + ".yml";
-			
-		}*/
 
 		path_ = actualpath;
 		fileName_ = actualfilename;

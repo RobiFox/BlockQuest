@@ -32,6 +32,22 @@ already-found-commands:
 already-found-all-blocks:
     - msg %player% You already found all blocks!
 
+find-effect:
+    enabled: true
+    invisible: true
+    small: true
+    head: PUMPKIN
+    chest: NONE
+    leg: NONE
+    boot: NONE
+    particle: FLAME
+    loop: 30
+    levitation-per-loop: 0.2
+    yaw-rotation: 20
+    scheduler: 2
+    sound: ENTITY_FIREWORK_LAUNCH
+    pitch: 0
+
 particles:
     loop: 20
     enabled: false

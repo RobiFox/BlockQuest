@@ -3,8 +3,11 @@ package me.robifoxx.block;
 import com.darkblade12.particleeffect.ParticleEffect;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -13,6 +16,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -27,19 +31,18 @@ import java.util.concurrent.Callable;
  * All rights reserved.
  */
 public class Main extends JavaPlugin implements Listener {
-    public static MySQL mysql;
-    ArrayList<String> inEdit = new ArrayList<>();
+    static MySQL mysql;
+    private ArrayList<String> inEdit = new ArrayList<>();
     static HashMap<String, List<String>> blocksss = new HashMap<>();
-    HashMap<String, String> saved_x = new HashMap<>();
-    HashMap<String, String> saved_y = new HashMap<>();
-    HashMap<String, String> saved_z = new HashMap<>();
-    HashMap<String, String> saved_world = new HashMap<>();
-    Config data;
-    boolean useMysql = false;
-    boolean unsafeSave = true;
-    ArrayList<String> eventReturn = new ArrayList<>();
-    boolean placeholder = false;
-    boolean enabledParticle;
+    private HashMap<String, String> saved_x = new HashMap<>();
+    private HashMap<String, String> saved_y = new HashMap<>();
+    private HashMap<String, String> saved_z = new HashMap<>();
+    private HashMap<String, String> saved_world = new HashMap<>();
+    private Config data;
+    private boolean useMysql = false;
+    private boolean unsafeSave = true;
+    private ArrayList<String> eventReturn = new ArrayList<>();
+    private boolean findEffect = false;
 
     public void onEnable() {
         if(!(new File("plugins/BlockQuest/config.yml").exists())) {
@@ -80,7 +83,7 @@ public class Main extends JavaPlugin implements Listener {
         if(getConfig().getString("placeholderapi") != null
                 && getConfig().getString("placeholderapi").equalsIgnoreCase("true")) {
             if(Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-                placeholder = true;
+                boolean placeholder = true;
                 new Placeholders(this).hook();
             } else {
                 getLogger().warning("PlaceholderAPI not found, placeholders will not work.");
@@ -88,7 +91,8 @@ public class Main extends JavaPlugin implements Listener {
                 getLogger().warning("https://www.spigotmc.org/resources/p.6245/");
             }
         }
-        enabledParticle = getConfig().getBoolean("particles.enabled");
+        findEffect = getConfig().getBoolean("find-effect.enabled");
+        boolean enabledParticle = getConfig().getBoolean("particles.enabled");
         if(enabledParticle) {
             int loop = getConfig().getInt("particles.loop");
             String f_type;
@@ -383,6 +387,7 @@ public class Main extends JavaPlugin implements Listener {
                             data.getConfig().set("data." + e.getPlayer().getUniqueId().toString() + ".world", saved_world.get(e.getPlayer().getName()));
                             data.saveConfig();
                         }
+                        playFindEffect(e.getClickedBlock().getLocation().clone().add(0.5, 0, 0.5));
                         int blocksLeft = getConfig().getStringList("blocks").size() - blocksss.get(e.getPlayer().getName()).size();
                         for(String s : getConfig().getStringList("find-block-commands")) {
                             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), s.replace("%player%", e.getPlayer().getName())
@@ -453,5 +458,48 @@ public class Main extends JavaPlugin implements Listener {
                 }
             }
         }
+    }
+
+    public void playFindEffect(Location l) {
+        if(!findEffect) {
+            return;
+        }
+        boolean visible = !getConfig().getBoolean("find-effect.invisible");
+        boolean small = getConfig().getBoolean("find-effect.small");
+        String head = getConfig().getString("find-effect.head").equalsIgnoreCase("NONE") ? null : getConfig().getString("find-effect.head");
+        String chest = getConfig().getString("find-effect.chest").equalsIgnoreCase("NONE") ? null : getConfig().getString("find-effect.chest");
+        String leg = getConfig().getString("find-effect.leg").equalsIgnoreCase("NONE") ? null : getConfig().getString("find-effect.leg");
+        String boot = getConfig().getString("find-effect.boot").equalsIgnoreCase("NONE") ? null : getConfig().getString("find-effect.boot");
+        ArmorStand a = l.getWorld().spawn(l.clone().add(0, 0.25, 0), ArmorStand.class);
+        a.setVisible(visible);
+        a.setSmall(small);
+        a.setInvulnerable(true);
+        a.setGravity(false);
+        a.getWorld().playSound(a.getLocation(), Sound.valueOf(getConfig().getString("find-effect.sound")), 1, getConfig().getInt("find-effect.pitch"));
+        if(head != null) {
+            a.setHelmet(new ItemStack(Material.valueOf(head)));
+        }
+        if(chest != null) {
+            a.setHelmet(new ItemStack(Material.valueOf(chest)));
+        }
+        if(leg != null) {
+            a.setHelmet(new ItemStack(Material.valueOf(leg)));
+        }
+        if(boot != null) {
+            a.setHelmet(new ItemStack(Material.valueOf(boot)));
+        }
+        for(int i = 0; i < getConfig().getInt("find-effect.loop"); i++) {
+            Bukkit.getScheduler().scheduleSyncDelayedTask(this, () -> {
+                Location newLoc = a.getLocation().clone();
+                newLoc.add(0.0, getConfig().getDouble("find-effect.levitation-per-loop"), 0.0);
+                newLoc.setYaw(a.getLocation().getYaw() + getConfig().getInt("find-effect.yaw-rotation"));
+                a.teleport(newLoc);
+                String particle = getConfig().getString("find-effect.particle");
+                if(!particle.equalsIgnoreCase("DISABLED")) {
+                    ParticleEffect.valueOf(particle).display(0, 0, 0, 0, 1, a.getLocation(), 16);
+                }
+            }, i * getConfig().getInt("find-effect.scheduler"));
+        }
+        Bukkit.getScheduler().scheduleSyncDelayedTask(this, a::remove, getConfig().getInt("find-effect.loop") * getConfig().getInt("find-effect.scheduler"));
     }
 }
