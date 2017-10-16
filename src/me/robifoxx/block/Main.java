@@ -15,7 +15,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -23,8 +22,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Callable;
 
 /**
  * Created by RobiFoxx.
@@ -466,11 +463,15 @@ public class Main extends JavaPlugin implements Listener {
         }
         boolean visible = !getConfig().getBoolean("find-effect.invisible");
         boolean small = getConfig().getBoolean("find-effect.small");
+        double offset = 0.25;
+        if(getConfig().get("find-effect.y-start") != null) {
+            offset = getConfig().getDouble("find-effect.y-start");
+        }
         String head = getConfig().getString("find-effect.head").equalsIgnoreCase("NONE") ? null : getConfig().getString("find-effect.head");
         String chest = getConfig().getString("find-effect.chest").equalsIgnoreCase("NONE") ? null : getConfig().getString("find-effect.chest");
         String leg = getConfig().getString("find-effect.leg").equalsIgnoreCase("NONE") ? null : getConfig().getString("find-effect.leg");
         String boot = getConfig().getString("find-effect.boot").equalsIgnoreCase("NONE") ? null : getConfig().getString("find-effect.boot");
-        ArmorStand a = l.getWorld().spawn(l.clone().add(0, 0.25, 0), ArmorStand.class);
+        ArmorStand a = l.getWorld().spawn(l.clone().add(0, offset, 0), ArmorStand.class);
         a.setVisible(visible);
         a.setSmall(small);
         a.setInvulnerable(true);

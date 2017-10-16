@@ -45,6 +45,7 @@ find-effect:
     levitation-per-loop: 0.2
     yaw-rotation: 20
     scheduler: 2
+    y-start: 0.25
     sound: ENTITY_FIREWORK_LAUNCH
     pitch: 0
 
