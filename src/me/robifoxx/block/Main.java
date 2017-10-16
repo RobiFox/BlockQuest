@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -457,6 +458,14 @@ public class Main extends JavaPlugin implements Listener {
         }
     }
 
+    @EventHandler
+    public void dmg(EntityDamageEvent e) {
+        if(e.getEntity().getCustomName() != null
+                && e.getEntity().getCustomName().equalsIgnoreCase("§b§l§o§c§k")) {
+            e.setCancelled(true);
+        }
+    }
+
     public void playFindEffect(Location l) {
         if(!findEffect) {
             return;
@@ -474,7 +483,9 @@ public class Main extends JavaPlugin implements Listener {
         ArmorStand a = l.getWorld().spawn(l.clone().add(0, offset, 0), ArmorStand.class);
         a.setVisible(visible);
         a.setSmall(small);
-        a.setInvulnerable(true);
+        //a.setInvulnerable(true);
+        a.setCustomName("§b§l§o§c§k");
+        a.setCustomNameVisible(false);
         a.setGravity(false);
         a.getWorld().playSound(a.getLocation(), Sound.valueOf(getConfig().getString("find-effect.sound")), 1, getConfig().getInt("find-effect.pitch"));
         if(head != null) {
