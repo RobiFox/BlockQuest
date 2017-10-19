@@ -44,6 +44,7 @@ public class Main extends JavaPlugin  {
     static String disabledMsg = "&cBlocks aren't enabled yet!";
     static boolean checkFullInventory = false;
     static String fullInventoryMsg = "&c&lYour inventory is full!";
+    static Material hideFoundBlocks = Material.AIR;
 
     public void onEnable() {
         if(!(new File("plugins/BlockQuest/config.yml").exists())) {

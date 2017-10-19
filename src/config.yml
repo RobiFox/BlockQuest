@@ -4,6 +4,9 @@
 # when server disables.
 # However, when false, it will save when
 # player finds a reward.
+# -----------------------------------
+# If hide-found-blocks is "NONE", it will
+# be disabled.
 
 placeholderapi: false
 use-mysql: false
@@ -22,6 +25,7 @@ mysql-unsafe-save: true
 
 no-permission: '&cYou don''t have permission for this!'
 
+hide-found-blocks: AIR
 blocks: []
 
 find-block-commands:
