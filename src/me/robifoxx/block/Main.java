@@ -97,6 +97,16 @@ public class Main extends JavaPlugin  {
                 fullInventoryMsg = getConfig().getString("full-inventory-msg");
             }
         }
+        if(getConfig().get("hide-found-blocks") != null) {
+            String st = getConfig().getString("hide-found-blocks");
+            if(st.equalsIgnoreCase("NONE")) {
+                hideFoundBlocks = null;
+            } else {
+                hideFoundBlocks = Material.valueOf(st);
+            }
+        } else {
+            hideFoundBlocks = null;
+        }
         if(getConfig().getString("placeholderapi") != null
                 && getConfig().getString("placeholderapi").equalsIgnoreCase("true")) {
             if(Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {

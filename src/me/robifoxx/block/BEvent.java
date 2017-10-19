@@ -73,6 +73,7 @@ public class BEvent implements Listener {
             }
             Main.blocksss.put(e.getPlayer().getName(), lst);
         }
+        Utils.hideFoundBlocks(e.getPlayer());
     }
 
     @EventHandler
@@ -177,6 +178,7 @@ public class BEvent implements Listener {
                                     .replace("%locZ%", "" + e.getClickedBlock().getLocation().getZ())
                                     .replace("%blockLeft%", "" + blocksLeft)
                                     .replace("%blocksLeft%", "" + blocksLeft));
+                            Utils.hideFoundBlocks(e.getPlayer());
                         }
                         if(foundAllBlocks) {
                             for(String s : plugin.getConfig().getStringList("all-blocks-found-commands")) {
