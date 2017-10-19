@@ -29,7 +29,7 @@ public class Utils {
         if(Main.blocksss.get(p.getName()) != null
                 && Main.hideFoundBlocks != null) {
             for (String s : Main.getProvidingPlugin(Main.class).getConfig().getStringList("blocks")) {
-                if(!Main.blocksss.get(p.getName()).contains(s)) {
+                if(Main.blocksss.get(p.getName()).contains(s)) {
                     String[] splt = s.split(";");
                     //x;y;z;w
                     Location loc = new Location(Bukkit.getWorld(splt[3]), Integer.valueOf(splt[0]), Integer.valueOf(splt[1]), Integer.valueOf(splt[2]));
