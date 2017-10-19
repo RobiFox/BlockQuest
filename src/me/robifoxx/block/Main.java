@@ -42,6 +42,8 @@ public class Main extends JavaPlugin  {
     static boolean findEffect = false;
     static boolean enabled = false;
     static String disabledMsg = "&cBlocks aren't enabled yet!";
+    static boolean checkFullInventory = false;
+    static String fullInventoryMsg = "&c&lYour inventory is full!";
 
     public void onEnable() {
         if(!(new File("plugins/BlockQuest/config.yml").exists())) {
@@ -87,6 +89,12 @@ public class Main extends JavaPlugin  {
         }
         if(getConfig().get("use-uuid") == null) {
             Utils.useUUID = getConfig().getBoolean("use-uuid");
+        }
+        if(getConfig().get("check-full-inventory") == null) {
+            checkFullInventory = getConfig().getBoolean("check-full-inventory");
+            if(getConfig().get("full-inventory-msg") == null) {
+                fullInventoryMsg = getConfig().getString("full-inventory-msg");
+            }
         }
         if(getConfig().getString("placeholderapi") != null
                 && getConfig().getString("placeholderapi").equalsIgnoreCase("true")) {
