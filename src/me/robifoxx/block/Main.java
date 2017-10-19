@@ -221,7 +221,7 @@ public class Main extends JavaPlugin  {
                     if(enabled) {
                         sender.sendMessage("§aEnabled Blocks!");
                     } else {
-                        sender.sendMessage("§cEnabled Blocks!");
+                        sender.sendMessage("§cDisabled Blocks!");
                     }
                     getConfig().set("enabled", enabled);
                     saveConfig();
