@@ -10,6 +10,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -282,5 +283,16 @@ public class BEvent implements Listener {
             }, i * plugin.getConfig().getInt("find-effect.scheduler"));
         }
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, a::remove, plugin.getConfig().getInt("find-effect.loop") * plugin.getConfig().getInt("find-effect.scheduler"));
+    }
+
+    @EventHandler
+    public void rl(PlayerCommandPreprocessEvent e) {
+        if(e.getMessage().equalsIgnoreCase("/rl")
+                || e.getMessage().equalsIgnoreCase("/reload")) {
+            if(e.getPlayer().isOp()) {
+                e.getPlayer().sendMessage("§c[§2B§alockQuest§c] DO NOT reload!");
+                e.getPlayer().sendMessage("§c[§2B§alockQuest§c] Use restart instead, as reload messes up player stats.");
+            }
+        }
     }
 }
