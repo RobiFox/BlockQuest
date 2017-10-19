@@ -21,4 +21,7 @@ public class Utils {
             return Bukkit.getOfflinePlayer(UUID.fromString(p)).getName();
         }
     }
+    public static String getUsername(String uuid) {
+        return Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName();
+    }
 }

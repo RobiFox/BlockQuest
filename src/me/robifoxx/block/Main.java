@@ -17,6 +17,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -228,8 +229,27 @@ public class Main extends JavaPlugin  {
                     }
                     getConfig().set("enabled", enabled);
                     saveConfig();
-                }  else if(args[0].equalsIgnoreCase("stats")) {
-
+                } else if(args[0].equalsIgnoreCase("stats")) {
+                    int total = 0;
+                    int foundAllBlocks = 0;
+                    int currentBlocks = getConfig().getStringList("blocks").size();
+                    for(String s : data.getConfig().getConfigurationSection("data").getKeys(false)) {
+                        if(!s.equalsIgnoreCase("1-1-1-1-1-1")) {
+                            String id = s;
+                            if(!Utils.useUUID) {
+                                id = Utils.getUsername(s);
+                            }
+                            total++;
+                            int foundBlocks = data.getConfig().getString("data." + id + ".x").split(";").length - 1;
+                            if(foundBlocks >= currentBlocks) {
+                                foundAllBlocks++;
+                            }
+                        }
+                    }
+                    double foundPercent = ((foundAllBlocks * 1.0) / (total * 1.0)) * 100;
+                    BigDecimal dec = new BigDecimal(foundPercent).setScale(2, BigDecimal.ROUND_HALF_EVEN);
+                    sender.sendMessage("§a§lCurrent Blocks: §e" + currentBlocks);
+                    sender.sendMessage("§e§l" + dec + "% §a§lhas found all blocks.");
                 } /*else if(args[0].equalsIgnoreCase("wipedata")) {
                     sender.sendMessage("§aWiping data...");
                     boolean success = false;
