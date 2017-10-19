@@ -155,16 +155,17 @@ public class BEvent implements Listener {
                             Main.data.getConfig().set("data." + Utils.getIdentifier(e.getPlayer()) + ".world", Main.saved_world.get(e.getPlayer().getName()));
                             Main.data.saveConfig();
                         }
-                        playFindEffect(e.getClickedBlock().getLocation().clone().add(0.5, 0, 0.5));
                         int blocksLeft = plugin.getConfig().getStringList("blocks").size() - Main.blocksss.get(e.getPlayer().getName()).size();
                         boolean foundAllBlocks = Main.blocksss.get(e.getPlayer().getName()).size() >= plugin.getConfig().getStringList("blocks").size();
-                        if(Main.checkFullInventory) {
+                        if(Main.checkFullInventory
+                                && foundAllBlocks) {
                             if(e.getPlayer().getInventory().firstEmpty() == -1) {
                                 Main.blocksss.get(e.getPlayer().getName()).remove(block);
                                 e.getPlayer().sendMessage(Main.fullInventoryMsg.replace("&", "§"));
                                 return;
                             }
                         }
+                        playFindEffect(e.getClickedBlock().getLocation().clone().add(0.5, 0, 0.5));
                         for(String s : plugin.getConfig().getStringList("find-block-commands")) {
                             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), s.replace("%player%", e.getPlayer().getName())
                                     .replace("%pLocX%", "" + e.getPlayer().getLocation().getX())
