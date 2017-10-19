@@ -191,22 +191,6 @@ public class Main extends JavaPlugin  {
         }
     }
 
-    /*public void onDisable() {
-        for(Player pl : Bukkit.getOnlinePlayers()) {
-            if(useMysql) {
-                SQLPlayer.setString(pl.getUniqueId().toString(), "X", saved_x.get(pl.getName()));
-                SQLPlayer.setString(pl.getUniqueId().toString(), "Y", saved_y.get(pl.getName()));
-                SQLPlayer.setString(pl.getUniqueId().toString(), "Z", saved_z.get(pl.getName()));
-                SQLPlayer.setString(pl.getUniqueId().toString(), "WORLD", saved_world.get(pl.getName()));
-            } else {
-                data.getConfig().set("data." + pl.getUniqueId().toString() + ".x", saved_x.get(pl.getName()));
-                data.getConfig().set("data." + pl.getUniqueId().toString() + ".y", saved_y.get(pl.getName()));
-                data.getConfig().set("data." + pl.getUniqueId().toString() + ".z", saved_z.get(pl.getName()));
-                data.getConfig().set("data." + pl.getUniqueId().toString() + ".world", saved_world.get(pl.getName()));
-            }
-        }
-    }*/
-
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if(cmd.getName().equalsIgnoreCase("blockquest")) {
