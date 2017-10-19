@@ -125,7 +125,8 @@ public class BEvent implements Listener {
                     if(Main.blocksss.get(e.getPlayer().getName()) == null
                             || !Main.blocksss.get(e.getPlayer().getName()).contains(block)) {
                         if(!Main.enabled) {
-
+                            e.getPlayer().sendMessage(Main.disabledMsg.replace("&", "§"));
+                            return;
                         }
                         Main.saved_x.put(e.getPlayer().getName(), Main.saved_x.get(e.getPlayer().getName()) + ";" + e.getClickedBlock().getLocation().getBlockX());
                         Main.saved_y.put(e.getPlayer().getName(), Main.saved_y.get(e.getPlayer().getName()) + ";" + e.getClickedBlock().getLocation().getBlockY());
