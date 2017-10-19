@@ -41,6 +41,8 @@ public class Main extends JavaPlugin  {
     static boolean unsafeSave = true;
     static ArrayList<String> eventReturn = new ArrayList<>();
     static boolean findEffect = false;
+    static boolean enabled = false;
+    static String disabledMsg = "&cBlocks aren't enabled yet!";
 
     public void onEnable() {
         if(!(new File("plugins/BlockQuest/config.yml").exists())) {
@@ -77,6 +79,12 @@ public class Main extends JavaPlugin  {
         }
         if(getConfig().getStringList("already-found-all-blocks") == null) {
             getConfig().set("already-found-all-blocks", new ArrayList<String>().add("msg %player% You already found all blocks!"));
+        }
+        if(getConfig().get("enabled") == null) {
+            enabled = getConfig().getBoolean("enabled");
+            if(getConfig().get("disabled-msg") == null) {
+                disabledMsg = getConfig().getString("disabled-msg");
+            }
         }
         if(getConfig().getString("placeholderapi") != null
                 && getConfig().getString("placeholderapi").equalsIgnoreCase("true")) {
@@ -218,6 +226,9 @@ public class Main extends JavaPlugin  {
                     sender.sendMessage("§aClick on blocks to add it to the config file!");
                     sender.sendMessage("§aType §6/blockquest §ato exit edit mode.");
                     sender.sendMessage("§a§lType §6§l/blockquest reload §a§lto reload the config!");
+                    if(!enabled) {
+                        sender.sendMessage("§c§lBlocks are disabled. Players cant find them until you enable it with §6§l/blockquest toggle");
+                    }
                     //sender.sendMessage("§a§lType §6§l/blockquest wipedata §a§lto clear data. §c§l!WARNING! This resets EVERYONE'S data!");
                     inEdit.add(sender.getName());
                 }
@@ -225,6 +236,15 @@ public class Main extends JavaPlugin  {
                 if(args[0].equalsIgnoreCase("reload")) {
                     reloadConfig();
                     sender.sendMessage("§aConfig reloaded!");
+                } else if(args[0].equalsIgnoreCase("toggle")) {
+                    enabled = !enabled;
+                    if(enabled) {
+                        sender.sendMessage("§aEnabled Blocks!");
+                    } else {
+                        sender.sendMessage("§cEnabled Blocks!");
+                    }
+                    getConfig().set("enabled", enabled);
+                    saveConfig();
                 } /*else if(args[0].equalsIgnoreCase("wipedata")) {
                     sender.sendMessage("§aWiping data...");
                     boolean success = false;
