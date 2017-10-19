@@ -82,18 +82,18 @@ public class Main extends JavaPlugin  {
         if(getConfig().getStringList("already-found-all-blocks") == null) {
             getConfig().set("already-found-all-blocks", new ArrayList<String>().add("msg %player% You already found all blocks!"));
         }
-        if(getConfig().get("enabled") == null) {
+        if(getConfig().get("enabled") != null) {
             enabled = getConfig().getBoolean("enabled");
-            if(getConfig().get("disabled-msg") == null) {
+            if(getConfig().get("disabled-msg") != null) {
                 disabledMsg = getConfig().getString("disabled-msg");
             }
         }
-        if(getConfig().get("use-uuid") == null) {
+        if(getConfig().get("use-uuid") != null) {
             Utils.useUUID = getConfig().getBoolean("use-uuid");
         }
-        if(getConfig().get("check-full-inventory") == null) {
+        if(getConfig().get("check-full-inventory") != null) {
             checkFullInventory = getConfig().getBoolean("check-full-inventory");
-            if(getConfig().get("full-inventory-msg") == null) {
+            if(getConfig().get("full-inventory-msg") != null) {
                 fullInventoryMsg = getConfig().getString("full-inventory-msg");
             }
         }
