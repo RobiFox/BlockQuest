@@ -28,19 +28,19 @@ import java.util.List;
  * Created by RobiFoxx.
  * All rights reserved.
  */
-public class Main extends JavaPlugin implements Listener {
+public class Main extends JavaPlugin  {
     static MySQL mysql;
-    private ArrayList<String> inEdit = new ArrayList<>();
+    static ArrayList<String> inEdit = new ArrayList<>();
     static HashMap<String, List<String>> blocksss = new HashMap<>();
-    private HashMap<String, String> saved_x = new HashMap<>();
-    private HashMap<String, String> saved_y = new HashMap<>();
-    private HashMap<String, String> saved_z = new HashMap<>();
-    private HashMap<String, String> saved_world = new HashMap<>();
-    private Config data;
-    private boolean useMysql = false;
-    private boolean unsafeSave = true;
-    private ArrayList<String> eventReturn = new ArrayList<>();
-    private boolean findEffect = false;
+    static HashMap<String, String> saved_x = new HashMap<>();
+    static HashMap<String, String> saved_y = new HashMap<>();
+    static HashMap<String, String> saved_z = new HashMap<>();
+    static HashMap<String, String> saved_world = new HashMap<>();
+    static Config data;
+    static boolean useMysql = false;
+    static boolean unsafeSave = true;
+    static ArrayList<String> eventReturn = new ArrayList<>();
+    static boolean findEffect = false;
 
     public void onEnable() {
         if(!(new File("plugins/BlockQuest/config.yml").exists())) {
@@ -69,7 +69,7 @@ public class Main extends JavaPlugin implements Listener {
             createMySQL();
             useMysql = true;
         }
-        Bukkit.getPluginManager().registerEvents(this, this);
+        Bukkit.getPluginManager().registerEvents(new BEvent(), this);
         if(getConfig().getString("mysql-unsafe-save") != null) {
             if(getConfig().getString("mysql-unsafe-save").equalsIgnoreCase("false")) {
                 unsafeSave = false;
@@ -81,7 +81,6 @@ public class Main extends JavaPlugin implements Listener {
         if(getConfig().getString("placeholderapi") != null
                 && getConfig().getString("placeholderapi").equalsIgnoreCase("true")) {
             if(Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-                boolean placeholder = true;
                 new Placeholders(this).hook();
             } else {
                 getLogger().warning("PlaceholderAPI not found, placeholders will not work.");
@@ -255,263 +254,5 @@ public class Main extends JavaPlugin implements Listener {
             }
         }
         return true;
-    }
-
-    @EventHandler
-    public void join(PlayerJoinEvent e) {
-        if(data.getConfig().get("data." + e.getPlayer().getUniqueId().toString() + ".x") == null) {
-            data.getConfig().set("data." + e.getPlayer().getUniqueId().toString() + ".x", "none");
-            data.getConfig().set("data." + e.getPlayer().getUniqueId().toString() + ".y", "none");
-            data.getConfig().set("data." + e.getPlayer().getUniqueId().toString() + ".z", "none");
-            data.getConfig().set("data." + e.getPlayer().getUniqueId().toString() + ".world", "none");
-            data.saveConfig();
-        }
-        if(blocksss.get(e.getPlayer().getName()) == null) {
-            String x;
-            String y;
-            String z;
-            String world;
-            if(saved_x.get(e.getPlayer().getName()) != null) {
-                x = saved_x.get(e.getPlayer().getName());
-                y = saved_z.get(e.getPlayer().getName());
-                z = saved_y.get(e.getPlayer().getName());
-                world = saved_world.get(e.getPlayer().getName());
-            } else {
-                if(useMysql) {
-                    x = SQLPlayer.getString(e.getPlayer().getUniqueId().toString(), "X");
-                    y = SQLPlayer.getString(e.getPlayer().getUniqueId().toString(), "Y");
-                    z = SQLPlayer.getString(e.getPlayer().getUniqueId().toString(), "Z");
-                    world = SQLPlayer.getString(e.getPlayer().getUniqueId().toString(), "WORLD");
-                } else {
-                    x = data.getConfig().getString("data." + e.getPlayer().getUniqueId().toString() + ".x");
-                    y = data.getConfig().getString("data." + e.getPlayer().getUniqueId().toString() + ".y");
-                    z = data.getConfig().getString("data." + e.getPlayer().getUniqueId().toString() + ".z");
-                    world = data.getConfig().getString("data." + e.getPlayer().getUniqueId().toString() + ".world");
-                }
-            }
-            saved_x.put(e.getPlayer().getName(), x);
-            saved_y.put(e.getPlayer().getName(), y);
-            saved_z.put(e.getPlayer().getName(), z);
-            saved_world.put(e.getPlayer().getName(), world);
-
-            String[] x_splt = x.split(";");
-            String[] y_splt = y.split(";");
-            String[] z_splt = z.split(";");
-            String[] world_splt = world.split(";");
-
-            int loc = 0;
-            List<String> lst = new ArrayList<>();
-            for(String s : x_splt) {
-                if(!s.equalsIgnoreCase("none")) {
-                    lst.add(x_splt[loc] + ";" + y_splt[loc] + ";" + z_splt[loc] + ";" + world_splt[loc]);
-                }
-                loc++;
-            }
-            blocksss.put(e.getPlayer().getName(), lst);
-        }
-    }
-
-    @EventHandler
-    public void leave(PlayerQuitEvent e) {
-        if(useMysql) {
-            SQLPlayer.setString(e.getPlayer().getUniqueId().toString(), "X", saved_x.get(e.getPlayer().getName()));
-            SQLPlayer.setString(e.getPlayer().getUniqueId().toString(), "Y", saved_y.get(e.getPlayer().getName()));
-            SQLPlayer.setString(e.getPlayer().getUniqueId().toString(), "Z", saved_z.get(e.getPlayer().getName()));
-            SQLPlayer.setString(e.getPlayer().getUniqueId().toString(), "WORLD", saved_world.get(e.getPlayer().getName()));
-        } else {
-            data.getConfig().set("data." + e.getPlayer().getUniqueId().toString() + ".x", saved_x.get(e.getPlayer().getName()));
-            data.getConfig().set("data." + e.getPlayer().getUniqueId().toString() + ".y", saved_y.get(e.getPlayer().getName()));
-            data.getConfig().set("data." + e.getPlayer().getUniqueId().toString() + ".z", saved_z.get(e.getPlayer().getName()));
-            data.getConfig().set("data." + e.getPlayer().getUniqueId().toString() + ".world", saved_world.get(e.getPlayer().getName()));
-            data.saveConfig();
-        }
-    }
-
-    @EventHandler
-    public void click(PlayerInteractEvent e) {
-        /*if(e.getHand() == EquipmentSlot.OFF_HAND) {
-            return;
-        }*/
-        if(eventReturn.contains(e.getPlayer().getName())) {
-            return;
-        }
-        eventReturn.add(e.getPlayer().getName());
-        Bukkit.getScheduler().scheduleSyncDelayedTask(this, () -> {
-            eventReturn.remove(e.getPlayer().getName());
-        }, 1);
-        if(e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            List<String> blocks = getConfig().getStringList("blocks");
-            String block = e.getClickedBlock().getLocation().getBlockX() + ";" + e.getClickedBlock().getLocation().getBlockY() + ";" + e.getClickedBlock().getLocation().getBlockZ() + ";" + e.getClickedBlock().getLocation().getWorld().getName();
-            if(inEdit.contains(e.getPlayer().getName())) {
-                if(blocks.contains(block)) {
-                    e.getPlayer().sendMessage("§cRemoved this block!");
-                    blocks.remove(block);
-                    getConfig().set("blocks", blocks);
-                    saveConfig();
-                } else {
-                    e.getPlayer().sendMessage("§aAdded this block!");
-                    blocks.add(block);
-                    getConfig().set("blocks", blocks);
-                    saveConfig();
-                }
-                inEdit.remove(e.getPlayer().getName());
-                e.getPlayer().sendMessage("§aExited edit mode.");
-            } else {
-                if(getConfig().getStringList("blocks").contains(block)) {
-                    if(blocksss.get(e.getPlayer().getName()) == null
-                            || !blocksss.get(e.getPlayer().getName()).contains(block)) {
-                        saved_x.put(e.getPlayer().getName(), saved_x.get(e.getPlayer().getName()) + ";" + e.getClickedBlock().getLocation().getBlockX());
-                        saved_y.put(e.getPlayer().getName(), saved_y.get(e.getPlayer().getName()) + ";" + e.getClickedBlock().getLocation().getBlockY());
-                        saved_z.put(e.getPlayer().getName(), saved_z.get(e.getPlayer().getName()) + ";" + e.getClickedBlock().getLocation().getBlockZ());
-                        saved_world.put(e.getPlayer().getName(), saved_world.get(e.getPlayer().getName()) + ";" + e.getClickedBlock().getLocation().getWorld().getName());
-                        if(blocksss.get(e.getPlayer().getName()) == null) {
-                            List<String> lst = new ArrayList<>();
-                            lst.add(block);
-                            blocksss.put(e.getPlayer().getName(), lst);
-                        } else {
-                            blocksss.get(e.getPlayer().getName()).add(block);
-                        }
-                        if(useMysql) {
-                            if(!unsafeSave) {
-                                SQLPlayer.setString(e.getPlayer().getUniqueId().toString(), "X", saved_x.get(e.getPlayer().getName()));
-                                SQLPlayer.setString(e.getPlayer().getUniqueId().toString(), "Y", saved_y.get(e.getPlayer().getName()));
-                                SQLPlayer.setString(e.getPlayer().getUniqueId().toString(), "Z", saved_z.get(e.getPlayer().getName()));
-                                SQLPlayer.setString(e.getPlayer().getUniqueId().toString(), "WORLD", saved_world.get(e.getPlayer().getName()));
-                            }
-                        } else {
-                            data.getConfig().set("data." + e.getPlayer().getUniqueId().toString() + ".x", saved_x.get(e.getPlayer().getName()));
-                            data.getConfig().set("data." + e.getPlayer().getUniqueId().toString() + ".y", saved_y.get(e.getPlayer().getName()));
-                            data.getConfig().set("data." + e.getPlayer().getUniqueId().toString() + ".z", saved_z.get(e.getPlayer().getName()));
-                            data.getConfig().set("data." + e.getPlayer().getUniqueId().toString() + ".world", saved_world.get(e.getPlayer().getName()));
-                            data.saveConfig();
-                        }
-                        playFindEffect(e.getClickedBlock().getLocation().clone().add(0.5, 0, 0.5));
-                        int blocksLeft = getConfig().getStringList("blocks").size() - blocksss.get(e.getPlayer().getName()).size();
-                        for(String s : getConfig().getStringList("find-block-commands")) {
-                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), s.replace("%player%", e.getPlayer().getName())
-                                    .replace("%pLocX%", "" + e.getPlayer().getLocation().getX())
-                                    .replace("%pLocY%", "" + e.getPlayer().getLocation().getY())
-                                    .replace("%pLocZ%", "" + e.getPlayer().getLocation().getZ())
-                                    .replace("%locX5%", "" + (e.getClickedBlock().getLocation().getX() + 0.5))
-                                    .replace("%locY5%", "" + (e.getClickedBlock().getLocation().getY() + 0.5))
-                                    .replace("%locZ5%", "" + (e.getClickedBlock().getLocation().getZ() + 0.5))
-                                    .replace("%locX%", "" + e.getClickedBlock().getLocation().getX())
-                                    .replace("%locY%", "" + e.getClickedBlock().getLocation().getY())
-                                    .replace("%locZ%", "" + e.getClickedBlock().getLocation().getZ())
-                                    .replace("%blockLeft%", "" + blocksLeft)
-                                    .replace("%blocksLeft%", "" + blocksLeft));
-                        }
-                        if(blocksss.get(e.getPlayer().getName()).size() >= getConfig().getStringList("blocks").size()) {
-                            for(String s : getConfig().getStringList("all-blocks-found-commands")) {
-                                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), s.replace("%player%", e.getPlayer().getName())
-                                        .replace("%pLocX%", "" + e.getPlayer().getLocation().getX())
-                                        .replace("%pLocY%", "" + e.getPlayer().getLocation().getY())
-                                        .replace("%pLocZ%", "" + e.getPlayer().getLocation().getZ())
-                                        .replace("%locX5%", "" + (e.getClickedBlock().getLocation().getX() + 0.5))
-                                        .replace("%locY5%", "" + (e.getClickedBlock().getLocation().getY() + 0.5))
-                                        .replace("%locZ5%", "" + (e.getClickedBlock().getLocation().getZ() + 0.5))
-                                        .replace("%locX%", "" + e.getClickedBlock().getLocation().getX())
-                                        .replace("%locY%", "" + e.getClickedBlock().getLocation().getY())
-                                        .replace("%locZ%", "" + e.getClickedBlock().getLocation().getZ())
-                                        .replace("%blockLeft%", "" + blocksLeft)
-                                        .replace("%blocksLeft%", "" + blocksLeft));
-                            }
-                        }
-                    } else {
-                        if(blocksss.get(e.getPlayer().getName()).contains(block)) {
-                            int blocksLeft = getConfig().getStringList("blocks").size() - blocksss.get(e.getPlayer().getName()).size();
-                            if(blocksLeft <= 0) {
-                                for(String s : getConfig().getStringList("already-found-all-blocks")) {
-                                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), s.replace("%player%", e.getPlayer().getName())
-                                            .replace("%pLocX%", "" + e.getPlayer().getLocation().getX())
-                                            .replace("%pLocY%", "" + e.getPlayer().getLocation().getY())
-                                            .replace("%pLocZ%", "" + e.getPlayer().getLocation().getZ())
-                                            .replace("%locX5%", "" + (e.getClickedBlock().getLocation().getX() + 0.5))
-                                            .replace("%locY5%", "" + (e.getClickedBlock().getLocation().getY() + 0.5))
-                                            .replace("%locZ5%", "" + (e.getClickedBlock().getLocation().getZ() + 0.5))
-                                            .replace("%locX%", "" + e.getClickedBlock().getLocation().getX())
-                                            .replace("%locY%", "" + e.getClickedBlock().getLocation().getY())
-                                            .replace("%locZ%", "" + e.getClickedBlock().getLocation().getZ())
-                                            .replace("%blockLeft%", "" + blocksLeft)
-                                            .replace("%blocksLeft%", "" + blocksLeft));
-                                }
-                            } else {
-                                for(String s : getConfig().getStringList("already-found-commands")) {
-                                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), s.replace("%player%", e.getPlayer().getName())
-                                            .replace("%pLocX%", "" + e.getPlayer().getLocation().getX())
-                                            .replace("%pLocY%", "" + e.getPlayer().getLocation().getY())
-                                            .replace("%pLocZ%", "" + e.getPlayer().getLocation().getZ())
-                                            .replace("%locX5%", "" + (e.getClickedBlock().getLocation().getX() + 0.5))
-                                            .replace("%locY5%", "" + (e.getClickedBlock().getLocation().getY() + 0.5))
-                                            .replace("%locZ5%", "" + (e.getClickedBlock().getLocation().getZ() + 0.5))
-                                            .replace("%locX%", "" + e.getClickedBlock().getLocation().getX())
-                                            .replace("%locY%", "" + e.getClickedBlock().getLocation().getY())
-                                            .replace("%locZ%", "" + e.getClickedBlock().getLocation().getZ())
-                                            .replace("%blockLeft%", "" + blocksLeft)
-                                            .replace("%blocksLeft%", "" + blocksLeft));
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    @EventHandler
-    public void dmg(EntityDamageEvent e) {
-        if(e.getEntity().getCustomName() != null
-                && e.getEntity().getCustomName().equalsIgnoreCase("§b§l§o§c§k")) {
-            e.setCancelled(true);
-        }
-    }
-
-    public void playFindEffect(Location l) {
-        if(!findEffect) {
-            return;
-        }
-        boolean visible = !getConfig().getBoolean("find-effect.invisible");
-        boolean small = getConfig().getBoolean("find-effect.small");
-        double offset = 0.25;
-        if(getConfig().get("find-effect.y-start") != null) {
-            offset = getConfig().getDouble("find-effect.y-start");
-        }
-        String head = getConfig().getString("find-effect.head").equalsIgnoreCase("NONE") ? null : getConfig().getString("find-effect.head");
-        String chest = getConfig().getString("find-effect.chest").equalsIgnoreCase("NONE") ? null : getConfig().getString("find-effect.chest");
-        String leg = getConfig().getString("find-effect.leg").equalsIgnoreCase("NONE") ? null : getConfig().getString("find-effect.leg");
-        String boot = getConfig().getString("find-effect.boot").equalsIgnoreCase("NONE") ? null : getConfig().getString("find-effect.boot");
-        ArmorStand a = l.getWorld().spawn(l.clone().add(0, offset, 0), ArmorStand.class);
-        a.setVisible(visible);
-        a.setSmall(small);
-        //a.setInvulnerable(true);
-        a.setCustomName("§b§l§o§c§k");
-        a.setCustomNameVisible(false);
-        a.setGravity(false);
-        a.getWorld().playSound(a.getLocation(), Sound.valueOf(getConfig().getString("find-effect.sound")), 1, getConfig().getInt("find-effect.pitch"));
-        if(head != null) {
-            a.setHelmet(new ItemStack(Material.valueOf(head)));
-        }
-        if(chest != null) {
-            a.setHelmet(new ItemStack(Material.valueOf(chest)));
-        }
-        if(leg != null) {
-            a.setHelmet(new ItemStack(Material.valueOf(leg)));
-        }
-        if(boot != null) {
-            a.setHelmet(new ItemStack(Material.valueOf(boot)));
-        }
-        for(int i = 0; i < getConfig().getInt("find-effect.loop"); i++) {
-            Bukkit.getScheduler().scheduleSyncDelayedTask(this, () -> {
-                Location newLoc = a.getLocation().clone();
-                newLoc.add(0.0, getConfig().getDouble("find-effect.levitation-per-loop"), 0.0);
-                newLoc.setYaw(a.getLocation().getYaw() + getConfig().getInt("find-effect.yaw-rotation"));
-                a.teleport(newLoc);
-                String particle = getConfig().getString("find-effect.particle");
-                if(!particle.equalsIgnoreCase("DISABLED")) {
-                    ParticleEffect.valueOf(particle).display(0, 0, 0, 0, 1, a.getLocation(), 16);
-                }
-            }, i * getConfig().getInt("find-effect.scheduler"));
-        }
-        Bukkit.getScheduler().scheduleSyncDelayedTask(this, a::remove, getConfig().getInt("find-effect.loop") * getConfig().getInt("find-effect.scheduler"));
     }
 }
