@@ -244,12 +244,8 @@ public class Main extends JavaPlugin  {
                     int currentBlocks = getConfig().getStringList("blocks").size();
                     for(String s : data.getConfig().getConfigurationSection("data").getKeys(false)) {
                         if(!s.equalsIgnoreCase("1-1-1-1-1-1")) {
-                            String id = s;
-                            if(!Utils.useUUID) {
-                                id = Utils.getUsername(s);
-                            }
                             total++;
-                            int foundBlocks = data.getConfig().getString("data." + id + ".x").split(";").length - 1;
+                            int foundBlocks = data.getConfig().getString("data." + s + ".x").split(";").length - 1;
                             if(foundBlocks >= currentBlocks) {
                                 foundAllBlocks++;
                             }
