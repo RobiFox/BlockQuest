@@ -10,6 +10,8 @@ use-mysql: false
 enabled: false
 disabled-msg: '&cBlocks aren''t enabled yet!'
 
+use-uuid: true
+
 mysql-host: host
 mysql-database: database
 mysql-username: username

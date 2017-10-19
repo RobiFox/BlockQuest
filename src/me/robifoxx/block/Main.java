@@ -1,10 +1,7 @@
 package me.robifoxx.block;
 
 import com.darkblade12.particleeffect.ParticleEffect;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.ArmorStand;
@@ -23,6 +20,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by RobiFoxx.
@@ -85,6 +83,9 @@ public class Main extends JavaPlugin  {
             if(getConfig().get("disabled-msg") == null) {
                 disabledMsg = getConfig().getString("disabled-msg");
             }
+        }
+        if(getConfig().get("use-uuid") == null) {
+            Utils.useUUID = getConfig().getBoolean("use-uuid");
         }
         if(getConfig().getString("placeholderapi") != null
                 && getConfig().getString("placeholderapi").equalsIgnoreCase("true")) {
@@ -177,15 +178,15 @@ public class Main extends JavaPlugin  {
     public void onDisable() {
         for(Player pl : Bukkit.getOnlinePlayers()) {
             if(useMysql) {
-                SQLPlayer.setString(pl.getUniqueId().toString(), "X", saved_x.get(pl.getName()));
-                SQLPlayer.setString(pl.getUniqueId().toString(), "Y", saved_y.get(pl.getName()));
-                SQLPlayer.setString(pl.getUniqueId().toString(), "Z", saved_z.get(pl.getName()));
-                SQLPlayer.setString(pl.getUniqueId().toString(), "WORLD", saved_world.get(pl.getName()));
+                SQLPlayer.setString(Utils.getIdentifier(pl), "X", saved_x.get(pl.getName()));
+                SQLPlayer.setString(Utils.getIdentifier(pl), "Y", saved_y.get(pl.getName()));
+                SQLPlayer.setString(Utils.getIdentifier(pl), "Z", saved_z.get(pl.getName()));
+                SQLPlayer.setString(Utils.getIdentifier(pl), "WORLD", saved_world.get(pl.getName()));
             } else {
-                data.getConfig().set("data." + pl.getUniqueId().toString() + ".x", saved_x.get(pl.getName()));
-                data.getConfig().set("data." + pl.getUniqueId().toString() + ".y", saved_y.get(pl.getName()));
-                data.getConfig().set("data." + pl.getUniqueId().toString() + ".z", saved_z.get(pl.getName()));
-                data.getConfig().set("data." + pl.getUniqueId().toString() + ".world", saved_world.get(pl.getName()));
+                data.getConfig().set("data." + Utils.getIdentifier(pl) + ".x", saved_x.get(pl.getName()));
+                data.getConfig().set("data." + Utils.getIdentifier(pl) + ".y", saved_y.get(pl.getName()));
+                data.getConfig().set("data." + Utils.getIdentifier(pl) + ".z", saved_z.get(pl.getName()));
+                data.getConfig().set("data." + Utils.getIdentifier(pl) + ".world", saved_world.get(pl.getName()));
                 data.saveConfig();
             }
         }
@@ -198,6 +199,7 @@ public class Main extends JavaPlugin  {
                 sender.sendMessage(getConfig().getString("no-permission").replace("&", "§"));
                 return true;
             }
+            //plugin.getConfig().getStringList("blocks").size() - Main.blocksss.get(e.getPlayer().getName()).size()
             if(args.length < 1) {
                 if (inEdit.remove(sender.getName())) {
                     sender.sendMessage("§cYou disabled edit mode.");
@@ -206,6 +208,7 @@ public class Main extends JavaPlugin  {
                     sender.sendMessage("§aClick on blocks to add it to the config file!");
                     sender.sendMessage("§aType §6/blockquest §ato exit edit mode.");
                     sender.sendMessage("§a§lType §6§l/blockquest reload §a§lto reload the config!");
+                    sender.sendMessage("§a§lType §6§l/blockquest stats §a§lto check stats!");
                     if(!enabled) {
                         sender.sendMessage("§c§lBlocks are disabled. Players cant find them until you enable it with §6§l/blockquest toggle");
                     }
@@ -225,6 +228,8 @@ public class Main extends JavaPlugin  {
                     }
                     getConfig().set("enabled", enabled);
                     saveConfig();
+                }  else if(args[0].equalsIgnoreCase("stats")) {
+
                 } /*else if(args[0].equalsIgnoreCase("wipedata")) {
                     sender.sendMessage("§aWiping data...");
                     boolean success = false;

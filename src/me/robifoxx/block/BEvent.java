@@ -23,11 +23,11 @@ import java.util.List;
 public class BEvent implements Listener {
     @EventHandler
     public void join(PlayerJoinEvent e) {
-        if(Main.data.getConfig().get("data." + e.getPlayer().getUniqueId().toString() + ".x") == null) {
-            Main.data.getConfig().set("data." + e.getPlayer().getUniqueId().toString() + ".x", "none");
-            Main.data.getConfig().set("data." + e.getPlayer().getUniqueId().toString() + ".y", "none");
-            Main.data.getConfig().set("data." + e.getPlayer().getUniqueId().toString() + ".z", "none");
-            Main.data.getConfig().set("data." + e.getPlayer().getUniqueId().toString() + ".world", "none");
+        if(Main.data.getConfig().get("data." + Utils.getIdentifier(e.getPlayer()) + ".x") == null) {
+            Main.data.getConfig().set("data." + Utils.getIdentifier(e.getPlayer()) + ".x", "none");
+            Main.data.getConfig().set("data." + Utils.getIdentifier(e.getPlayer()) + ".y", "none");
+            Main.data.getConfig().set("data." + Utils.getIdentifier(e.getPlayer()) + ".z", "none");
+            Main.data.getConfig().set("data." + Utils.getIdentifier(e.getPlayer()) + ".world", "none");
             Main.data.saveConfig();
         }
         if(Main.blocksss.get(e.getPlayer().getName()) == null) {
@@ -42,15 +42,15 @@ public class BEvent implements Listener {
                 world = Main.saved_world.get(e.getPlayer().getName());
             } else {
                 if(Main.useMysql) {
-                    x = SQLPlayer.getString(e.getPlayer().getUniqueId().toString(), "X");
-                    y = SQLPlayer.getString(e.getPlayer().getUniqueId().toString(), "Y");
-                    z = SQLPlayer.getString(e.getPlayer().getUniqueId().toString(), "Z");
-                    world = SQLPlayer.getString(e.getPlayer().getUniqueId().toString(), "WORLD");
+                    x = SQLPlayer.getString(Utils.getIdentifier(e.getPlayer()), "X");
+                    y = SQLPlayer.getString(Utils.getIdentifier(e.getPlayer()), "Y");
+                    z = SQLPlayer.getString(Utils.getIdentifier(e.getPlayer()), "Z");
+                    world = SQLPlayer.getString(Utils.getIdentifier(e.getPlayer()), "WORLD");
                 } else {
-                    x = Main.data.getConfig().getString("data." + e.getPlayer().getUniqueId().toString() + ".x");
-                    y = Main.data.getConfig().getString("data." + e.getPlayer().getUniqueId().toString() + ".y");
-                    z = Main.data.getConfig().getString("data." + e.getPlayer().getUniqueId().toString() + ".z");
-                    world = Main.data.getConfig().getString("data." + e.getPlayer().getUniqueId().toString() + ".world");
+                    x = Main.data.getConfig().getString("data." + Utils.getIdentifier(e.getPlayer()) + ".x");
+                    y = Main.data.getConfig().getString("data." + Utils.getIdentifier(e.getPlayer()) + ".y");
+                    z = Main.data.getConfig().getString("data." + Utils.getIdentifier(e.getPlayer()) + ".z");
+                    world = Main.data.getConfig().getString("data." + Utils.getIdentifier(e.getPlayer()) + ".world");
                 }
             }
             Main.saved_x.put(e.getPlayer().getName(), x);
@@ -78,15 +78,15 @@ public class BEvent implements Listener {
     @EventHandler
     public void leave(PlayerQuitEvent e) {
         if(Main.useMysql) {
-            SQLPlayer.setString(e.getPlayer().getUniqueId().toString(), "X", Main.saved_x.get(e.getPlayer().getName()));
-            SQLPlayer.setString(e.getPlayer().getUniqueId().toString(), "Y", Main.saved_y.get(e.getPlayer().getName()));
-            SQLPlayer.setString(e.getPlayer().getUniqueId().toString(), "Z", Main.saved_z.get(e.getPlayer().getName()));
-            SQLPlayer.setString(e.getPlayer().getUniqueId().toString(), "WORLD", Main.saved_world.get(e.getPlayer().getName()));
+            SQLPlayer.setString(Utils.getIdentifier(e.getPlayer()), "X", Main.saved_x.get(e.getPlayer().getName()));
+            SQLPlayer.setString(Utils.getIdentifier(e.getPlayer()), "Y", Main.saved_y.get(e.getPlayer().getName()));
+            SQLPlayer.setString(Utils.getIdentifier(e.getPlayer()), "Z", Main.saved_z.get(e.getPlayer().getName()));
+            SQLPlayer.setString(Utils.getIdentifier(e.getPlayer()), "WORLD", Main.saved_world.get(e.getPlayer().getName()));
         } else {
-            Main.data.getConfig().set("data." + e.getPlayer().getUniqueId().toString() + ".x", Main.saved_x.get(e.getPlayer().getName()));
-            Main.data.getConfig().set("data." + e.getPlayer().getUniqueId().toString() + ".y", Main.saved_y.get(e.getPlayer().getName()));
-            Main.data.getConfig().set("data." + e.getPlayer().getUniqueId().toString() + ".z", Main.saved_z.get(e.getPlayer().getName()));
-            Main.data.getConfig().set("data." + e.getPlayer().getUniqueId().toString() + ".world", Main.saved_world.get(e.getPlayer().getName()));
+            Main.data.getConfig().set("data." + Utils.getIdentifier(e.getPlayer()) + ".x", Main.saved_x.get(e.getPlayer().getName()));
+            Main.data.getConfig().set("data." + Utils.getIdentifier(e.getPlayer()) + ".y", Main.saved_y.get(e.getPlayer().getName()));
+            Main.data.getConfig().set("data." + Utils.getIdentifier(e.getPlayer()) + ".z", Main.saved_z.get(e.getPlayer().getName()));
+            Main.data.getConfig().set("data." + Utils.getIdentifier(e.getPlayer()) + ".world", Main.saved_world.get(e.getPlayer().getName()));
             Main.data.saveConfig();
         }
     }
@@ -142,16 +142,16 @@ public class BEvent implements Listener {
                         }
                         if(Main.useMysql) {
                             if(!Main.unsafeSave) {
-                                SQLPlayer.setString(e.getPlayer().getUniqueId().toString(), "X", Main.saved_x.get(e.getPlayer().getName()));
-                                SQLPlayer.setString(e.getPlayer().getUniqueId().toString(), "Y", Main.saved_y.get(e.getPlayer().getName()));
-                                SQLPlayer.setString(e.getPlayer().getUniqueId().toString(), "Z", Main.saved_z.get(e.getPlayer().getName()));
-                                SQLPlayer.setString(e.getPlayer().getUniqueId().toString(), "WORLD", Main.saved_world.get(e.getPlayer().getName()));
+                                SQLPlayer.setString(Utils.getIdentifier(e.getPlayer()), "X", Main.saved_x.get(e.getPlayer().getName()));
+                                SQLPlayer.setString(Utils.getIdentifier(e.getPlayer()), "Y", Main.saved_y.get(e.getPlayer().getName()));
+                                SQLPlayer.setString(Utils.getIdentifier(e.getPlayer()), "Z", Main.saved_z.get(e.getPlayer().getName()));
+                                SQLPlayer.setString(Utils.getIdentifier(e.getPlayer()), "WORLD", Main.saved_world.get(e.getPlayer().getName()));
                             }
                         } else {
-                            Main.data.getConfig().set("data." + e.getPlayer().getUniqueId().toString() + ".x", Main.saved_x.get(e.getPlayer().getName()));
-                            Main.data.getConfig().set("data." + e.getPlayer().getUniqueId().toString() + ".y", Main.saved_y.get(e.getPlayer().getName()));
-                            Main.data.getConfig().set("data." + e.getPlayer().getUniqueId().toString() + ".z", Main.saved_z.get(e.getPlayer().getName()));
-                            Main.data.getConfig().set("data." + e.getPlayer().getUniqueId().toString() + ".world", Main.saved_world.get(e.getPlayer().getName()));
+                            Main.data.getConfig().set("data." + Utils.getIdentifier(e.getPlayer()) + ".x", Main.saved_x.get(e.getPlayer().getName()));
+                            Main.data.getConfig().set("data." + Utils.getIdentifier(e.getPlayer()) + ".y", Main.saved_y.get(e.getPlayer().getName()));
+                            Main.data.getConfig().set("data." + Utils.getIdentifier(e.getPlayer()) + ".z", Main.saved_z.get(e.getPlayer().getName()));
+                            Main.data.getConfig().set("data." + Utils.getIdentifier(e.getPlayer()) + ".world", Main.saved_world.get(e.getPlayer().getName()));
                             Main.data.saveConfig();
                         }
                         playFindEffect(e.getClickedBlock().getLocation().clone().add(0.5, 0, 0.5));

@@ -36,8 +36,7 @@ public class SQLPlayer {
 
 	public static void createPlayer(Player p, int x, int y, int z, String world) {
 
-		int id = getLatestId(p.getUniqueId().toString()) + 1;
-		Main.mysql.update("INSERT INTO " + database + " (UUID, X, Y, Z, WORLD) VALUES ('" + p.getUniqueId().toString() + "', '" + x + "', '" + y + "', '" + z + "', '" + world + "')");
+		Main.mysql.update("INSERT INTO " + database + " (UUID, X, Y, Z, WORLD) VALUES ('" + Utils.getIdentifier(p) + "', '" + x + "', '" + y + "', '" + z + "', '" + world + "')");
 
 	}
 
