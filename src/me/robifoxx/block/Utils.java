@@ -2,6 +2,7 @@ package me.robifoxx.block;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;
@@ -39,5 +40,15 @@ public class Utils {
                 }
             }
         }, 1);
+    }
+    public static int getEmptyInventorySpaces(Player p) {
+        int empty = 0;
+        for(int i = 0; i < p.getInventory().getSize(); i++) {
+            if(p.getInventory().getItem(i) == null
+                    || p.getInventory().getItem(i).getType() == Material.AIR) {
+                empty++;
+            }
+        }
+        return empty;
     }
 }

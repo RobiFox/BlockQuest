@@ -32,7 +32,7 @@ public class Main extends JavaPlugin  {
     static boolean findEffect = false;
     static boolean enabled = false;
     static String disabledMsg = "&cBlocks aren't enabled yet!";
-    static boolean checkFullInventory = false;
+    static int checkFullInventory = 0;
     static String fullInventoryMsg = "&c&lYour inventory is full!";
     static Material hideFoundBlocks = Material.AIR;
 
@@ -82,7 +82,7 @@ public class Main extends JavaPlugin  {
             Utils.useUUID = getConfig().getBoolean("use-uuid");
         }
         if(getConfig().get("check-full-inventory") != null) {
-            checkFullInventory = getConfig().getBoolean("check-full-inventory");
+            checkFullInventory = getConfig().getInt("check-full-inventory");
             if(getConfig().get("full-inventory-msg") != null) {
                 fullInventoryMsg = getConfig().getString("full-inventory-msg");
             }

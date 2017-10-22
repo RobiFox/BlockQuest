@@ -14,7 +14,7 @@ enabled: false
 disabled-msg: '&cBlocks aren''t enabled yet!'
 
 use-uuid: true
-check-full-inventory: false
+check-full-inventory: 0
 full-inventory-msg: '&c&lYour inventory is full!'
 
 mysql-host: host

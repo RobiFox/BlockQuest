@@ -157,7 +157,7 @@ public class BEvent implements Listener {
                         }
                         int blocksLeft = plugin.getConfig().getStringList("blocks").size() - Main.blocksss.get(e.getPlayer().getName()).size();
                         boolean foundAllBlocks = Main.blocksss.get(e.getPlayer().getName()).size() >= plugin.getConfig().getStringList("blocks").size();
-                        if(Main.checkFullInventory
+                        if(Main.checkFullInventory >= Utils.getEmptyInventorySpaces(e.getPlayer())
                                 && foundAllBlocks) {
                             if(e.getPlayer().getInventory().firstEmpty() == -1) {
                                 Main.blocksss.get(e.getPlayer().getName()).remove(block);
