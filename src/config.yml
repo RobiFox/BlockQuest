@@ -25,7 +25,7 @@ mysql-unsafe-save: true
 
 no-permission: '&cYou don''t have permission for this!'
 
-hide-found-blocks: AIR
+hide-found-blocks: NONE
 blocks: []
 
 find-block-commands:
