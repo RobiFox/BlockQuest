@@ -304,13 +304,13 @@ public class BEvent implements Listener {
             a.setHelmet(new ItemStack(Material.valueOf(head)));
         }
         if(chest != null) {
-            a.setHelmet(new ItemStack(Material.valueOf(chest)));
+            a.setChestplate(new ItemStack(Material.valueOf(chest)));
         }
         if(leg != null) {
-            a.setHelmet(new ItemStack(Material.valueOf(leg)));
+            a.setLeggings(new ItemStack(Material.valueOf(leg)));
         }
         if(boot != null) {
-            a.setHelmet(new ItemStack(Material.valueOf(boot)));
+            a.setBoots(new ItemStack(Material.valueOf(boot)));
         }
         for(int i = 0; i < plugin.getConfig().getInt("find-effect.loop"); i++) {
             Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
