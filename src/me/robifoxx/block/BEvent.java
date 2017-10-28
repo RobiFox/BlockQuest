@@ -301,7 +301,11 @@ public class BEvent implements Listener {
         a.setGravity(false);
         a.getWorld().playSound(a.getLocation(), Sound.valueOf(plugin.getConfig().getString("find-effect.sound")), 1, plugin.getConfig().getInt("find-effect.pitch"));
         if(head != null) {
-            a.setHelmet(new ItemStack(Material.valueOf(head)));
+            if(head.length() > 45) {
+                a.setHelmet(Skulls.createSkull(head));
+            } else {
+                a.setHelmet(new ItemStack(Material.valueOf(head)));
+            }
         }
         if(chest != null) {
             a.setChestplate(new ItemStack(Material.valueOf(chest)));
