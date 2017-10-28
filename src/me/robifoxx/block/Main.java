@@ -1,6 +1,10 @@
 package me.robifoxx.block;
 
 import com.darkblade12.particleeffect.ParticleEffect;
+import me.robifoxx.block.api.Config;
+import me.robifoxx.block.api.Metrics;
+import me.robifoxx.block.mysql.MySQL;
+import me.robifoxx.block.mysql.SQLPlayer;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -18,7 +22,7 @@ import java.util.List;
  * All rights reserved.
  */
 public class Main extends JavaPlugin  {
-    static MySQL mysql;
+    public static MySQL mysql;
     static ArrayList<String> inEdit = new ArrayList<>();
     static HashMap<String, List<String>> blocksss = new HashMap<>();
     static HashMap<String, String> saved_x = new HashMap<>();

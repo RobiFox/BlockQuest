@@ -1,4 +1,4 @@
-package me.robifoxx.block;
+package me.robifoxx.block.api;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;

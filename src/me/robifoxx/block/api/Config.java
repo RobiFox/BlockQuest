@@ -1,7 +1,8 @@
-package me.robifoxx.block;
+package me.robifoxx.block.api;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.ByteStreams;
+import me.robifoxx.block.Main;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;

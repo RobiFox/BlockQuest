@@ -1,11 +1,11 @@
-package me.robifoxx.block;
+package me.robifoxx.block.mysql;
 
+import me.robifoxx.block.Main;
+import me.robifoxx.block.Utils;
 import org.bukkit.entity.Player;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class SQLPlayer {
 

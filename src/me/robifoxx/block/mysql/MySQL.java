@@ -1,4 +1,4 @@
-package me.robifoxx.block;
+package me.robifoxx.block.mysql;
 
 import java.sql.*;
 

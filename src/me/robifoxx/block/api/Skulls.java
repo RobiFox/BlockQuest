@@ -1,4 +1,4 @@
-package me.robifoxx.block;
+package me.robifoxx.block.api;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;

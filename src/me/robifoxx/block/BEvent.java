@@ -1,6 +1,8 @@
 package me.robifoxx.block;
 
 import com.darkblade12.particleeffect.ParticleEffect;
+import me.robifoxx.block.api.Skulls;
+import me.robifoxx.block.mysql.SQLPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
