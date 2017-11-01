@@ -16,7 +16,7 @@
 placeholderapi: false
 use-mysql: false
 enabled: false
-disabled-msg: '&cBlocks aren''t enabled yet!'
+disabled-msg: '&cBlocks aren''t enabled yet! If you are a player, refer to a Server Administrator!'
 
 use-uuid: true
 check-full-inventory: 0
