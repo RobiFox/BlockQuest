@@ -41,13 +41,14 @@ public class Main extends JavaPlugin  {
     public Material hideFoundBlocks = Material.AIR;
 
     public void onEnable() {
-        if(!(new File("plugins/BlockQuest/config.yml").exists())) {
+        String fileName = this.getDescription().getName();
+        if(!(new File("plugins/" + fileName + "/config.yml").exists())) {
             getConfig().options().copyDefaults(true);
             saveConfig();
         }
         {
 
-            Config c = new Config("plugins/BlockQuest", "data.yml");
+            Config c = new Config("plugins/" + fileName, "data.yml");
             c.create();
 
             c.setDefault("data.yml");
@@ -185,7 +186,7 @@ public class Main extends JavaPlugin  {
     }
 
     public void createMySQL() {
-        mysql.update("CREATE TABLE IF NOT EXISTS BlockQuest (UUID varchar(128), X varchar(2048) default \"none\", Y varchar(2048) default \"none\", Z varchar(2048) default \"none\", WORLD varchar(2048) default \"none\")");
+        mysql.update("CREATE TABLE IF NOT EXISTS " + this.getDescription().getName() + " (UUID varchar(128), X varchar(2048) default \"none\", Y varchar(2048) default \"none\", Z varchar(2048) default \"none\", WORLD varchar(2048) default \"none\")");
     }
 
     @Override
