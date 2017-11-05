@@ -25,40 +25,40 @@ import java.util.List;
 public class BEvent implements Listener {
     @EventHandler
     public void join(PlayerJoinEvent e) {
-        if(Main.data.getConfig().get("data." + Utils.getIdentifier(e.getPlayer()) + ".x") == null) {
-            Main.data.getConfig().set("data." + Utils.getIdentifier(e.getPlayer()) + ".x", "none");
-            Main.data.getConfig().set("data." + Utils.getIdentifier(e.getPlayer()) + ".y", "none");
-            Main.data.getConfig().set("data." + Utils.getIdentifier(e.getPlayer()) + ".z", "none");
-            Main.data.getConfig().set("data." + Utils.getIdentifier(e.getPlayer()) + ".world", "none");
-            Main.data.saveConfig();
+        if(Main.getPlugin(Main.class).data.getConfig().get("data." + Utils.getIdentifier(e.getPlayer()) + ".x") == null) {
+            Main.getPlugin(Main.class).data.getConfig().set("data." + Utils.getIdentifier(e.getPlayer()) + ".x", "none");
+            Main.getPlugin(Main.class).data.getConfig().set("data." + Utils.getIdentifier(e.getPlayer()) + ".y", "none");
+            Main.getPlugin(Main.class).data.getConfig().set("data." + Utils.getIdentifier(e.getPlayer()) + ".z", "none");
+            Main.getPlugin(Main.class).data.getConfig().set("data." + Utils.getIdentifier(e.getPlayer()) + ".world", "none");
+            Main.getPlugin(Main.class).data.saveConfig();
         }
-        if(Main.blocksss.get(e.getPlayer().getName()) == null) {
+        if(Main.getPlugin(Main.class).blocksss.get(e.getPlayer().getName()) == null) {
             String x;
             String y;
             String z;
             String world;
-            if(Main.saved_x.get(e.getPlayer().getName()) != null) {
-                x = Main.saved_x.get(e.getPlayer().getName());
-                y = Main.saved_z.get(e.getPlayer().getName());
-                z = Main.saved_y.get(e.getPlayer().getName());
-                world = Main.saved_world.get(e.getPlayer().getName());
+            if(Main.getPlugin(Main.class).saved_x.get(e.getPlayer().getName()) != null) {
+                x = Main.getPlugin(Main.class).saved_x.get(e.getPlayer().getName());
+                y = Main.getPlugin(Main.class).saved_z.get(e.getPlayer().getName());
+                z = Main.getPlugin(Main.class).saved_y.get(e.getPlayer().getName());
+                world = Main.getPlugin(Main.class).saved_world.get(e.getPlayer().getName());
             } else {
-                if(Main.useMysql) {
+                if(Main.getPlugin(Main.class).useMysql) {
                     x = SQLPlayer.getString(Utils.getIdentifier(e.getPlayer()), "X");
                     y = SQLPlayer.getString(Utils.getIdentifier(e.getPlayer()), "Y");
                     z = SQLPlayer.getString(Utils.getIdentifier(e.getPlayer()), "Z");
                     world = SQLPlayer.getString(Utils.getIdentifier(e.getPlayer()), "WORLD");
                 } else {
-                    x = Main.data.getConfig().getString("data." + Utils.getIdentifier(e.getPlayer()) + ".x");
-                    y = Main.data.getConfig().getString("data." + Utils.getIdentifier(e.getPlayer()) + ".y");
-                    z = Main.data.getConfig().getString("data." + Utils.getIdentifier(e.getPlayer()) + ".z");
-                    world = Main.data.getConfig().getString("data." + Utils.getIdentifier(e.getPlayer()) + ".world");
+                    x = Main.getPlugin(Main.class).data.getConfig().getString("data." + Utils.getIdentifier(e.getPlayer()) + ".x");
+                    y = Main.getPlugin(Main.class).data.getConfig().getString("data." + Utils.getIdentifier(e.getPlayer()) + ".y");
+                    z = Main.getPlugin(Main.class).data.getConfig().getString("data." + Utils.getIdentifier(e.getPlayer()) + ".z");
+                    world = Main.getPlugin(Main.class).data.getConfig().getString("data." + Utils.getIdentifier(e.getPlayer()) + ".world");
                 }
             }
-            Main.saved_x.put(e.getPlayer().getName(), x);
-            Main.saved_y.put(e.getPlayer().getName(), y);
-            Main.saved_z.put(e.getPlayer().getName(), z);
-            Main.saved_world.put(e.getPlayer().getName(), world);
+            Main.getPlugin(Main.class).saved_x.put(e.getPlayer().getName(), x);
+            Main.getPlugin(Main.class).saved_y.put(e.getPlayer().getName(), y);
+            Main.getPlugin(Main.class).saved_z.put(e.getPlayer().getName(), z);
+            Main.getPlugin(Main.class).saved_world.put(e.getPlayer().getName(), world);
 
             String[] x_splt = x.split(";");
             String[] y_splt = y.split(";");
@@ -73,24 +73,24 @@ public class BEvent implements Listener {
                 }
                 loc++;
             }
-            Main.blocksss.put(e.getPlayer().getName(), lst);
+            Main.getPlugin(Main.class).blocksss.put(e.getPlayer().getName(), lst);
         }
         Utils.hideFoundBlocks(e.getPlayer());
     }
 
     @EventHandler
     public void leave(PlayerQuitEvent e) {
-        if(Main.useMysql) {
-            SQLPlayer.setString(Utils.getIdentifier(e.getPlayer()), "X", Main.saved_x.get(e.getPlayer().getName()));
-            SQLPlayer.setString(Utils.getIdentifier(e.getPlayer()), "Y", Main.saved_y.get(e.getPlayer().getName()));
-            SQLPlayer.setString(Utils.getIdentifier(e.getPlayer()), "Z", Main.saved_z.get(e.getPlayer().getName()));
-            SQLPlayer.setString(Utils.getIdentifier(e.getPlayer()), "WORLD", Main.saved_world.get(e.getPlayer().getName()));
+        if(Main.getPlugin(Main.class).useMysql) {
+            SQLPlayer.setString(Utils.getIdentifier(e.getPlayer()), "X", Main.getPlugin(Main.class).saved_x.get(e.getPlayer().getName()));
+            SQLPlayer.setString(Utils.getIdentifier(e.getPlayer()), "Y", Main.getPlugin(Main.class).saved_y.get(e.getPlayer().getName()));
+            SQLPlayer.setString(Utils.getIdentifier(e.getPlayer()), "Z", Main.getPlugin(Main.class).saved_z.get(e.getPlayer().getName()));
+            SQLPlayer.setString(Utils.getIdentifier(e.getPlayer()), "WORLD", Main.getPlugin(Main.class).saved_world.get(e.getPlayer().getName()));
         } else {
-            Main.data.getConfig().set("data." + Utils.getIdentifier(e.getPlayer()) + ".x", Main.saved_x.get(e.getPlayer().getName()));
-            Main.data.getConfig().set("data." + Utils.getIdentifier(e.getPlayer()) + ".y", Main.saved_y.get(e.getPlayer().getName()));
-            Main.data.getConfig().set("data." + Utils.getIdentifier(e.getPlayer()) + ".z", Main.saved_z.get(e.getPlayer().getName()));
-            Main.data.getConfig().set("data." + Utils.getIdentifier(e.getPlayer()) + ".world", Main.saved_world.get(e.getPlayer().getName()));
-            Main.data.saveConfig();
+            Main.getPlugin(Main.class).data.getConfig().set("data." + Utils.getIdentifier(e.getPlayer()) + ".x", Main.getPlugin(Main.class).saved_x.get(e.getPlayer().getName()));
+            Main.getPlugin(Main.class).data.getConfig().set("data." + Utils.getIdentifier(e.getPlayer()) + ".y", Main.getPlugin(Main.class).saved_y.get(e.getPlayer().getName()));
+            Main.getPlugin(Main.class).data.getConfig().set("data." + Utils.getIdentifier(e.getPlayer()) + ".z", Main.getPlugin(Main.class).saved_z.get(e.getPlayer().getName()));
+            Main.getPlugin(Main.class).data.getConfig().set("data." + Utils.getIdentifier(e.getPlayer()) + ".world", Main.getPlugin(Main.class).saved_world.get(e.getPlayer().getName()));
+            Main.getPlugin(Main.class).data.saveConfig();
         }
     }
 
@@ -100,17 +100,17 @@ public class BEvent implements Listener {
         /*if(e.getHand() == EquipmentSlot.OFF_HAND) {
             return;
         }*/
-        if(Main.eventReturn.contains(e.getPlayer().getName())) {
+        if(Main.getPlugin(Main.class).eventReturn.contains(e.getPlayer().getName())) {
             return;
         }
-        Main.eventReturn.add(e.getPlayer().getName());
+        Main.getPlugin(Main.class).eventReturn.add(e.getPlayer().getName());
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
-            Main.eventReturn.remove(e.getPlayer().getName());
+            Main.getPlugin(Main.class).eventReturn.remove(e.getPlayer().getName());
         }, 1);
         if(e.getAction() == Action.RIGHT_CLICK_BLOCK) {
             List<String> blocks =  plugin.getConfig().getStringList("blocks");
             String block = e.getClickedBlock().getLocation().getBlockX() + ";" + e.getClickedBlock().getLocation().getBlockY() + ";" + e.getClickedBlock().getLocation().getBlockZ() + ";" + e.getClickedBlock().getLocation().getWorld().getName();
-            if(Main.inEdit.contains(e.getPlayer().getName())) {
+            if(Main.getPlugin(Main.class).inEdit.contains(e.getPlayer().getName())) {
                 if(blocks.contains(block)) {
                     e.getPlayer().sendMessage("§cRemoved this block!");
                     blocks.remove(block);
@@ -122,48 +122,48 @@ public class BEvent implements Listener {
                     plugin.getConfig().set("blocks", blocks);
                     plugin.saveConfig();
                 }
-                Main.inEdit.remove(e.getPlayer().getName());
+                Main.getPlugin(Main.class).inEdit.remove(e.getPlayer().getName());
                 e.getPlayer().sendMessage("§aExited edit mode.");
             } else {
                 if(plugin.getConfig().getStringList("blocks").contains(block)) {
-                    if(Main.blocksss.get(e.getPlayer().getName()) == null
-                            || !Main.blocksss.get(e.getPlayer().getName()).contains(block)) {
-                        if(!Main.enabled) {
-                            e.getPlayer().sendMessage(Main.disabledMsg.replace("&", "§"));
+                    if(Main.getPlugin(Main.class).blocksss.get(e.getPlayer().getName()) == null
+                            || !Main.getPlugin(Main.class).blocksss.get(e.getPlayer().getName()).contains(block)) {
+                        if(!Main.getPlugin(Main.class).enabled) {
+                            e.getPlayer().sendMessage(Main.getPlugin(Main.class).disabledMsg.replace("&", "§"));
                             return;
                         }
-                        Main.saved_x.put(e.getPlayer().getName(), Main.saved_x.get(e.getPlayer().getName()) + ";" + e.getClickedBlock().getLocation().getBlockX());
-                        Main.saved_y.put(e.getPlayer().getName(), Main.saved_y.get(e.getPlayer().getName()) + ";" + e.getClickedBlock().getLocation().getBlockY());
-                        Main.saved_z.put(e.getPlayer().getName(), Main.saved_z.get(e.getPlayer().getName()) + ";" + e.getClickedBlock().getLocation().getBlockZ());
-                        Main.saved_world.put(e.getPlayer().getName(), Main.saved_world.get(e.getPlayer().getName()) + ";" + e.getClickedBlock().getLocation().getWorld().getName());
-                        if(Main.blocksss.get(e.getPlayer().getName()) == null) {
+                        Main.getPlugin(Main.class).saved_x.put(e.getPlayer().getName(), Main.getPlugin(Main.class).saved_x.get(e.getPlayer().getName()) + ";" + e.getClickedBlock().getLocation().getBlockX());
+                        Main.getPlugin(Main.class).saved_y.put(e.getPlayer().getName(), Main.getPlugin(Main.class).saved_y.get(e.getPlayer().getName()) + ";" + e.getClickedBlock().getLocation().getBlockY());
+                        Main.getPlugin(Main.class).saved_z.put(e.getPlayer().getName(), Main.getPlugin(Main.class).saved_z.get(e.getPlayer().getName()) + ";" + e.getClickedBlock().getLocation().getBlockZ());
+                        Main.getPlugin(Main.class).saved_world.put(e.getPlayer().getName(), Main.getPlugin(Main.class).saved_world.get(e.getPlayer().getName()) + ";" + e.getClickedBlock().getLocation().getWorld().getName());
+                        if(Main.getPlugin(Main.class).blocksss.get(e.getPlayer().getName()) == null) {
                             List<String> lst = new ArrayList<>();
                             lst.add(block);
-                            Main.blocksss.put(e.getPlayer().getName(), lst);
+                            Main.getPlugin(Main.class).blocksss.put(e.getPlayer().getName(), lst);
                         } else {
-                            Main.blocksss.get(e.getPlayer().getName()).add(block);
+                            Main.getPlugin(Main.class).blocksss.get(e.getPlayer().getName()).add(block);
                         }
-                        if(Main.useMysql) {
-                            if(!Main.unsafeSave) {
-                                SQLPlayer.setString(Utils.getIdentifier(e.getPlayer()), "X", Main.saved_x.get(e.getPlayer().getName()));
-                                SQLPlayer.setString(Utils.getIdentifier(e.getPlayer()), "Y", Main.saved_y.get(e.getPlayer().getName()));
-                                SQLPlayer.setString(Utils.getIdentifier(e.getPlayer()), "Z", Main.saved_z.get(e.getPlayer().getName()));
-                                SQLPlayer.setString(Utils.getIdentifier(e.getPlayer()), "WORLD", Main.saved_world.get(e.getPlayer().getName()));
+                        if(Main.getPlugin(Main.class).useMysql) {
+                            if(!Main.getPlugin(Main.class).unsafeSave) {
+                                SQLPlayer.setString(Utils.getIdentifier(e.getPlayer()), "X", Main.getPlugin(Main.class).saved_x.get(e.getPlayer().getName()));
+                                SQLPlayer.setString(Utils.getIdentifier(e.getPlayer()), "Y", Main.getPlugin(Main.class).saved_y.get(e.getPlayer().getName()));
+                                SQLPlayer.setString(Utils.getIdentifier(e.getPlayer()), "Z", Main.getPlugin(Main.class).saved_z.get(e.getPlayer().getName()));
+                                SQLPlayer.setString(Utils.getIdentifier(e.getPlayer()), "WORLD", Main.getPlugin(Main.class).saved_world.get(e.getPlayer().getName()));
                             }
                         } else {
-                            Main.data.getConfig().set("data." + Utils.getIdentifier(e.getPlayer()) + ".x", Main.saved_x.get(e.getPlayer().getName()));
-                            Main.data.getConfig().set("data." + Utils.getIdentifier(e.getPlayer()) + ".y", Main.saved_y.get(e.getPlayer().getName()));
-                            Main.data.getConfig().set("data." + Utils.getIdentifier(e.getPlayer()) + ".z", Main.saved_z.get(e.getPlayer().getName()));
-                            Main.data.getConfig().set("data." + Utils.getIdentifier(e.getPlayer()) + ".world", Main.saved_world.get(e.getPlayer().getName()));
-                            Main.data.saveConfig();
+                            Main.getPlugin(Main.class).data.getConfig().set("data." + Utils.getIdentifier(e.getPlayer()) + ".x", Main.getPlugin(Main.class).saved_x.get(e.getPlayer().getName()));
+                            Main.getPlugin(Main.class).data.getConfig().set("data." + Utils.getIdentifier(e.getPlayer()) + ".y", Main.getPlugin(Main.class).saved_y.get(e.getPlayer().getName()));
+                            Main.getPlugin(Main.class).data.getConfig().set("data." + Utils.getIdentifier(e.getPlayer()) + ".z", Main.getPlugin(Main.class).saved_z.get(e.getPlayer().getName()));
+                            Main.getPlugin(Main.class).data.getConfig().set("data." + Utils.getIdentifier(e.getPlayer()) + ".world", Main.getPlugin(Main.class).saved_world.get(e.getPlayer().getName()));
+                            Main.getPlugin(Main.class).data.saveConfig();
                         }
-                        int blocksLeft = plugin.getConfig().getStringList("blocks").size() - Main.blocksss.get(e.getPlayer().getName()).size();
-                        boolean foundAllBlocks = Main.blocksss.get(e.getPlayer().getName()).size() >= plugin.getConfig().getStringList("blocks").size();
-                        if(Main.checkFullInventory >= Utils.getEmptyInventorySpaces(e.getPlayer())
+                        int blocksLeft = plugin.getConfig().getStringList("blocks").size() - Main.getPlugin(Main.class).blocksss.get(e.getPlayer().getName()).size();
+                        boolean foundAllBlocks = Main.getPlugin(Main.class).blocksss.get(e.getPlayer().getName()).size() >= plugin.getConfig().getStringList("blocks").size();
+                        if(Main.getPlugin(Main.class).checkFullInventory >= Utils.getEmptyInventorySpaces(e.getPlayer())
                                 && foundAllBlocks) {
                             if(e.getPlayer().getInventory().firstEmpty() == -1) {
-                                Main.blocksss.get(e.getPlayer().getName()).remove(block);
-                                e.getPlayer().sendMessage(Main.fullInventoryMsg.replace("&", "§"));
+                                Main.getPlugin(Main.class).blocksss.get(e.getPlayer().getName()).remove(block);
+                                e.getPlayer().sendMessage(Main.getPlugin(Main.class).fullInventoryMsg.replace("&", "§"));
                                 return;
                             }
                         }
@@ -200,8 +200,8 @@ public class BEvent implements Listener {
                             }
                         }
                     } else {
-                        if(Main.blocksss.get(e.getPlayer().getName()).contains(block)) {
-                            int blocksLeft = plugin.getConfig().getStringList("blocks").size() - Main.blocksss.get(e.getPlayer().getName()).size();
+                        if(Main.getPlugin(Main.class).blocksss.get(e.getPlayer().getName()).contains(block)) {
+                            int blocksLeft = plugin.getConfig().getStringList("blocks").size() - Main.getPlugin(Main.class).blocksss.get(e.getPlayer().getName()).size();
                             if(blocksLeft <= 0) {
                                 for(String s : plugin.getConfig().getStringList("already-found-all-blocks")) {
                                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), s.replace("%player%", e.getPlayer().getName())
@@ -281,7 +281,7 @@ public class BEvent implements Listener {
 
     public void playFindEffect(Location l) {
         JavaPlugin plugin = Main.getProvidingPlugin(Main.class);
-        if(!Main.findEffect) {
+        if(!Main.getPlugin(Main.class).findEffect) {
             return;
         }
         boolean visible = !plugin.getConfig().getBoolean("find-effect.invisible");

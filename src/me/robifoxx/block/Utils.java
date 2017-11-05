@@ -28,14 +28,14 @@ public class Utils {
     }
     public static void hideFoundBlocks(Player p) {
         Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getProvidingPlugin(Main.class), () -> {
-            if(Main.blocksss.get(p.getName()) != null
-                    && Main.hideFoundBlocks != null) {
+            if(Main.getPlugin(Main.class).blocksss.get(p.getName()) != null
+                    && Main.getPlugin(Main.class).hideFoundBlocks != null) {
                 for (String s : Main.getProvidingPlugin(Main.class).getConfig().getStringList("blocks")) {
-                    if(Main.blocksss.get(p.getName()).contains(s)) {
+                    if(Main.getPlugin(Main.class).blocksss.get(p.getName()).contains(s)) {
                         String[] splt = s.split(";");
                         //x;y;z;w
                         Location loc = new Location(Bukkit.getWorld(splt[3]), Integer.valueOf(splt[0]), Integer.valueOf(splt[1]), Integer.valueOf(splt[2]));
-                        p.sendBlockChange(loc, Main.hideFoundBlocks, (byte) 0);
+                        p.sendBlockChange(loc, Main.getPlugin(Main.class).hideFoundBlocks, (byte) 0);
                     }
                 }
             }

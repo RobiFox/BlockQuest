@@ -22,23 +22,23 @@ import java.util.List;
  * All rights reserved.
  */
 public class Main extends JavaPlugin  {
-    public static MySQL mysql;
-    static ArrayList<String> inEdit = new ArrayList<>();
-    static HashMap<String, List<String>> blocksss = new HashMap<>();
-    static HashMap<String, String> saved_x = new HashMap<>();
-    static HashMap<String, String> saved_y = new HashMap<>();
-    static HashMap<String, String> saved_z = new HashMap<>();
-    static HashMap<String, String> saved_world = new HashMap<>();
-    static Config data;
-    static boolean useMysql = false;
-    static boolean unsafeSave = true;
-    static ArrayList<String> eventReturn = new ArrayList<>();
-    static boolean findEffect = false;
-    static boolean enabled = false;
-    static String disabledMsg = "&cBlocks aren't enabled yet!";
-    static int checkFullInventory = 0;
-    static String fullInventoryMsg = "&c&lYour inventory is full!";
-    static Material hideFoundBlocks = Material.AIR;
+    public MySQL mysql;
+    public ArrayList<String> inEdit = new ArrayList<>();
+    public HashMap<String, List<String>> blocksss = new HashMap<>();
+    public HashMap<String, String> saved_x = new HashMap<>();
+    public HashMap<String, String> saved_y = new HashMap<>();
+    public HashMap<String, String> saved_z = new HashMap<>();
+    public HashMap<String, String> saved_world = new HashMap<>();
+    public Config data;
+    public boolean useMysql = false;
+    public boolean unsafeSave = true;
+    public ArrayList<String> eventReturn = new ArrayList<>();
+    public boolean findEffect = false;
+    public boolean enabled = false;
+    public String disabledMsg = "&cBlocks aren't enabled yet!";
+    public int checkFullInventory = 0;
+    public String fullInventoryMsg = "&c&lYour inventory is full!";
+    public Material hideFoundBlocks = Material.AIR;
 
     public void onEnable() {
         if(!(new File("plugins/BlockQuest/config.yml").exists())) {

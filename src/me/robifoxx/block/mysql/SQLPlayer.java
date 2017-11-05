@@ -16,7 +16,7 @@ public class SQLPlayer {
 
 		try {
 
-			ResultSet rs = Main.mysql.query("SELECT * FROM " + database + " WHERE " + column +"= '" + p + "'");
+			ResultSet rs = Main.getPlugin(Main.class).mysql.query("SELECT * FROM " + database + " WHERE " + column +"= '" + p + "'");
 
 			if(rs.next()) {
 
@@ -36,7 +36,7 @@ public class SQLPlayer {
 
 	public static void createPlayer(Player p, int x, int y, int z, String world) {
 
-		Main.mysql.update("INSERT INTO " + database + " (UUID, X, Y, Z, WORLD) VALUES ('" + Utils.getIdentifier(p) + "', '" + x + "', '" + y + "', '" + z + "', '" + world + "')");
+		Main.getPlugin(Main.class).mysql.update("INSERT INTO " + database + " (UUID, X, Y, Z, WORLD) VALUES ('" + Utils.getIdentifier(p) + "', '" + x + "', '" + y + "', '" + z + "', '" + world + "')");
 
 	}
 
@@ -50,7 +50,7 @@ public class SQLPlayer {
 
 				ResultSet rs;
 
-				rs = Main.mysql.query("SELECT * FROM " + database + " WHERE " + column + "='" + p + "'");
+				rs = Main.getPlugin(Main.class).mysql.query("SELECT * FROM " + database + " WHERE " + column + "='" + p + "'");
 
 				if(!rs.next()
 						|| Integer.valueOf(rs.getInt(path)) == null);
@@ -80,7 +80,7 @@ public class SQLPlayer {
 
 				ResultSet rs;
 
-				rs = Main.mysql.query("SELECT * FROM " + database + " ORDER BY ID DESC LIMIT 1");
+				rs = Main.getPlugin(Main.class).mysql.query("SELECT * FROM " + database + " ORDER BY ID DESC LIMIT 1");
 
 				if(!rs.next()
 						|| Integer.valueOf(rs.getInt(path)) == null);
@@ -102,7 +102,7 @@ public class SQLPlayer {
 
 		if(playerExists(p)) {
 
-			Main.mysql.update("UPDATE " + database + " SET " + path + "= '" + value + "' WHERE " + column + "='" + p + "';");
+			Main.getPlugin(Main.class).mysql.update("UPDATE " + database + " SET " + path + "= '" + value + "' WHERE " + column + "='" + p + "';");
 
 		}
 
@@ -112,7 +112,7 @@ public class SQLPlayer {
 
 		if(playerExists(p)) {
 
-			Main.mysql.update("UPDATE " + database + " SET " + path + "= '" + (getInteger(p, path) + value) + "' WHERE " + column + "='" + p + "';");
+			Main.getPlugin(Main.class).mysql.update("UPDATE " + database + " SET " + path + "= '" + (getInteger(p, path) + value) + "' WHERE " + column + "='" + p + "';");
 
 		}
 
@@ -128,7 +128,7 @@ public class SQLPlayer {
 
 				ResultSet rs;
 
-				rs = Main.mysql.query("SELECT * FROM " + database + " WHERE " + column + "='" + p + "'");
+				rs = Main.getPlugin(Main.class).mysql.query("SELECT * FROM " + database + " WHERE " + column + "='" + p + "'");
 
 				if(!rs.next()
 						|| rs.getString(path) == null);
@@ -151,7 +151,7 @@ public class SQLPlayer {
 
 		if (playerExists(p)) {
 
-			Main.mysql.update("UPDATE " + database + " SET " + path + "= '" + value + "' WHERE " + column + "='" + p + "';");
+			Main.getPlugin(Main.class).mysql.update("UPDATE " + database + " SET " + path + "= '" + value + "' WHERE " + column + "='" + p + "';");
 
 		}
 
