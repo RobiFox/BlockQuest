@@ -34,7 +34,7 @@ public class BEvent implements Listener {
                 Main.getPlugin(Main.class).data.saveConfig();
             }
         } else {
-            if(!SQLPlayer.playerExists(e.getPlayer().getName()))
+            if(!SQLPlayer.playerExists(Utils.getIdentifier(e.getPlayer())))
                 SQLPlayer.createPlayer(e.getPlayer(), "none", "none", "none", "none");
         }
         if(Main.getPlugin(Main.class).blocksss.get(e.getPlayer().getName()) == null) {
@@ -90,6 +90,10 @@ public class BEvent implements Listener {
             SQLPlayer.setString(Utils.getIdentifier(e.getPlayer()), "Y", Main.getPlugin(Main.class).saved_y.get(e.getPlayer().getName()));
             SQLPlayer.setString(Utils.getIdentifier(e.getPlayer()), "Z", Main.getPlugin(Main.class).saved_z.get(e.getPlayer().getName()));
             SQLPlayer.setString(Utils.getIdentifier(e.getPlayer()), "WORLD", Main.getPlugin(Main.class).saved_world.get(e.getPlayer().getName()));
+            Main.getPlugin(Main.class).saved_x.remove(e.getPlayer().getName());
+            Main.getPlugin(Main.class).saved_y.remove(e.getPlayer().getName());
+            Main.getPlugin(Main.class).saved_z.remove(e.getPlayer().getName());
+            Main.getPlugin(Main.class).saved_world.remove(e.getPlayer().getName());
         } else {
             Main.getPlugin(Main.class).data.getConfig().set("data." + Utils.getIdentifier(e.getPlayer()) + ".x", Main.getPlugin(Main.class).saved_x.get(e.getPlayer().getName()));
             Main.getPlugin(Main.class).data.getConfig().set("data." + Utils.getIdentifier(e.getPlayer()) + ".y", Main.getPlugin(Main.class).saved_y.get(e.getPlayer().getName()));

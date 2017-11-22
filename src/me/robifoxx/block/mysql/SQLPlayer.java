@@ -6,36 +6,28 @@ import org.bukkit.entity.Player;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SQLPlayer {
 
-	static String database = "BlockQuest";
+	static String database = Main.getPlugin(Main.class).getDescription().getName();
 	static String column = "UUID";
 
 	public static boolean playerExists(String p) {
-
 		try {
-
 			ResultSet rs = Main.getPlugin(Main.class).mysql.query("SELECT * FROM " + database + " WHERE " + column +"= '" + p + "'");
-
 			if(rs.next()) {
-
-				return rs.getString("NAME") != null;
-
+				return rs.getString(column) != null;
 			}
-
 		} catch(SQLException e) {
-
 			e.printStackTrace();
-
 		}
-
 		return false;
-
 	}
 
 	public static void createPlayer(Player p, String x, String y, String z, String world) {
-
+		if(!playerExists(Utils.getIdentifier(p)))
 		Main.getPlugin(Main.class).mysql.update("INSERT INTO " + database + " (UUID, X, Y, Z, WORLD) VALUES ('" + Utils.getIdentifier(p) + "', '" + x + "', '" + y + "', '" + z + "', '" + world + "')");
 
 	}
@@ -147,14 +139,23 @@ public class SQLPlayer {
 
 	}
 
-	public static void setString(String p, String path, String value) {
-
-		if (playerExists(p)) {
-
-			Main.getPlugin(Main.class).mysql.update("UPDATE " + database + " SET " + path + "= '" + value + "' WHERE " + column + "='" + p + "';");
-
+	public static List<String> getAll() {
+		List<String> i = new ArrayList<>();
+		try {
+			ResultSet rs;
+			rs = Main.getPlugin(Main.class).mysql.query("SELECT * FROM " + database);
+			while(rs.next()) {
+				i.add(rs.getString(1));
+			}
+		} catch(SQLException e) {
+			e.printStackTrace();
 		}
-
+		return i;
 	}
 
+	public static void setString(String p, String path, String value) {
+		if (playerExists(p)) {
+			Main.getPlugin(Main.class).mysql.update("UPDATE " + database + " SET " + path + "= '" + value + "' WHERE " + column + "='" + p + "';");
+		}
+	}
 }

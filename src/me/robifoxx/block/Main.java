@@ -189,20 +189,21 @@ public class Main extends JavaPlugin  {
         mysql.update("CREATE TABLE IF NOT EXISTS " + this.getDescription().getName() + " (UUID varchar(128), X varchar(2048) default \"none\", Y varchar(2048) default \"none\", Z varchar(2048) default \"none\", WORLD varchar(2048) default \"none\")");
     }
 
-    @Override
     public void onDisable() {
         for(Player pl : Bukkit.getOnlinePlayers()) {
-            if(useMysql) {
-                SQLPlayer.setString(Utils.getIdentifier(pl), "X", saved_x.get(pl.getName()));
-                SQLPlayer.setString(Utils.getIdentifier(pl), "Y", saved_y.get(pl.getName()));
-                SQLPlayer.setString(Utils.getIdentifier(pl), "Z", saved_z.get(pl.getName()));
-                SQLPlayer.setString(Utils.getIdentifier(pl), "WORLD", saved_world.get(pl.getName()));
-            } else {
-                data.getConfig().set("data." + Utils.getIdentifier(pl) + ".x", saved_x.get(pl.getName()));
-                data.getConfig().set("data." + Utils.getIdentifier(pl) + ".y", saved_y.get(pl.getName()));
-                data.getConfig().set("data." + Utils.getIdentifier(pl) + ".z", saved_z.get(pl.getName()));
-                data.getConfig().set("data." + Utils.getIdentifier(pl) + ".world", saved_world.get(pl.getName()));
-                data.saveConfig();
+            if(saved_x.get(pl.getName()) != null) {
+                if (useMysql) {
+                    SQLPlayer.setString(Utils.getIdentifier(pl), "X", saved_x.get(pl.getName()));
+                    SQLPlayer.setString(Utils.getIdentifier(pl), "Y", saved_y.get(pl.getName()));
+                    SQLPlayer.setString(Utils.getIdentifier(pl), "Z", saved_z.get(pl.getName()));
+                    SQLPlayer.setString(Utils.getIdentifier(pl), "WORLD", saved_world.get(pl.getName()));
+                } else {
+                    data.getConfig().set("data." + Utils.getIdentifier(pl) + ".x", saved_x.get(pl.getName()));
+                    data.getConfig().set("data." + Utils.getIdentifier(pl) + ".y", saved_y.get(pl.getName()));
+                    data.getConfig().set("data." + Utils.getIdentifier(pl) + ".z", saved_z.get(pl.getName()));
+                    data.getConfig().set("data." + Utils.getIdentifier(pl) + ".world", saved_world.get(pl.getName()));
+                    data.saveConfig();if(saved_x.get(pl.getName()) != null);
+                }
             }
         }
     }
@@ -224,6 +225,7 @@ public class Main extends JavaPlugin  {
                     sender.sendMessage("§aType §6/blockquest §ato exit edit mode.");
                     sender.sendMessage("§a§lType §6§l/blockquest reload §a§lto reload the config!");
                     sender.sendMessage("§a§lType §6§l/blockquest stats §a§lto check stats!");
+                    sender.sendMessage("§a§lType §6§l/blockquest save §a§lto save stats!");
                     if(!enabled) {
                         sender.sendMessage("§c§lBlocks are disabled. Players cant find them until you enable it with §6§l/blockquest toggle");
                     }
@@ -243,15 +245,46 @@ public class Main extends JavaPlugin  {
                     }
                     getConfig().set("enabled", enabled);
                     saveConfig();
+                } else if(args[0].equalsIgnoreCase("save")) {
+                    int amount = 0;
+                    for(Player pl : Bukkit.getOnlinePlayers()) {
+                        if(saved_x.get(pl.getName()) != null) {
+                            amount++;
+                            sender.sendMessage("§a§oSaving data for " + pl.getName());
+                            if (useMysql) {
+                                SQLPlayer.setString(Utils.getIdentifier(pl), "X", saved_x.get(pl.getName()));
+                                SQLPlayer.setString(Utils.getIdentifier(pl), "Y", saved_y.get(pl.getName()));
+                                SQLPlayer.setString(Utils.getIdentifier(pl), "Z", saved_z.get(pl.getName()));
+                                SQLPlayer.setString(Utils.getIdentifier(pl), "WORLD", saved_world.get(pl.getName()));
+                            } else {
+                                data.getConfig().set("data." + Utils.getIdentifier(pl) + ".x", saved_x.get(pl.getName()));
+                                data.getConfig().set("data." + Utils.getIdentifier(pl) + ".y", saved_y.get(pl.getName()));
+                                data.getConfig().set("data." + Utils.getIdentifier(pl) + ".z", saved_z.get(pl.getName()));
+                                data.getConfig().set("data." + Utils.getIdentifier(pl) + ".world", saved_world.get(pl.getName()));
+                                data.saveConfig();
+                            }
+                        }
+                    }
+                    sender.sendMessage("§a§lFinished saving data for §6§l" + amount +" §a§l players!");
                 } else if(args[0].equalsIgnoreCase("stats")) {
                     int total = 0;
                     int foundAllBlocks = 0;
                     int currentBlocks = getConfig().getStringList("blocks").size();
-                    for(String s : data.getConfig().getConfigurationSection("data").getKeys(false)) {
-                        if(!s.equalsIgnoreCase("1-1-1-1-1-1")) {
+                    if(!useMysql) {
+                        for (String s : data.getConfig().getConfigurationSection("data").getKeys(false)) {
+                            if (!s.equalsIgnoreCase("1-1-1-1-1-1")) {
+                                total++;
+                                int foundBlocks = data.getConfig().getString("data." + s + ".x").split(";").length - 1;
+                                if (foundBlocks >= currentBlocks) {
+                                    foundAllBlocks++;
+                                }
+                            }
+                        }
+                    } else {
+                        for(String s : SQLPlayer.getAll()) {
                             total++;
-                            int foundBlocks = data.getConfig().getString("data." + s + ".x").split(";").length - 1;
-                            if(foundBlocks >= currentBlocks) {
+                            int foundBlocks = SQLPlayer.getString(s, "X").split(";").length - 1;
+                            if (foundBlocks >= currentBlocks) {
                                 foundAllBlocks++;
                             }
                         }
@@ -259,7 +292,7 @@ public class Main extends JavaPlugin  {
                     double foundPercent = ((foundAllBlocks * 1.0) / (total * 1.0)) * 100;
                     BigDecimal dec = new BigDecimal(foundPercent).setScale(2, BigDecimal.ROUND_HALF_EVEN);
                     sender.sendMessage("§a§lCurrent Blocks: §e" + currentBlocks);
-                    sender.sendMessage("§e§l" + dec + "% §a§lhas found all blocks.");
+                    sender.sendMessage("§e§l" + dec + "% §a§lhas found all blocks. §e§l(" + foundAllBlocks + "/" + total + ")");
                 } /*else if(args[0].equalsIgnoreCase("wipedata")) {
                     sender.sendMessage("§aWiping data...");
                     boolean success = false;
