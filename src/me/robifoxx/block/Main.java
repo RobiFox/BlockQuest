@@ -47,21 +47,14 @@ public class Main extends JavaPlugin  {
             saveConfig();
         }
         {
-
             Config c = new Config("plugins/" + fileName, "data.yml");
             c.create();
-
             c.setDefault("data.yml");
-
             if(!c.exists()) {
-
                 c.getConfig().options().copyDefaults(true);
                 c.saveConfig();
-
             }
-
             data = c;
-
         }
         if(getConfig().getString("use-mysql").equalsIgnoreCase("true")) {
             mysql = new MySQL(getConfig().getString("mysql-host"), getConfig().getString("mysql-database"), getConfig().getString("mysql-username"), getConfig().getString("mysql-password"));
