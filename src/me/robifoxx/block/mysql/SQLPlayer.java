@@ -34,7 +34,7 @@ public class SQLPlayer {
 
 	}
 
-	public static void createPlayer(Player p, int x, int y, int z, String world) {
+	public static void createPlayer(Player p, String x, String y, String z, String world) {
 
 		Main.getPlugin(Main.class).mysql.update("INSERT INTO " + database + " (UUID, X, Y, Z, WORLD) VALUES ('" + Utils.getIdentifier(p) + "', '" + x + "', '" + y + "', '" + z + "', '" + world + "')");
 

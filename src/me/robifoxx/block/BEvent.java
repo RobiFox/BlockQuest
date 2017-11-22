@@ -25,12 +25,17 @@ import java.util.List;
 public class BEvent implements Listener {
     @EventHandler
     public void join(PlayerJoinEvent e) {
-        if(Main.getPlugin(Main.class).data.getConfig().get("data." + Utils.getIdentifier(e.getPlayer()) + ".x") == null) {
-            Main.getPlugin(Main.class).data.getConfig().set("data." + Utils.getIdentifier(e.getPlayer()) + ".x", "none");
-            Main.getPlugin(Main.class).data.getConfig().set("data." + Utils.getIdentifier(e.getPlayer()) + ".y", "none");
-            Main.getPlugin(Main.class).data.getConfig().set("data." + Utils.getIdentifier(e.getPlayer()) + ".z", "none");
-            Main.getPlugin(Main.class).data.getConfig().set("data." + Utils.getIdentifier(e.getPlayer()) + ".world", "none");
-            Main.getPlugin(Main.class).data.saveConfig();
+        if(!Main.getPlugin(Main.class).useMysql) {
+            if (Main.getPlugin(Main.class).data.getConfig().get("data." + Utils.getIdentifier(e.getPlayer()) + ".x") == null) {
+                Main.getPlugin(Main.class).data.getConfig().set("data." + Utils.getIdentifier(e.getPlayer()) + ".x", "none");
+                Main.getPlugin(Main.class).data.getConfig().set("data." + Utils.getIdentifier(e.getPlayer()) + ".y", "none");
+                Main.getPlugin(Main.class).data.getConfig().set("data." + Utils.getIdentifier(e.getPlayer()) + ".z", "none");
+                Main.getPlugin(Main.class).data.getConfig().set("data." + Utils.getIdentifier(e.getPlayer()) + ".world", "none");
+                Main.getPlugin(Main.class).data.saveConfig();
+            }
+        } else {
+            if(!SQLPlayer.playerExists(e.getPlayer().getName()))
+                SQLPlayer.createPlayer(e.getPlayer(), "none", "none", "none", "none");
         }
         if(Main.getPlugin(Main.class).blocksss.get(e.getPlayer().getName()) == null) {
             String x;
