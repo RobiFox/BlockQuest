@@ -316,7 +316,10 @@ public class BEvent implements Listener {
         a.setCustomName(name.toString());
         a.setCustomNameVisible(false);
         a.setGravity(false);
-        a.getWorld().playSound(a.getLocation(), Sound.valueOf(plugin.getConfig().getString("find-effect.sound")), 1, plugin.getConfig().getInt("find-effect.pitch"));
+        if(!plugin.getConfig().getString("find-effect.sound").equalsIgnoreCase("DISABLED")
+                || !plugin.getConfig().getString("find-effect.sound").equalsIgnoreCase("NONE")) {
+            a.getWorld().playSound(a.getLocation(), Sound.valueOf(plugin.getConfig().getString("find-effect.sound")), 1, plugin.getConfig().getInt("find-effect.sound-pitch"));
+        }
         if(head != null) {
             if(head.length() > 45) {
                 a.setHelmet(Skulls.createSkull(head));
