@@ -9,7 +9,8 @@
 # be disabled.
 # -----------------------------------
 # For custom skulls for find effect,
-# use head IDs from heads.freshcoal.com,
+# use the Base64 Encoding
+# from heads.freshcoal.com in the give command,
 # what usually looks like this:
 # eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzAxNDYxOTczNjM0NTI1MTk2ZWNjNzU3NjkzYjE3MWFkYTRlZjI0YWE5MjgzNmY0MmVhMTFiZDc5YzNhNTAyZCJ9fX0=
 
