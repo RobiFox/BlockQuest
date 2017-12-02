@@ -69,6 +69,10 @@ find-effect:
     y-start: 0.25
     sound: ENTITY_FIREWORK_LAUNCH
     sound-pitch: 0
+    disappear-commands:
+        enabled: false
+        commands:
+            - 'say The find effect disappeared at %loxX% %locY% %locZ%!'
 
 particles:
     loop: 20

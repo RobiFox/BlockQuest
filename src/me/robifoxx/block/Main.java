@@ -213,12 +213,15 @@ public class Main extends JavaPlugin  {
                 if (inEdit.remove(sender.getName())) {
                     sender.sendMessage("§cYou disabled edit mode.");
                 } else {
+                    sender.sendMessage("§7§m----------------------------------------");
                     sender.sendMessage("§aYou entered edit mode!");
                     sender.sendMessage("§aClick on blocks to add it to the config file!");
                     sender.sendMessage("§aType §6/blockquest §ato exit edit mode.");
+                    sender.sendMessage("§7§m----------------------------------------");
                     sender.sendMessage("§a§lType §6§l/blockquest reload §a§lto reload the config!");
                     sender.sendMessage("§a§lType §6§l/blockquest stats §a§lto check stats!");
                     sender.sendMessage("§a§lType §6§l/blockquest save §a§lto save stats!");
+                    sender.sendMessage("§7§m----------------------------------------");
                     if(!enabled) {
                         sender.sendMessage("§c§lBlocks are disabled. Players cant find them until you enable it with §6§l/blockquest toggle");
                     }

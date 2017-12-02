@@ -348,7 +348,15 @@ public class BEvent implements Listener {
                 }
             }, i * plugin.getConfig().getInt("find-effect.scheduler"));
         }
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, a::remove, plugin.getConfig().getInt("find-effect.loop") * plugin.getConfig().getInt("find-effect.scheduler"));
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+            if(plugin.getConfig().get("find-effect.disappear-commands.enabled") != null
+                    && plugin.getConfig().getBoolean("find-effect.disappear-commands.enabled")) {
+                for(String s : plugin.getConfig().getStringList("find-effect.disappear-commands.commands")) {
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), s.replace("%locX%", a.getLocation().getX() + "").replace("%locY%", a.getLocation().getY() + "").replace("%locZ%", a.getLocation().getZ() + ""));
+                }
+            }
+            a.remove();
+        }, plugin.getConfig().getInt("find-effect.loop") * plugin.getConfig().getInt("find-effect.scheduler"));
     }
 
     @EventHandler
