@@ -18,11 +18,11 @@ import java.nio.charset.Charset;
 import java.util.logging.Level;
 
 public class Config {
-	File f;
-	FileConfiguration cfg;
+	private File f;
+	private FileConfiguration cfg;
 
-	String path_;
-	String fileName_;
+	private String path_;
+	private String fileName_;
 
 	public Config(String path, String fileName) {
 		path_ = path;
