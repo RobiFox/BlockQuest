@@ -284,7 +284,7 @@ public class BEvent implements Listener {
     @EventHandler
     public void dmg(EntityDamageEvent e) {
         if(e.getEntity().getCustomName() != null
-                && e.getEntity().getCustomName().equalsIgnoreCase("§b§l§o§c§k")) {
+                && e.getEntity().getCustomName().startsWith("§b§l§o§c§k")) {
             e.setCancelled(true);
         }
     }
@@ -307,8 +307,13 @@ public class BEvent implements Listener {
         ArmorStand a = l.getWorld().spawn(l.clone().add(0, offset, 0), ArmorStand.class);
         a.setVisible(visible);
         a.setSmall(small);
-        //a.setInvulnerable(true);
-        a.setCustomName("§b§l§o§c§k");
+        //a.setInvulnerable(true); // 1.8 :(
+        StringBuilder name = new StringBuilder("§b§l§o§c§k");
+        if(plugin.getConfig().get("find-effect.custom-name") != null
+                && plugin.getConfig().getString("find-effect.custom-name").length() >= 1) {
+            name.append(plugin.getConfig().getString("find-effect.custom-name").replace("&", "§"));
+        }
+        a.setCustomName(name.toString());
         a.setCustomNameVisible(false);
         a.setGravity(false);
         a.getWorld().playSound(a.getLocation(), Sound.valueOf(plugin.getConfig().getString("find-effect.sound")), 1, plugin.getConfig().getInt("find-effect.pitch"));

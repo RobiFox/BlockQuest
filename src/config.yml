@@ -52,6 +52,7 @@ find-effect:
     enabled: true
     invisible: true
     small: true
+    custom-name: ''
     head: PUMPKIN
     chest: NONE
     leg: NONE
