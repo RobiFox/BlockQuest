@@ -267,31 +267,60 @@ public class Main extends JavaPlugin  {
                     sender.sendMessage("§a§lFinished saving data for §6§l" + amount +" §a§l players!");
                 } else if(args[0].equalsIgnoreCase("stats")) {
                     int total = 0;
-                    int foundAllBlocks = 0;
                     int currentBlocks = getConfig().getStringList("blocks").size();
-                    if(!useMysql) {
-                        for (String s : data.getConfig().getConfigurationSection("data").getKeys(false)) {
-                            if (!s.equalsIgnoreCase("1-1-1-1-1-1")) {
+                    if(args.length >= 2) {
+                        int foundBlocks = 0;
+                        if(!useMysql) {
+                            if(data.getConfig().getString("data." + args[1] + ".x") != null) {
+                                foundBlocks = data.getConfig().getString("data." + args[1] + ".x").split(";").length - 1;
+                            } else {
+                                sender.sendMessage("§c§lThere's no player called " + args[1] + "!");
+                                if(Utils.useUUID) {
+                                    sender.sendMessage("§cIf you have Use UUID on, you should try using player UUID instead of player name");
+                                }
+                                return true;
+                            }
+                        } else {
+                            if(SQLPlayer.playerExists(args[1])) {
+                                foundBlocks = SQLPlayer.getString(args[1], "X").split(";").length - 1;
+                            } else {
+                                sender.sendMessage("§c§lThere's no player called " + args[1] + "!");
+                                if(Utils.useUUID) {
+                                    sender.sendMessage("§cIf you have Use UUID on, you should try using player UUID instead of player name");
+                                }
+                                return true;
+                            }
+                        }
+                        double foundPercent = ((foundBlocks * 1.0) / (total * 1.0)) * 100;
+                        BigDecimal dec = new BigDecimal(foundPercent).setScale(2, BigDecimal.ROUND_HALF_EVEN);
+                        sender.sendMessage("§a§lCurrent Blocks: §e" + currentBlocks);
+                        sender.sendMessage("§e§l" + args[1] + "§a§lhas found §e§l" + dec + "% §a§lof all blocks. §e§l(" + foundBlocks + "/" + total + ")");
+                    } else {
+                        int foundAllBlocks = 0;
+                        if (!useMysql) {
+                            for (String s : data.getConfig().getConfigurationSection("data").getKeys(false)) {
+                                if (!s.equalsIgnoreCase("1-1-1-1-1-1")) {
+                                    total++;
+                                    int foundBlocks = data.getConfig().getString("data." + s + ".x").split(";").length - 1;
+                                    if (foundBlocks >= currentBlocks) {
+                                        foundAllBlocks++;
+                                    }
+                                }
+                            }
+                        } else {
+                            for (String s : SQLPlayer.getAll()) {
                                 total++;
-                                int foundBlocks = data.getConfig().getString("data." + s + ".x").split(";").length - 1;
+                                int foundBlocks = SQLPlayer.getString(s, "X").split(";").length - 1;
                                 if (foundBlocks >= currentBlocks) {
                                     foundAllBlocks++;
                                 }
                             }
                         }
-                    } else {
-                        for(String s : SQLPlayer.getAll()) {
-                            total++;
-                            int foundBlocks = SQLPlayer.getString(s, "X").split(";").length - 1;
-                            if (foundBlocks >= currentBlocks) {
-                                foundAllBlocks++;
-                            }
-                        }
+                        double foundPercent = ((foundAllBlocks * 1.0) / (total * 1.0)) * 100;
+                        BigDecimal dec = new BigDecimal(foundPercent).setScale(2, BigDecimal.ROUND_HALF_EVEN);
+                        sender.sendMessage("§a§lCurrent Blocks: §e" + currentBlocks);
+                        sender.sendMessage("§e§l" + dec + "% §a§lhas found all blocks. §e§l(" + foundAllBlocks + "/" + total + ")");
                     }
-                    double foundPercent = ((foundAllBlocks * 1.0) / (total * 1.0)) * 100;
-                    BigDecimal dec = new BigDecimal(foundPercent).setScale(2, BigDecimal.ROUND_HALF_EVEN);
-                    sender.sendMessage("§a§lCurrent Blocks: §e" + currentBlocks);
-                    sender.sendMessage("§e§l" + dec + "% §a§lhas found all blocks. §e§l(" + foundAllBlocks + "/" + total + ")");
                 } /*else if(args[0].equalsIgnoreCase("wipedata")) {
                     sender.sendMessage("§aWiping data...");
                     boolean success = false;
