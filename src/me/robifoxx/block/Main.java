@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 /**
  * Created by RobiFoxx.
@@ -174,8 +175,10 @@ public class Main extends JavaPlugin  {
                 }
             }, loop, loop);
         }
-        new Metrics(this);
-        getLogger().info("Enabled Metrics (bStats).");
+        getLogger().info("Enabling Metrics (bStats).");
+        Metrics m = new Metrics(this);
+        m.addCustomChart(new Metrics.SingleLineChart("blocks", () -> getConfig().getStringList("blocks").size()));
+        getLogger().info("Enabled Metrics.");
     }
 
     public void createMySQL() {
@@ -195,7 +198,7 @@ public class Main extends JavaPlugin  {
                     data.getConfig().set("data." + Utils.getIdentifier(pl) + ".y", saved_y.get(pl.getName()));
                     data.getConfig().set("data." + Utils.getIdentifier(pl) + ".z", saved_z.get(pl.getName()));
                     data.getConfig().set("data." + Utils.getIdentifier(pl) + ".world", saved_world.get(pl.getName()));
-                    data.saveConfig();if(saved_x.get(pl.getName()) != null);
+                    data.saveConfig();
                 }
             }
         }
