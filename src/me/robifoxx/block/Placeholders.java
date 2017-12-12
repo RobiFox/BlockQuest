@@ -17,9 +17,11 @@ public class Placeholders extends EZPlaceholderHook {
     @Override
     public String onPlaceholderRequest(Player player, String s) {
         if(s.startsWith("blocksfound")) {
-            return String.valueOf(Main.getPlugin(Main.class).blocksss.get(player.getName()).size());
+            return String.valueOf(p.blocksss.get(player.getName()).size());
         } else if(s.startsWith("blocksleft")) {
-            return String.valueOf(Main.getPlugin(Main.class).getConfig().getStringList("blocks").size() - Main.getPlugin(Main.class).blocksss.get(player.getName()).size());
+            return String.valueOf(p.getConfig().getStringList("blocks").size() - Main.getPlugin(Main.class).blocksss.get(player.getName()).size());
+        } else if(s.startsWith("allblocks")) {
+            return String.valueOf(p.getConfig().getStringList("blocks").size());
         }
         return null;
     }
