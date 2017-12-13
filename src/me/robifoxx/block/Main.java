@@ -222,7 +222,7 @@ public class Main extends JavaPlugin  {
                     sender.sendMessage("§aType §6/blockquest §ato exit edit mode.");
                     sender.sendMessage("§7§m----------------------------------------");
                     sender.sendMessage("§a§lType §6§l/blockquest reload §a§lto reload the config!");
-                    sender.sendMessage("§a§lType §6§l/blockquest stats §a§lto check stats!");
+                    sender.sendMessage("§a§lType §6§l/blockquest stats [player] §a§lto check stats!");
                     sender.sendMessage("§a§lType §6§l/blockquest save §a§lto save stats!");
                     sender.sendMessage("§7§m----------------------------------------");
                     if(!enabled) {
@@ -247,7 +247,7 @@ public class Main extends JavaPlugin  {
                 } else if(args[0].equalsIgnoreCase("save")) {
                     int amount = 0;
                     for(Player pl : Bukkit.getOnlinePlayers()) {
-                        if(saved_x.get(pl.getName()) != null) {
+                        if (saved_x.get(pl.getName()) != null) {
                             amount++;
                             sender.sendMessage("§a§oSaving data for " + pl.getName());
                             if (useMysql) {
@@ -269,7 +269,7 @@ public class Main extends JavaPlugin  {
                     int total = 0;
                     int currentBlocks = getConfig().getStringList("blocks").size();
                     if(args.length >= 2) {
-                        int foundBlocks = 0;
+                        int foundBlocks;
                         if(!useMysql) {
                             if(data.getConfig().getString("data." + args[1] + ".x") != null) {
                                 foundBlocks = data.getConfig().getString("data." + args[1] + ".x").split(";").length - 1;
@@ -291,10 +291,10 @@ public class Main extends JavaPlugin  {
                                 return true;
                             }
                         }
-                        double foundPercent = ((foundBlocks * 1.0) / (total * 1.0)) * 100;
+                        double foundPercent = ((foundBlocks * 1.0) / (currentBlocks * 1.0)) * 100;
                         BigDecimal dec = new BigDecimal(foundPercent).setScale(2, BigDecimal.ROUND_HALF_EVEN);
                         sender.sendMessage("§a§lCurrent Blocks: §e" + currentBlocks);
-                        sender.sendMessage("§e§l" + args[1] + "§a§lhas found §e§l" + dec + "% §a§lof all blocks. §e§l(" + foundBlocks + "/" + total + ")");
+                        sender.sendMessage("§e§l" + args[1] + "§a§lhas found §e§l" + dec + "% §a§lof all blocks. §e§l(" + foundBlocks + "/" + currentBlocks + ")");
                     } else {
                         int foundAllBlocks = 0;
                         if (!useMysql) {
