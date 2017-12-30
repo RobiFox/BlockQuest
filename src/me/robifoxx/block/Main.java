@@ -62,7 +62,7 @@ public class Main extends JavaPlugin  {
             createMySQL();
             useMysql = true;
         }
-        Bukkit.getPluginManager().registerEvents(new BEvent(), this);
+        Bukkit.getPluginManager().registerEvents(new BEvent(this), this);
         if(getConfig().getString("mysql-unsafe-save") != null) {
             if(getConfig().getString("mysql-unsafe-save").equalsIgnoreCase("false")) {
                 unsafeSave = false;
