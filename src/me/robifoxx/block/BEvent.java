@@ -246,37 +246,6 @@ public class BEvent implements Listener {
                                             .replace("%blocksLeft%", "" + blocksLeft));
                                 }
                             }
-                            /*if(blocksLeft <= 0) {
-                                for(String s : plugin.getConfig().getStringList("already-found-all-blocks")) {
-                                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), s.replace("%player%", e.getPlayer().getName())
-                                            .replace("%pLocX%", "" + e.getPlayer().getLocation().getX())
-                                            .replace("%pLocY%", "" + e.getPlayer().getLocation().getY())
-                                            .replace("%pLocZ%", "" + e.getPlayer().getLocation().getZ())
-                                            .replace("%locX5%", "" + (e.getClickedBlock().getLocation().getX() + 0.5))
-                                            .replace("%locY5%", "" + (e.getClickedBlock().getLocation().getY() + 0.5))
-                                            .replace("%locZ5%", "" + (e.getClickedBlock().getLocation().getZ() + 0.5))
-                                            .replace("%locX%", "" + e.getClickedBlock().getLocation().getX())
-                                            .replace("%locY%", "" + e.getClickedBlock().getLocation().getY())
-                                            .replace("%locZ%", "" + e.getClickedBlock().getLocation().getZ())
-                                            .replace("%blockLeft%", "" + blocksLeft)
-                                            .replace("%blocksLeft%", "" + blocksLeft));
-                                }
-                            } else {
-                                for(String s : plugin.getConfig().getStringList("already-found-commands")) {
-                                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), s.replace("%player%", e.getPlayer().getName())
-                                            .replace("%pLocX%", "" + e.getPlayer().getLocation().getX())
-                                            .replace("%pLocY%", "" + e.getPlayer().getLocation().getY())
-                                            .replace("%pLocZ%", "" + e.getPlayer().getLocation().getZ())
-                                            .replace("%locX5%", "" + (e.getClickedBlock().getLocation().getX() + 0.5))
-                                            .replace("%locY5%", "" + (e.getClickedBlock().getLocation().getY() + 0.5))
-                                            .replace("%locZ5%", "" + (e.getClickedBlock().getLocation().getZ() + 0.5))
-                                            .replace("%locX%", "" + e.getClickedBlock().getLocation().getX())
-                                            .replace("%locY%", "" + e.getClickedBlock().getLocation().getY())
-                                            .replace("%locZ%", "" + e.getClickedBlock().getLocation().getZ())
-                                            .replace("%blockLeft%", "" + blocksLeft)
-                                            .replace("%blocksLeft%", "" + blocksLeft));
-                                }
-                            }*/
                         }
                     }
                 }
