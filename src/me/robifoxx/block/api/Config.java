@@ -23,10 +23,12 @@ public class Config {
 
 	private String path_;
 	private String fileName_;
+	private Main plugin;
 
-	public Config(String path, String fileName) {
+	public Config(String path, String fileName, Main plugin) {
 		path_ = path;
 		fileName_ = fileName;
+		this.plugin = plugin;
 	}
 
 	public void create() {
@@ -35,7 +37,7 @@ public class Config {
 	}
 
 	public void setDefault(String filename) {
-		InputStream defConfigStream = Main.getProvidingPlugin(Main.class).getResource(filename);
+		InputStream defConfigStream = plugin.getResource(filename);
 		if (defConfigStream == null)
 			return;
 		YamlConfiguration defConfig;
@@ -50,20 +52,20 @@ public class Config {
 			try {
 				contents = ByteStreams.toByteArray(defConfigStream);
 			} catch (IOException e) {
-				Main.getProvidingPlugin(Main.class).getLogger().log(Level.SEVERE,
+				plugin.getLogger().log(Level.SEVERE,
 						"Unexpected failure reading " + filename, e);
 				return;
 			}
 			String text = new String(contents, Charset.defaultCharset());
 			if (!(text.equals(new String(contents, Charsets.UTF_8)))) {
-				Main.getProvidingPlugin(Main.class).getLogger()
+				plugin.getLogger()
 						.warning(
 								"Default system encoding may have misread " + filename + " from plugin jar");
 			}
 			try {
 				defConfig.loadFromString(text);
 			} catch (InvalidConfigurationException e) {
-				Main.getProvidingPlugin(Main.class).getLogger().log(Level.SEVERE,
+				plugin.getLogger().log(Level.SEVERE,
 						"Cannot load configuration from jar", e);
 			}
 		}
@@ -90,7 +92,7 @@ public class Config {
 	}
 
 	private boolean isStrictlyUTF8() {
-		return Main.getProvidingPlugin(Main.class).getDescription().getAwareness().contains(
+		return plugin.getDescription().getAwareness().contains(
 				PluginAwareness.Flags.UTF8);
 	}
 

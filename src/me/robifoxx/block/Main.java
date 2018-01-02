@@ -48,7 +48,7 @@ public class Main extends JavaPlugin  {
             saveConfig();
         }
         {
-            Config c = new Config("plugins/" + fileName, "data.yml");
+            Config c = new Config("plugins/" + fileName, "data.yml", this);
             c.create();
             c.setDefault("data.yml");
             if(!c.exists()) {

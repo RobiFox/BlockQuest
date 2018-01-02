@@ -20,7 +20,7 @@ public class Utils {
         if(useUUID) {
             return p;
         } else {
-            return Bukkit.getOfflinePlayer(UUID.fromString(p)).getName();
+            return Bukkit.getOfflinePlayer(UUID.fromString(p)).getUniqueId().toString();
         }
     }
     public static String getUsername(String uuid) {
@@ -33,7 +33,6 @@ public class Utils {
                 for (String s : Main.getProvidingPlugin(Main.class).getConfig().getStringList("blocks")) {
                     if(Main.getPlugin(Main.class).blocksss.get(p.getName()).contains(s)) {
                         String[] splt = s.split(";");
-                        //x;y;z;w
                         Location loc = new Location(Bukkit.getWorld(splt[3]), Integer.valueOf(splt[0]), Integer.valueOf(splt[1]), Integer.valueOf(splt[2]));
                         p.sendBlockChange(loc, Main.getPlugin(Main.class).hideFoundBlocks, (byte) 0);
                     }
