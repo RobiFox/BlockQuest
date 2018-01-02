@@ -31,6 +31,7 @@ public class Main extends JavaPlugin  {
     public HashMap<String, String> saved_z = new HashMap<>();
     public HashMap<String, String> saved_world = new HashMap<>();
     public Config data;
+    public Config msgs;
     public boolean useMysql = false;
     public boolean unsafeSave = true;
     public ArrayList<String> eventReturn = new ArrayList<>();
@@ -56,6 +57,18 @@ public class Main extends JavaPlugin  {
                 c.saveConfig();
             }
             data = c;
+        }
+        {
+
+            Config c = new Config("plugins/" + fileName, "messages.yml", this);
+            c.create();
+
+            c.setDefault("messages.yml");
+            c.getConfig().options().copyDefaults(true);
+            c.saveConfig();
+
+            msgs = c;
+
         }
         if(getConfig().getString("use-mysql").equalsIgnoreCase("true")) {
             mysql = new MySQL(getConfig().getString("mysql-host"), getConfig().getString("mysql-database"), getConfig().getString("mysql-username"), getConfig().getString("mysql-password"));
@@ -234,13 +247,13 @@ public class Main extends JavaPlugin  {
             } else {
                 if(args[0].equalsIgnoreCase("reload")) {
                     reloadConfig();
-                    sender.sendMessage("§aConfig reloaded!");
+                    Utils.sendMessageFromMSGS(sender, msgs.getConfig().getString("config-reloaded"));
                 } else if(args[0].equalsIgnoreCase("toggle")) {
                     enabled = !enabled;
                     if(enabled) {
-                        sender.sendMessage("§aEnabled Blocks!");
+                        Utils.sendMessageFromMSGS(sender, msgs.getConfig().getString("enabled-blocks"));
                     } else {
-                        sender.sendMessage("§cDisabled Blocks!");
+                        Utils.sendMessageFromMSGS(sender, msgs.getConfig().getString("disabled-blocks"));
                     }
                     getConfig().set("enabled", enabled);
                     saveConfig();
@@ -249,7 +262,7 @@ public class Main extends JavaPlugin  {
                     for(Player pl : Bukkit.getOnlinePlayers()) {
                         if (saved_x.get(pl.getName()) != null) {
                             amount++;
-                            sender.sendMessage("§a§oSaving data for " + pl.getName());
+                            Utils.sendMessageFromMSGS(sender, msgs.getConfig().getString("saving-data-for").replace("%target%", pl.getName()));
                             if (useMysql) {
                                 SQLPlayer.setString(Utils.getIdentifier(pl), "X", saved_x.get(pl.getName()));
                                 SQLPlayer.setString(Utils.getIdentifier(pl), "Y", saved_y.get(pl.getName()));
@@ -264,37 +277,26 @@ public class Main extends JavaPlugin  {
                             }
                         }
                     }
-                    sender.sendMessage("§a§lFinished saving data for §6§l" + amount +" §a§l players!");
+                    Utils.sendMessageFromMSGS(sender, msgs.getConfig().getString("finished-saving").replace("%amount%", "" + amount));
                 } else if(args[0].equalsIgnoreCase("stats")) {
                     int total = 0;
                     int currentBlocks = getConfig().getStringList("blocks").size();
                     if(args.length >= 2) {
                         int foundBlocks;
-                        if(!useMysql) {
-                            if(data.getConfig().getString("data." + args[1] + ".x") != null) {
-                                foundBlocks = data.getConfig().getString("data." + args[1] + ".x").split(";").length - 1;
-                            } else {
-                                sender.sendMessage("§c§lThere's no player called " + args[1] + "!");
-                                if(Utils.useUUID) {
-                                    sender.sendMessage("§cIf you have Use UUID on, you should try using player UUID instead of player name");
-                                }
-                                return true;
-                            }
+                        String argReq = Utils.getIdentifierFromUsername(args[1]);
+                        if((!useMysql && data.getConfig().getString("data." + argReq + ".x") != null)
+                                || ( useMysql && SQLPlayer.playerExists(argReq))) {
+                            foundBlocks = data.getConfig().getString("data." + argReq + ".x").split(";").length - 1;
                         } else {
-                            if(SQLPlayer.playerExists(args[1])) {
-                                foundBlocks = SQLPlayer.getString(args[1], "X").split(";").length - 1;
-                            } else {
-                                sender.sendMessage("§c§lThere's no player called " + args[1] + "!");
-                                if(Utils.useUUID) {
-                                    sender.sendMessage("§cIf you have Use UUID on, you should try using player UUID instead of player name");
-                                }
-                                return true;
-                            }
+                            Utils.sendMessageFromMSGS(sender, msgs.getConfig().getString("stats-unknown-player").replace("%target%", args[1]));
+                            return true;
                         }
                         double foundPercent = ((foundBlocks * 1.0) / (currentBlocks * 1.0)) * 100;
                         BigDecimal dec = new BigDecimal(foundPercent).setScale(2, BigDecimal.ROUND_HALF_EVEN);
-                        sender.sendMessage("§a§lCurrent Blocks: §e" + currentBlocks);
-                        sender.sendMessage("§e§l" + args[1] + "§a§lhas found §e§l" + dec + "% §a§lof all blocks. §e§l(" + foundBlocks + "/" + currentBlocks + ")");
+                        Utils.sendMessageFromMSGS(sender, msgs.getConfig().getString("personal-stats").replace("%target%", args[1])
+                                .replace("%currentBlocks%", "" + currentBlocks)
+                                .replace("%percent%", dec + "")
+                                .replace("%foundBlocks%", "" + foundBlocks));
                     } else {
                         int foundAllBlocks = 0;
                         if (!useMysql) {
@@ -318,8 +320,10 @@ public class Main extends JavaPlugin  {
                         }
                         double foundPercent = ((foundAllBlocks * 1.0) / (total * 1.0)) * 100;
                         BigDecimal dec = new BigDecimal(foundPercent).setScale(2, BigDecimal.ROUND_HALF_EVEN);
-                        sender.sendMessage("§a§lCurrent Blocks: §e" + currentBlocks);
-                        sender.sendMessage("§e§l" + dec + "% §a§lhas found all blocks. §e§l(" + foundAllBlocks + "/" + total + ")");
+                        Utils.sendMessageFromMSGS(sender, msgs.getConfig().getString("global-stats")
+                                .replace("%currentBlocks%", "" + currentBlocks)
+                                .replace("%percent%", dec + "")
+                                .replace("%foundAllBlocks%", "" + foundAllBlocks));
                     }
                 } /*else if(args[0].equalsIgnoreCase("wipedata")) {
                     sender.sendMessage("§aWiping data...");

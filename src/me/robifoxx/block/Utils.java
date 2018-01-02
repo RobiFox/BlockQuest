@@ -3,6 +3,7 @@ package me.robifoxx.block;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;
@@ -16,11 +17,11 @@ public class Utils {
             return p.getName();
         }
     }
-    public static String getIdentifier(String p) {
-        if(useUUID) {
+    public static String getIdentifierFromUsername(String p) {
+        if(!useUUID) {
             return p;
         } else {
-            return Bukkit.getOfflinePlayer(UUID.fromString(p)).getUniqueId().toString();
+            return Bukkit.getOfflinePlayer(p).getUniqueId().toString();
         }
     }
     public static String getUsername(String uuid) {
@@ -49,5 +50,8 @@ public class Utils {
             }
         }
         return empty;
+    }
+    public static void sendMessageFromMSGS(CommandSender sender, String message) {
+        sender.sendMessage(message.replace("&", "§").replace("%player%", sender.getName()).split("\\\\n"));
     }
 }
