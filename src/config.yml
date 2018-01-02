@@ -72,7 +72,7 @@ find-effect:
     disappear-commands:
         enabled: false
         commands:
-            - 'say The find effect disappeared at %loxX% %locY% %locZ%!'
+            - 'say The find effect disappeared at %locX% %locY% %locZ%!'
 
 particles:
     loop: 20

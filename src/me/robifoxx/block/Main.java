@@ -59,7 +59,6 @@ public class Main extends JavaPlugin  {
             data = c;
         }
         {
-
             Config c = new Config("plugins/" + fileName, "messages.yml", this);
             c.create();
 
@@ -68,7 +67,6 @@ public class Main extends JavaPlugin  {
             c.saveConfig();
 
             msgs = c;
-
         }
         if(getConfig().getString("use-mysql").equalsIgnoreCase("true")) {
             mysql = new MySQL(getConfig().getString("mysql-host"), getConfig().getString("mysql-database"), getConfig().getString("mysql-username"), getConfig().getString("mysql-password"));
