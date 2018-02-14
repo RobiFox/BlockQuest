@@ -1,7 +1,9 @@
 package me.robifoxx.block;
 
 import com.darkblade12.particleeffect.ParticleEffect;
+import me.robifoxx.block.api.FindEffect;
 import me.robifoxx.block.api.Skulls;
+import me.robifoxx.block.events.BlockFindEvent;
 import me.robifoxx.block.mysql.SQLPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -176,7 +178,13 @@ public class BEvent implements Listener {
                                 return;
                             }
                         }
-                        playFindEffect(e.getClickedBlock().getLocation().clone().add(0.5, 0, 0.5));
+                        BlockFindEvent evnt = new BlockFindEvent(e.getPlayer(), e.getClickedBlock(), m.findEffectC);
+                        Bukkit.getPluginManager().callEvent(e);
+                        if(e.isCancelled()) {
+                            return;
+                        }
+
+                        playFindEffect(e.getClickedBlock().getLocation().clone().add(0.5, 0, 0.5), evnt.getEffect());
                         for(String s : m.getConfig().getStringList("find-block-commands")) {
                             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), s.replace("%player%", e.getPlayer().getName())
                                     .replace("%pLocX%", "" + e.getPlayer().getLocation().getX())
@@ -257,51 +265,23 @@ public class BEvent implements Listener {
         }
     }
 
-    public void playFindEffect(Location l) {
+    public void playFindEffect(Location l, FindEffect e) {
         if(!m.findEffect) {
             return;
         }
-        boolean visible = !m.getConfig().getBoolean("find-effect.invisible");
-        boolean small = m.getConfig().getBoolean("find-effect.small");
         double offset = 0.25;
         if(m.getConfig().get("find-effect.y-start") != null) {
             offset = m.getConfig().getDouble("find-effect.y-start");
         }
-        String head = m.getConfig().getString("find-effect.head").equalsIgnoreCase("NONE") ? null : m.getConfig().getString("find-effect.head");
+        /*String head = m.getConfig().getString("find-effect.head").equalsIgnoreCase("NONE") ? null : m.getConfig().getString("find-effect.head");
         String chest = m.getConfig().getString("find-effect.chest").equalsIgnoreCase("NONE") ? null : m.getConfig().getString("find-effect.chest");
         String leg = m.getConfig().getString("find-effect.leg").equalsIgnoreCase("NONE") ? null : m.getConfig().getString("find-effect.leg");
-        String boot = m.getConfig().getString("find-effect.boot").equalsIgnoreCase("NONE") ? null : m.getConfig().getString("find-effect.boot");
-        ArmorStand a = l.getWorld().spawn(l.clone().add(0, offset, 0), ArmorStand.class);
-        a.setVisible(visible);
-        a.setSmall(small);
+        String boot = m.getConfig().getString("find-effect.boot").equalsIgnoreCase("NONE") ? null : m.getConfig().getString("find-effect.boot");*/
+        ArmorStand a = e.getArmorStand(l.clone().add(0, offset, 0));
         //a.setInvulnerable(true); // 1.8 :(
-        StringBuilder name = new StringBuilder("§b§l§o§c§k");
-        if(m.getConfig().get("find-effect.custom-name") != null
-                && m.getConfig().getString("find-effect.custom-name").length() >= 1) {
-            name.append(m.getConfig().getString("find-effect.custom-name").replace("&", "§"));
-        }
-        a.setCustomName(name.toString());
-        a.setCustomNameVisible(false);
-        a.setGravity(false);
         if(!m.getConfig().getString("find-effect.sound").equalsIgnoreCase("DISABLED")
                 || !m.getConfig().getString("find-effect.sound").equalsIgnoreCase("NONE")) {
             a.getWorld().playSound(a.getLocation(), Sound.valueOf(m.getConfig().getString("find-effect.sound")), 1, m.getConfig().getInt("find-effect.sound-pitch"));
-        }
-        if(head != null) {
-            if(head.length() > 45) {
-                a.setHelmet(Skulls.createSkull(head));
-            } else {
-                a.setHelmet(new ItemStack(Material.valueOf(head)));
-            }
-        }
-        if(chest != null) {
-            a.setChestplate(new ItemStack(Material.valueOf(chest)));
-        }
-        if(leg != null) {
-            a.setLeggings(new ItemStack(Material.valueOf(leg)));
-        }
-        if(boot != null) {
-            a.setBoots(new ItemStack(Material.valueOf(boot)));
         }
         for(int i = 0; i < m.getConfig().getInt("find-effect.loop"); i++) {
             Bukkit.getScheduler().scheduleSyncDelayedTask(m, () -> {

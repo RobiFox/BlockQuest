@@ -1,5 +1,6 @@
 package me.robifoxx.block;
 
+import me.robifoxx.block.api.FindEffect;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -10,7 +11,7 @@ import java.util.List;
 public class BlockQuestAPI {
     private static BlockQuestAPI instance;
     private Main plugin;
-    public BlockQuestAPI(Main plugin) {
+    private BlockQuestAPI(Main plugin) {
         this.plugin = plugin;
     }
 
@@ -103,5 +104,21 @@ public class BlockQuestAPI {
      */
     public String convertLocToString(Location l) {
         return l.getBlockX() + ";" + l.getBlockY() + ";" + l.getBlockZ() + ";" + l.getWorld().getName();
+    }
+
+    /**
+     * Gets the current Find Effect
+     * @return The Find Effect specified in config file
+     */
+    public FindEffect getFindEffect() {
+        return plugin.findEffectC;
+    }
+
+    /**
+     * Replaces the Find Effect
+     * @param ef The new effect
+     */
+    public void setFindEffect(FindEffect ef) {
+        plugin.findEffectC = ef;
     }
 }

@@ -2,13 +2,16 @@ package me.robifoxx.block;
 
 import com.darkblade12.particleeffect.ParticleEffect;
 import me.robifoxx.block.api.Config;
+import me.robifoxx.block.api.FindEffect;
 import me.robifoxx.block.api.Metrics;
+import me.robifoxx.block.api.Skulls;
 import me.robifoxx.block.mysql.MySQL;
 import me.robifoxx.block.mysql.SQLPlayer;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -41,6 +44,7 @@ public class Main extends JavaPlugin  {
     public int checkFullInventory = 0;
     public String fullInventoryMsg = "&c&lYour inventory is full!";
     public Material hideFoundBlocks = Material.AIR;
+    public FindEffect findEffectC;
     private static Main plugin;
 
     public void onEnable() {
@@ -192,6 +196,35 @@ public class Main extends JavaPlugin  {
         m.addCustomChart(new Metrics.SingleLineChart("blocks", () -> BlockQuestAPI.getInstance().getAllBlocks().length));
         getLogger().info("Enabled Metrics.");
         plugin = this;
+        {
+            boolean visible = !getConfig().getBoolean("find-effect.invisible");
+            boolean small = getConfig().getBoolean("find-effect.small");
+            String head = getConfig().getString("find-effect.head").equalsIgnoreCase("NONE") ? null : getConfig().getString("find-effect.head");
+            String chest = getConfig().getString("find-effect.chest").equalsIgnoreCase("NONE") ? null : getConfig().getString("find-effect.chest");
+            String leg = getConfig().getString("find-effect.leg").equalsIgnoreCase("NONE") ? null : getConfig().getString("find-effect.leg");
+            String boot = getConfig().getString("find-effect.boot").equalsIgnoreCase("NONE") ? null : getConfig().getString("find-effect.boot");
+            ItemStack h = null;
+            ItemStack c = null;
+            ItemStack l = null;
+            ItemStack b = null;
+            if(head != null) {
+                if(head.length() > 45) {
+                    h = Skulls.createSkull(head);
+                } else {
+                    h = new ItemStack(Material.valueOf(head));
+                }
+            }
+            if(chest != null) {
+                c = new ItemStack(Material.valueOf(chest));
+            }
+            if(leg != null) {
+                l = new ItemStack(Material.valueOf(leg));
+            }
+            if(boot != null) {
+                b = new ItemStack(Material.valueOf(boot));
+            }
+            findEffectC = new FindEffect(h, c, l, b, visible, small, getConfig().getString("find-effect.custom-name"));
+        }
     }
 
     public void createMySQL() {
