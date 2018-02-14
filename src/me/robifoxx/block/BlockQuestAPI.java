@@ -13,17 +13,37 @@ public class BlockQuestAPI {
     public BlockQuestAPI(Main plugin) {
         this.plugin = plugin;
     }
+
+    /**
+     * Gets the instance for API
+     * @return The instance for API
+     */
     public static BlockQuestAPI getInstance() {
         return instance == null ? instance = new BlockQuestAPI(Main.getPlugin()) : instance;
     }
 
+    /**
+     * Gets the amount of how many blocks the player has found
+     * @param p The target player
+     * @return The amount of blocks
+     */
     public int getFoundBlocks(Player p) {
         return plugin.blocksss.get(p.getName()).size();
     }
 
+    /**
+     * Gets the amount of blocks left to find
+     * @param p The target plyer
+     * @return The amount of blocks required to find
+     */
     public int getBlocksLeft(Player p) {
         return getAllBlocks().length - getFoundBlocks(p);
     }
+
+    /**
+     * Returns an array of blocks
+     * @return An array of locations of blocks
+     */
     public Location[] getAllBlocks() {
         List<Location> locationList = new ArrayList<>();
         for(String s : plugin.getConfig().getStringList("blocks")) {

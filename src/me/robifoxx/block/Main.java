@@ -189,7 +189,7 @@ public class Main extends JavaPlugin  {
         }
         getLogger().info("Enabling Metrics (bStats).");
         Metrics m = new Metrics(this);
-        m.addCustomChart(new Metrics.SingleLineChart("blocks", () -> getConfig().getStringList("blocks").size()));
+        m.addCustomChart(new Metrics.SingleLineChart("blocks", () -> BlockQuestAPI.getInstance().getAllBlocks().length));
         getLogger().info("Enabled Metrics.");
         plugin = this;
     }
