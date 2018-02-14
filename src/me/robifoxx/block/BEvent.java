@@ -179,8 +179,9 @@ public class BEvent implements Listener {
                             }
                         }
                         BlockFindEvent evnt = new BlockFindEvent(e.getPlayer(), e.getClickedBlock(), m.findEffectC);
-                        Bukkit.getPluginManager().callEvent(e);
-                        if(e.isCancelled()) {
+                        Bukkit.getPluginManager().callEvent(evnt);
+                        if(evnt.isCancelled()) {
+                            m.blocksss.get(e.getPlayer().getName()).remove(block);
                             return;
                         }
 

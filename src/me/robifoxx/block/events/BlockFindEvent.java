@@ -43,13 +43,15 @@ public class BlockFindEvent extends Event implements Cancellable {
         this.ef = ef;
     }
 
+    private boolean cancel = false;
+
     @Override
     public boolean isCancelled() {
-        return false;
+        return cancel;
     }
 
     @Override
     public void setCancelled(boolean b) {
-
+        cancel = b;
     }
 }

@@ -8,6 +8,7 @@ import me.robifoxx.block.api.Skulls;
 import me.robifoxx.block.mysql.MySQL;
 import me.robifoxx.block.mysql.SQLPlayer;
 import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
