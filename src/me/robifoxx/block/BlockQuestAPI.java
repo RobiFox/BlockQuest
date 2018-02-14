@@ -52,4 +52,56 @@ public class BlockQuestAPI {
         }
         return locationList.toArray(new Location[locationList.size()]);
     }
+
+    /**
+     * Adds a block to the specified location
+     * @param l The location where the new block will be
+     * @return If the task was successful
+     */
+    public boolean addLocation(Location l) {
+        List<String> blocks = plugin.getConfig().getStringList("blocks");
+        if(locationExists(l)) {
+            return false;
+        } else {
+            blocks.add(convertLocToString(l));
+            plugin.getConfig().set("blocks", blocks);
+            plugin.saveConfig();
+            return true;
+        }
+    }
+
+    /**
+     * Removes a block from a specified location
+     * @param l The location where the block needs to be removed
+     * @return If the task was successful
+     */
+    public boolean removeLocation(Location l) {
+        List<String> blocks = plugin.getConfig().getStringList("blocks");
+        if(!locationExists(l)) {
+            return false;
+        } else {
+            blocks.remove(convertLocToString(l));
+            plugin.getConfig().set("blocks", blocks);
+            plugin.saveConfig();
+            return true;
+        }
+    }
+
+    /**
+     * Checks if the specified location already exists
+     * @param l The location to check
+     * @return Returns a boolean if there's a BlockQuest block there
+     */
+    public boolean locationExists(Location l) {
+        return plugin.getConfig().getStringList("blocks").contains(convertLocToString(l));
+    }
+
+    /**
+     * Convert Location to a String, the same way they are stored in config.yml
+     * @param l The location to be converted
+     * @return The converted location
+     */
+    public String convertLocToString(Location l) {
+        return l.getBlockX() + ";" + l.getBlockY() + ";" + l.getBlockZ() + ";" + l.getWorld().getName();
+    }
 }

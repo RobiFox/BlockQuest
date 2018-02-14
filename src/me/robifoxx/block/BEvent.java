@@ -121,19 +121,15 @@ public class BEvent implements Listener {
             m.eventReturn.remove(e.getPlayer().getName());
         }, 1);
         if(e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            List<String> blocks =  m.getConfig().getStringList("blocks");
-            String block = e.getClickedBlock().getLocation().getBlockX() + ";" + e.getClickedBlock().getLocation().getBlockY() + ";" + e.getClickedBlock().getLocation().getBlockZ() + ";" + e.getClickedBlock().getLocation().getWorld().getName();
+            /*List<String> blocks =  m.getConfig().getStringList("blocks");
+            String block = e.getClickedBlock().getLocation().getBlockX() + ";" + e.getClickedBlock().getLocation().getBlockY() + ";" + e.getClickedBlock().getLocation().getBlockZ() + ";" + e.getClickedBlock().getLocation().getWorld().getName(); */
+            String block = BlockQuestAPI.getInstance().convertLocToString(e.getClickedBlock().getLocation());
             if(m.inEdit.contains(e.getPlayer().getName())) {
-                if(blocks.contains(block)) {
+                if(BlockQuestAPI.getInstance().removeLocation(e.getClickedBlock().getLocation())) {
                     e.getPlayer().sendMessage("§cRemoved this block!");
-                    blocks.remove(block);
-                    m.getConfig().set("blocks", blocks);
-                    m.saveConfig();
                 } else {
+                    BlockQuestAPI.getInstance().addLocation(e.getClickedBlock().getLocation());
                     e.getPlayer().sendMessage("§aAdded this block!");
-                    blocks.add(block);
-                    m.getConfig().set("blocks", blocks);
-                    m.saveConfig();
                 }
                 m.inEdit.remove(e.getPlayer().getName());
                 e.getPlayer().sendMessage("§aExited edit mode.");
