@@ -41,6 +41,7 @@ public class Main extends JavaPlugin  {
     public int checkFullInventory = 0;
     public String fullInventoryMsg = "&c&lYour inventory is full!";
     public Material hideFoundBlocks = Material.AIR;
+    private static Main plugin;
 
     public void onEnable() {
         String fileName = this.getDescription().getName();
@@ -190,6 +191,7 @@ public class Main extends JavaPlugin  {
         Metrics m = new Metrics(this);
         m.addCustomChart(new Metrics.SingleLineChart("blocks", () -> getConfig().getStringList("blocks").size()));
         getLogger().info("Enabled Metrics.");
+        plugin = this;
     }
 
     public void createMySQL() {
@@ -352,5 +354,9 @@ public class Main extends JavaPlugin  {
             }
         }
         return true;
+    }
+
+    public static Main getPlugin() {
+        return plugin;
     }
 }

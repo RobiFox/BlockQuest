@@ -39,18 +39,29 @@ hide-found-blocks: NONE
 blocks: []
 
 find-block-commands:
-    - msg %player% %pLocX% %pLocY% %pLocZ% %locX% %locY% %locZ%
-    - msg %player% %blocksLeft% blocks left
+    - particle mobSpell %locX% %locY% %locZ% 0.25 0.25 0.25 1 10
+    - rawmsg %player% true &a&lBlock&2&lQUEST
+    - rawmsg %player% false &a
+    - rawmsg %player% true &fYou found a block!
+    - rawmsg %player% true &f%blocksLeft% left.
+    - give %player% diamond 1
 
 all-blocks-found-commands:
-    - msg %player% You found all blocks!
-    - say %player% found all blocks!
+    - rawmsg %player% true &a&lBlock&2&lQUEST
+    - rawmsg %player% false &a
+    - rawmsg %player% true &fYou found &lALL &fblocks!
+    - rawmsg %player% true &fNice!
+    - give %player% diamond_block 1
 
 already-found-commands:
-    - msg %player% You already found this block!
+    - rawmsg %player% true &a&lBlock&2&lQUEST
+    - rawmsg %player% false &a
+    - rawmsg %player% true &fYou already found this block!
 
 already-found-all-blocks:
-    - msg %player% You already found all blocks!
+    - rawmsg %player% true &a&lBlock&2&lQUEST
+    - rawmsg %player% false &a
+    - rawmsg %player% true &fYou already found all blocks!
 
 find-effect:
     enabled: true
