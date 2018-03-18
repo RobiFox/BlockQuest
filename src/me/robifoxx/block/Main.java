@@ -5,6 +5,8 @@ import me.robifoxx.block.api.Config;
 import me.robifoxx.block.api.FindEffect;
 import me.robifoxx.block.api.Metrics;
 import me.robifoxx.block.api.Skulls;
+import me.robifoxx.block.command.BlockQuestCommand;
+import me.robifoxx.block.command.BlockQuestTab;
 import me.robifoxx.block.mysql.MySQL;
 import me.robifoxx.block.mysql.SQLPlayer;
 import org.bukkit.*;
@@ -226,6 +228,8 @@ public class Main extends JavaPlugin  {
             }
             findEffectC = new FindEffect(h, c, l, b, visible, small, getConfig().getString("find-effect.custom-name"));
         }
+        getCommand("blockquest").setExecutor(new BlockQuestCommand(this));
+        getCommand("blockquest").setTabCompleter(new BlockQuestTab());
     }
 
     public void createMySQL() {
@@ -249,145 +253,6 @@ public class Main extends JavaPlugin  {
                 }
             }
         }
-    }
-
-    @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if(cmd.getName().equalsIgnoreCase("blockquest")) {
-            if(!sender.hasPermission("blockquest.command")) {
-                sender.sendMessage(getConfig().getString("no-permission").replace("&", "§"));
-                return true;
-            }
-            //plugin.getConfig().getStringList("blocks").size() - Main.blocksss.get(e.getPlayer().getName()).size()
-            if(args.length < 1) {
-                if (inEdit.remove(sender.getName())) {
-                    sender.sendMessage("§cYou disabled edit mode.");
-                } else {
-                    sender.sendMessage("§7§m----------------------------------------");
-                    sender.sendMessage("§aYou entered edit mode!");
-                    sender.sendMessage("§aClick on blocks to add it to the config file!");
-                    sender.sendMessage("§aType §6/blockquest §ato exit edit mode.");
-                    sender.sendMessage("§7§m----------------------------------------");
-                    sender.sendMessage("§a§lType §6§l/blockquest reload §a§lto reload the config!");
-                    sender.sendMessage("§a§lType §6§l/blockquest stats [player] §a§lto check stats!");
-                    sender.sendMessage("§a§lType §6§l/blockquest save §a§lto save stats!");
-                    sender.sendMessage("§7§m----------------------------------------");
-                    if(!enabled) {
-                        sender.sendMessage("§c§lBlocks are disabled. Players cant find them until you enable it with §6§l/blockquest toggle");
-                    }
-                    //sender.sendMessage("§a§lType §6§l/blockquest wipedata §a§lto clear data. §c§l!WARNING! This resets EVERYONE'S data!");
-                    inEdit.add(sender.getName());
-                }
-            } else {
-                if(args[0].equalsIgnoreCase("reload")) {
-                    reloadConfig();
-                    Utils.sendMessageFromMSGS(sender, msgs.getConfig().getString("config-reloaded"));
-                } else if(args[0].equalsIgnoreCase("toggle")) {
-                    enabled = !enabled;
-                    if(enabled) {
-                        Utils.sendMessageFromMSGS(sender, msgs.getConfig().getString("enabled-blocks"));
-                    } else {
-                        Utils.sendMessageFromMSGS(sender, msgs.getConfig().getString("disabled-blocks"));
-                    }
-                    getConfig().set("enabled", enabled);
-                    saveConfig();
-                } else if(args[0].equalsIgnoreCase("save")) {
-                    int amount = 0;
-                    for(Player pl : Bukkit.getOnlinePlayers()) {
-                        if (saved_x.get(pl.getName()) != null) {
-                            amount++;
-                            Utils.sendMessageFromMSGS(sender, msgs.getConfig().getString("saving-data-for").replace("%target%", pl.getName()));
-                            if (useMysql) {
-                                SQLPlayer.setString(Utils.getIdentifier(pl), "X", saved_x.get(pl.getName()));
-                                SQLPlayer.setString(Utils.getIdentifier(pl), "Y", saved_y.get(pl.getName()));
-                                SQLPlayer.setString(Utils.getIdentifier(pl), "Z", saved_z.get(pl.getName()));
-                                SQLPlayer.setString(Utils.getIdentifier(pl), "WORLD", saved_world.get(pl.getName()));
-                            } else {
-                                data.getConfig().set("data." + Utils.getIdentifier(pl) + ".x", saved_x.get(pl.getName()));
-                                data.getConfig().set("data." + Utils.getIdentifier(pl) + ".y", saved_y.get(pl.getName()));
-                                data.getConfig().set("data." + Utils.getIdentifier(pl) + ".z", saved_z.get(pl.getName()));
-                                data.getConfig().set("data." + Utils.getIdentifier(pl) + ".world", saved_world.get(pl.getName()));
-                                data.saveConfig();
-                            }
-                        }
-                    }
-                    Utils.sendMessageFromMSGS(sender, msgs.getConfig().getString("finished-saving").replace("%amount%", "" + amount));
-                } else if(args[0].equalsIgnoreCase("stats")) {
-                    int total = 0;
-                    int currentBlocks = getConfig().getStringList("blocks").size();
-                    if(args.length >= 2) {
-                        int foundBlocks;
-                        String argReq = Utils.getIdentifierFromUsername(args[1]);
-                        if((!useMysql && data.getConfig().getString("data." + argReq + ".x") != null)
-                                || ( useMysql && SQLPlayer.playerExists(argReq))) {
-                            foundBlocks = data.getConfig().getString("data." + argReq + ".x").split(";").length - 1;
-                        } else {
-                            Utils.sendMessageFromMSGS(sender, msgs.getConfig().getString("stats-unknown-player").replace("%target%", args[1]));
-                            return true;
-                        }
-                        double foundPercent = ((foundBlocks * 1.0) / (currentBlocks * 1.0)) * 100;
-                        BigDecimal dec = new BigDecimal(foundPercent).setScale(2, BigDecimal.ROUND_HALF_EVEN);
-                        Utils.sendMessageFromMSGS(sender, msgs.getConfig().getString("personal-stats").replace("%target%", args[1])
-                                .replace("%currentBlocks%", "" + currentBlocks)
-                                .replace("%percent%", dec + "")
-                                .replace("%foundBlocks%", "" + foundBlocks));
-                    } else {
-                        int foundAllBlocks = 0;
-                        if (!useMysql) {
-                            for (String s : data.getConfig().getConfigurationSection("data").getKeys(false)) {
-                                if (!s.equalsIgnoreCase("1-1-1-1-1-1")) {
-                                    total++;
-                                    int foundBlocks = data.getConfig().getString("data." + s + ".x").split(";").length - 1;
-                                    if (foundBlocks >= currentBlocks) {
-                                        foundAllBlocks++;
-                                    }
-                                }
-                            }
-                        } else {
-                            for (String s : SQLPlayer.getAll()) {
-                                total++;
-                                int foundBlocks = SQLPlayer.getString(s, "X").split(";").length - 1;
-                                if (foundBlocks >= currentBlocks) {
-                                    foundAllBlocks++;
-                                }
-                            }
-                        }
-                        double foundPercent = ((foundAllBlocks * 1.0) / (total * 1.0)) * 100;
-                        BigDecimal dec = new BigDecimal(foundPercent).setScale(2, BigDecimal.ROUND_HALF_EVEN);
-                        Utils.sendMessageFromMSGS(sender, msgs.getConfig().getString("global-stats")
-                                .replace("%currentBlocks%", "" + currentBlocks)
-                                .replace("%percent%", dec + "")
-                                .replace("%foundAllBlocks%", "" + foundAllBlocks));
-                    }
-                } /*else if(args[0].equalsIgnoreCase("wipedata")) {
-                    sender.sendMessage("§aWiping data...");
-                    boolean success = false;
-                    if(useMysql) {
-                        mysql.update("DROP TABLE BlockQuest");
-                        createMySQL();
-                        success = true;
-                    } else {
-
-                        Config c = new Config("plugins/BlockQuest", "data.yml");
-                        c.create();
-                        if(c.toFile().delete()) {
-                            c.setDefault("data.yml");
-                            c.getConfig().options().copyDefaults(true);
-                            c.saveConfig();
-
-                            data = c;
-                            success = true;
-                        }
-                    }
-                    if(success) {
-                        sender.sendMessage("§aData Wiped successfully!");
-                    } else {
-                        sender.sendMessage("§cData wipe failed! :(");
-                    }
-                }*/
-            }
-        }
-        return true;
     }
 
     public static Main getPlugin() {
