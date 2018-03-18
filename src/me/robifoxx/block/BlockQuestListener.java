@@ -24,9 +24,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BEvent implements Listener {
+public class BlockQuestListener implements Listener {
     private Main m;
-    public BEvent(Main m) {
+    public BlockQuestListener(Main m) {
         this.m = m;
     }
     @EventHandler

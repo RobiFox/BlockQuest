@@ -8,7 +8,6 @@ import me.robifoxx.block.api.Skulls;
 import me.robifoxx.block.mysql.MySQL;
 import me.robifoxx.block.mysql.SQLPlayer;
 import org.bukkit.*;
-import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -20,7 +19,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 /**
  * Created by RobiFoxx.
@@ -79,7 +77,7 @@ public class Main extends JavaPlugin  {
             createMySQL();
             useMysql = true;
         }
-        Bukkit.getPluginManager().registerEvents(new BEvent(this), this);
+        Bukkit.getPluginManager().registerEvents(new BlockQuestListener(this), this);
         if(getConfig().getString("mysql-unsafe-save") != null) {
             if(getConfig().getString("mysql-unsafe-save").equalsIgnoreCase("false")) {
                 unsafeSave = false;
