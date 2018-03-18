@@ -22,6 +22,11 @@ public class Placeholders extends EZPlaceholderHook {
             return String.valueOf(BlockQuestAPI.getInstance().getBlocksLeft(player));
         } else if(s.startsWith("allblocks")) {
             return String.valueOf(BlockQuestAPI.getInstance().getAllBlocks().length);
+        } else if(s.startsWith("foundpercent")) {
+            return String.valueOf(BlockQuestAPI.getInstance().getFoundPercent(2));
+        } else if(s.startsWith("foundpercent_")) {
+            String p = s.replaceFirst("foundpercent_", "");
+            return String.valueOf(BlockQuestAPI.getInstance().getFoundPercent(p,2));
         }
         return null;
     }
