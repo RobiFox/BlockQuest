@@ -1,10 +1,12 @@
 package me.robifoxx.block;
 
 import me.robifoxx.block.api.FindEffect;
+import me.robifoxx.block.mysql.SQLPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +31,21 @@ public class BlockQuestAPI {
      * @return The amount of blocks
      */
     public int getFoundBlocks(Player p) {
-        return plugin.blocksss.get(p.getName()).size();
+        if(p == null
+                || !p.isOnline()) {
+            return getFoundBlocks(p.getName());
+        } else {
+            return plugin.blocksss.get(p.getName()).size();
+        }
+    }
+
+    /**
+     * Same as above method
+     * @param p Name of the player
+     * @return Amount of blocks
+     */
+    public int getFoundBlocks(String p) {
+        return plugin.data.getConfig().getString("data." + Utils.getIdentifierFromUsername(p) + ".x").split(";").length;
     }
 
     /**
@@ -120,5 +136,50 @@ public class BlockQuestAPI {
      */
     public void setFindEffect(FindEffect ef) {
         plugin.findEffectC = ef;
+    }
+
+    /**
+     * Get the percent of found blocks
+     * @param player Target player name
+     * @param scale Must be atleast 1. By default it's 2. It will show the given amount of numbers after the decimal
+     * @return The found percent;
+     */
+    public BigDecimal getFoundPercent(String player, int scale) {
+        int foundBlocks = getFoundBlocks(player);
+        int currentBlocks = getAllBlocks().length;
+        double foundPercent = ((foundBlocks * 1.0) / (currentBlocks * 1.0)) * 100;
+        return new BigDecimal(foundPercent).setScale(scale, BigDecimal.ROUND_HALF_EVEN);
+    }
+
+    /**
+     * Get how many percent of players has found all blocks
+     * @param scale Amount of numbers after the decimal
+     * @return The percent of players who found all blocks
+     */
+    public BigDecimal getFoundPercent(int scale) {
+        int foundAllBlocks = 0;
+        int total = 0;
+        int currentBlocks = getAllBlocks().length;
+        if (!plugin.useMysql) {
+            for (String s : plugin.data.getConfig().getConfigurationSection("data").getKeys(false)) {
+                if (!s.equalsIgnoreCase("1-1-1-1-1-1")) {
+                    total++;
+                    int foundBlocks = plugin.data.getConfig().getString("data." + s + ".x").split(";").length - 1;
+                    if (foundBlocks >= currentBlocks) {
+                        foundAllBlocks++;
+                    }
+                }
+            }
+        } else {
+            for (String s : SQLPlayer.getAll()) {
+                total++;
+                int foundBlocks = SQLPlayer.getString(s, "X").split(";").length - 1;
+                if (foundBlocks >= currentBlocks) {
+                    foundAllBlocks++;
+                }
+            }
+        }
+        double foundPercent = ((foundAllBlocks * 1.0) / (total * 1.0)) * 100;
+        return new BigDecimal(foundPercent).setScale(scale, BigDecimal.ROUND_HALF_EVEN);
     }
 }

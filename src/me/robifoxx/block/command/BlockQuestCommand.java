@@ -1,5 +1,6 @@
 package me.robifoxx.block.command;
 
+import me.robifoxx.block.BlockQuestAPI;
 import me.robifoxx.block.Main;
 import me.robifoxx.block.Utils;
 import me.robifoxx.block.mysql.SQLPlayer;
@@ -7,13 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class BlockQuestCommand implements CommandExecutor {
     private Main plugin;
@@ -81,30 +76,25 @@ public class BlockQuestCommand implements CommandExecutor {
                 }
                 Utils.sendMessageFromMSGS(sender, plugin.msgs.getConfig().getString("finished-saving").replace("%amount%", "" + amount));
             } else if(args[0].equalsIgnoreCase("stats")) {
-                int total = 0;
                 int currentBlocks = plugin.getConfig().getStringList("blocks").size();
                 if(args.length >= 2) {
-                    int foundBlocks;
-                    String argReq = Utils.getIdentifierFromUsername(args[1]);
+                   /* String argReq = Utils.getIdentifierFromUsername(args[1]);
                     if((!plugin.useMysql && plugin.data.getConfig().getString("data." + argReq + ".x") != null)
                             || ( plugin.useMysql && SQLPlayer.playerExists(argReq))) {
                         foundBlocks = plugin.data.getConfig().getString("data." + argReq + ".x").split(";").length - 1;
                     } else {
                         Utils.sendMessageFromMSGS(sender, plugin.msgs.getConfig().getString("stats-unknown-player").replace("%target%", args[1]));
                         return true;
-                    }
-                    double foundPercent = ((foundBlocks * 1.0) / (currentBlocks * 1.0)) * 100;
-                    BigDecimal dec = new BigDecimal(foundPercent).setScale(2, BigDecimal.ROUND_HALF_EVEN);
+                    }*/
                     Utils.sendMessageFromMSGS(sender, plugin.msgs.getConfig().getString("personal-stats").replace("%target%", args[1])
                             .replace("%currentBlocks%", "" + currentBlocks)
-                            .replace("%percent%", dec + "")
-                            .replace("%foundBlocks%", "" + foundBlocks));
+                            .replace("%percent%", "" + BlockQuestAPI.getInstance().getFoundPercent(args[1], 2))
+                            .replace("%foundBlocks%", "" + BlockQuestAPI.getInstance().getFoundBlocks(args[1])));
                 } else {
                     int foundAllBlocks = 0;
                     if (!plugin.useMysql) {
                         for (String s : plugin.data.getConfig().getConfigurationSection("data").getKeys(false)) {
                             if (!s.equalsIgnoreCase("1-1-1-1-1-1")) {
-                                total++;
                                 int foundBlocks = plugin.data.getConfig().getString("data." + s + ".x").split(";").length - 1;
                                 if (foundBlocks >= currentBlocks) {
                                     foundAllBlocks++;
@@ -113,18 +103,15 @@ public class BlockQuestCommand implements CommandExecutor {
                         }
                     } else {
                         for (String s : SQLPlayer.getAll()) {
-                            total++;
                             int foundBlocks = SQLPlayer.getString(s, "X").split(";").length - 1;
                             if (foundBlocks >= currentBlocks) {
                                 foundAllBlocks++;
                             }
                         }
                     }
-                    double foundPercent = ((foundAllBlocks * 1.0) / (total * 1.0)) * 100;
-                    BigDecimal dec = new BigDecimal(foundPercent).setScale(2, BigDecimal.ROUND_HALF_EVEN);
                     Utils.sendMessageFromMSGS(sender, plugin.msgs.getConfig().getString("global-stats")
                             .replace("%currentBlocks%", "" + currentBlocks)
-                            .replace("%percent%", dec + "")
+                            .replace("%percent%", BlockQuestAPI.getInstance().getFoundPercent(2) + "")
                             .replace("%foundAllBlocks%", "" + foundAllBlocks));
                 }
             } /*else if(args[0].equalsIgnoreCase("wipedata")) {
