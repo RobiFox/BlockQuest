@@ -159,36 +159,38 @@ public class Main extends JavaPlugin  {
             }
             Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> {
                 for(String s : getConfig().getStringList("blocks")) {
-                    for(Player pl : Bukkit.getOnlinePlayers()) {
-                        //If it was a reload, then dont bother to proceed
-                        if(blocksss.get(pl.getName()) != null) {
-                            boolean found = blocksss.get(pl.getName()).contains(s);
-                            String[] splt = s.split(";");
-                            //x;y;z;w
-                            Location loc = new Location(Bukkit.getWorld(splt[3]), Integer.valueOf(splt[0]) + 0.5, Integer.valueOf(splt[1]) + 0.25, Integer.valueOf(splt[2]) + 0.5);
-                            if(found) {
-                                if(!f_type.equalsIgnoreCase("DISABLED")) {
-                                    ParticleEffect.valueOf(f_type).display(
-                                            f_dx,
-                                            f_dy,
-                                            f_dz,
-                                            f_speed,
-                                            f_quan,
-                                            loc, pl);
-                                }
-                            } else {
-                                if(!nf_type.equalsIgnoreCase("DISABLED")) {
-                                    ParticleEffect.valueOf(nf_type).display(
-                                            nf_dx,
-                                            nf_dy,
-                                            nf_dz,
-                                            nf_speed,
-                                            nf_quan,
-                                            loc, pl);
+                    Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
+                        for(Player pl : Bukkit.getOnlinePlayers()) {
+                            //If it was a reload, then dont bother to proceed
+                            if(blocksss.get(pl.getName()) != null) {
+                                boolean found = blocksss.get(pl.getName()).contains(s);
+                                String[] splt = s.split(";");
+                                //x;y;z;w
+                                Location loc = new Location(Bukkit.getWorld(splt[3]), Integer.valueOf(splt[0]) + 0.5, Integer.valueOf(splt[1]) + 0.25, Integer.valueOf(splt[2]) + 0.5);
+                                if(found) {
+                                    if(!f_type.equalsIgnoreCase("DISABLED")) {
+                                        ParticleEffect.valueOf(f_type).display(
+                                                f_dx,
+                                                f_dy,
+                                                f_dz,
+                                                f_speed,
+                                                f_quan,
+                                                loc, pl);
+                                    }
+                                } else {
+                                    if(!nf_type.equalsIgnoreCase("DISABLED")) {
+                                        ParticleEffect.valueOf(nf_type).display(
+                                                nf_dx,
+                                                nf_dy,
+                                                nf_dz,
+                                                nf_speed,
+                                                nf_quan,
+                                                loc, pl);
+                                    }
                                 }
                             }
                         }
-                    }
+                    });
                 }
             }, loop, loop);
         }
