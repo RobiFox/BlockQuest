@@ -1,6 +1,7 @@
 package me.robifoxx.block;
 
 import me.robifoxx.block.api.FindEffect;
+import me.robifoxx.block.api.abstracts.IBlockQuest;
 import me.robifoxx.block.mysql.SQLPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -13,6 +14,7 @@ import java.util.List;
 public class BlockQuestAPI {
     private static BlockQuestAPI instance;
     private Main plugin;
+    private List<IBlockQuest> quests = new ArrayList<>();
     private BlockQuestAPI(Main plugin) {
         this.plugin = plugin;
     }
@@ -181,5 +183,17 @@ public class BlockQuestAPI {
         }
         double foundPercent = ((foundAllBlocks * 1.0) / (total * 1.0)) * 100;
         return new BigDecimal(foundPercent).setScale(scale, BigDecimal.ROUND_HALF_EVEN);
+    }
+
+    /**
+     * Registers the quest
+     * @param bq The quest that contains the blocks
+     */
+    public void registerQuest(IBlockQuest bq) {
+        if(quests.contains(bq)) {
+            throw new IllegalArgumentException("BlockQuest already on list");
+        } else {
+            quests.add(bq);
+        }
     }
 }

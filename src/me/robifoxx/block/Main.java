@@ -5,6 +5,8 @@ import me.robifoxx.block.api.Config;
 import me.robifoxx.block.api.FindEffect;
 import me.robifoxx.block.api.Metrics;
 import me.robifoxx.block.api.Skulls;
+import me.robifoxx.block.api.abstracts.IBlockQuest;
+import me.robifoxx.block.api.constructors.HiddenBlock;
 import me.robifoxx.block.command.BlockQuestCommand;
 import me.robifoxx.block.command.BlockQuestTab;
 import me.robifoxx.block.mysql.MySQL;
@@ -230,6 +232,34 @@ public class Main extends JavaPlugin  {
         }
         getCommand("blockquest").setExecutor(new BlockQuestCommand(this));
         getCommand("blockquest").setTabCompleter(new BlockQuestTab());
+
+        // DEBUG START
+        IBlockQuest bq = new IBlockQuest() {
+            @Override
+            public void onBlockFindSuccess(Player p, HiddenBlock hb) {
+                p.sendMessage("You found a block");
+                p.getInventory().addItem(new ItemStack(Material.GOLD_INGOT));
+            }
+
+            @Override
+            public void blockAlreadyFound(Player p, HiddenBlock hb) {
+                p.sendMessage("You already found this block");
+            }
+
+            @Override
+            public void alreadyFoundAllBlocks(Player p, HiddenBlock hb) {
+                p.sendMessage("You already found all blocks");
+            }
+
+            @Override
+            public void foundAllBlocks(Player p, HiddenBlock hb) {
+                p.sendMessage("You found all blocks");
+                p.getInventory().addItem(new ItemStack(Material.DIAMOND));
+            }
+        };
+        bq.registerBlock(new Location(Bukkit.getWorld("world"), 0, 0, 0));
+        BlockQuestAPI.getInstance().registerQuest(bq);
+        // DEBUG END
     }
 
     public void createMySQL() {
