@@ -32,13 +32,13 @@ public class BlockQuestAPI {
      * @param p The target player
      * @return The amount of blocks
      */
-    public int getFoundBlocks(Player p) {
-        if(!p.isOnline()) {
+    /*public int getFoundBlocks(Player p) {
+        if(p == null) {
             return getFoundBlocks(p.getName());
         } else {
             return plugin.blocksss.get(p.getName()).size();
         }
-    }
+    }*/
 
     /**
      * Same as above method
@@ -46,7 +46,12 @@ public class BlockQuestAPI {
      * @return Amount of blocks
      */
     public int getFoundBlocks(String p) {
-        return plugin.data.getConfig().getString("data." + Utils.getIdentifierFromUsername(p) + ".x").split(";").length;
+        if(Bukkit.getPlayer(p) != null) {
+            return plugin.blocksss.get(p).size();
+        } else {
+            String path = plugin.data.getConfig().getString("data." + Utils.getIdentifierFromUsername(p) + ".x");
+            return path == null ? 0 : path.split(";").length;
+        }
     }
 
     /**
@@ -54,7 +59,7 @@ public class BlockQuestAPI {
      * @param p The target plyer
      * @return The amount of blocks required to find
      */
-    public int getBlocksLeft(Player p) {
+    public int getBlocksLeft(String p) {
         return getAllBlocks().length - getFoundBlocks(p);
     }
 
