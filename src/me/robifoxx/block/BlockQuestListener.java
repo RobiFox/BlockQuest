@@ -14,10 +14,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -123,6 +120,9 @@ public class BlockQuestListener implements Listener {
             m.eventReturn.remove(e.getPlayer().getName());
         }, 1);
         if(e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            Bukkit.getScheduler().runTaskAsynchronously(m, () -> {
+                Utils.hideFoundBlocks(e.getPlayer());
+            });
             /*List<String> blocks =  m.getConfig().getStringList("blocks");
             String block = e.getClickedBlock().getLocation().getBlockX() + ";" + e.getClickedBlock().getLocation().getBlockY() + ";" + e.getClickedBlock().getLocation().getBlockZ() + ";" + e.getClickedBlock().getLocation().getWorld().getName(); */
             String block = BlockQuestAPI.getInstance().convertLocToString(e.getClickedBlock().getLocation());
@@ -199,7 +199,7 @@ public class BlockQuestListener implements Listener {
                                     .replace("%locZ%", "" + e.getClickedBlock().getLocation().getZ())
                                     .replace("%blockLeft%", "" + blocksLeft)
                                     .replace("%blocksLeft%", "" + blocksLeft));
-                            Utils.hideFoundBlocks(e.getPlayer());
+                            //Utils.hideFoundBlocks(e.getPlayer());
                         }
                         if(foundAllBlocks) {
                             for(String s : m.getConfig().getStringList("all-blocks-found-commands")) {

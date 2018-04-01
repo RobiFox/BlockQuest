@@ -99,21 +99,23 @@ public class Main extends JavaPlugin  {
         if(getConfig().get("use-uuid") != null) {
             Utils.useUUID = getConfig().getBoolean("use-uuid");
         }
-        if(getConfig().get("check-full-inventory") != null) {
+        if (getConfig().get("check-full-inventory") != null) {
             checkFullInventory = getConfig().getInt("check-full-inventory");
-            if(getConfig().get("full-inventory-msg") != null) {
+            if (getConfig().get("full-inventory-msg") != null) {
                 fullInventoryMsg = getConfig().getString("full-inventory-msg");
             }
         }
-        if(getConfig().get("hide-found-blocks") != null) {
-            String st = getConfig().getString("hide-found-blocks");
-            if(st.equalsIgnoreCase("NONE")) {
-                hideFoundBlocks = null;
+        {
+            String s = getConfig().getString("hide-found-blocks");
+            if (s != null) {
+                if (s.equalsIgnoreCase("NONE")) {
+                    hideFoundBlocks = null;
+                } else {
+                    hideFoundBlocks = Material.valueOf(s);
+                }
             } else {
-                hideFoundBlocks = Material.valueOf(st);
+                hideFoundBlocks = null;
             }
-        } else {
-            hideFoundBlocks = null;
         }
         if(getConfig().getString("placeholderapi") != null
                 && getConfig().getString("placeholderapi").equalsIgnoreCase("true")) {
@@ -233,8 +235,8 @@ public class Main extends JavaPlugin  {
         getCommand("blockquest").setExecutor(new BlockQuestCommand(this));
         getCommand("blockquest").setTabCompleter(new BlockQuestTab());
 
-        // DEBUG START
-        IBlockQuest bq = new IBlockQuest() {
+        // TEST START
+       /* IBlockQuest bq = new IBlockQuest() {
             @Override
             public void onBlockFindSuccess(Player p, HiddenBlock hb) {
                 p.sendMessage("You found a block");
@@ -258,8 +260,8 @@ public class Main extends JavaPlugin  {
             }
         };
         bq.registerBlock(new Location(Bukkit.getWorld("world"), 0, 0, 0));
-        BlockQuestAPI.getInstance().registerQuest(bq);
-        // DEBUG END
+        BlockQuestAPI.getInstance().registerQuest(bq);*/
+        // TEST END
     }
 
     public void createMySQL() {

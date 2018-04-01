@@ -33,8 +33,7 @@ public class BlockQuestAPI {
      * @return The amount of blocks
      */
     public int getFoundBlocks(Player p) {
-        if(p == null
-                || !p.isOnline()) {
+        if(!p.isOnline()) {
             return getFoundBlocks(p.getName());
         } else {
             return plugin.blocksss.get(p.getName()).size();
