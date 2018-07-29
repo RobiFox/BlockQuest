@@ -46,7 +46,8 @@ public class BlockQuestAPI {
      * @return Amount of blocks
      */
     public int getFoundBlocks(String p) {
-        if(Bukkit.getPlayer(p) != null) {
+        if(Bukkit.getPlayer(p) != null
+                && plugin.blocksss.get(p) != null) {
             return plugin.blocksss.get(p).size();
         } else {
             String path = plugin.data.getConfig().getString("data." + Utils.getIdentifierFromUsername(p) + ".x");
