@@ -6,3 +6,8 @@ softdepend: [PlaceholderAPI]
 commands:
     blockquest:
         description: Use this to add/remove blocks
+        permission: blockquest.command
+permissions:
+    blockquest.command:
+        description: access to the /blockquest command
+        default: op
