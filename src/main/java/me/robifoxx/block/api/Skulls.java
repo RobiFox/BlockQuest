@@ -23,7 +23,7 @@ public class Skulls {
     public static ItemStack createSkull(String urlToFormat) {
         String s = urlToFormat.replace("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUv", "");
         String url = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUv" + s;
-        ItemStack head = create(Material.SKULL_ITEM, (byte) 3);
+        ItemStack head = new ItemStack(Material.PLAYER_HEAD);
         if (url.isEmpty()) return head;
 
         SkullMeta headMeta = (SkullMeta) head.getItemMeta();
