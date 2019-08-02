@@ -1,8 +1,0 @@
-config-reloaded: '&aConfig Reloaded!'
-enabled-blocks: '&aEnabled blocks!'
-disabled-blocks: '&cDisabled blocks!'
-saving-data-for: '&a&oSaving data for %target%'
-finished-saving: '&a&lFinished saving data for &6&l%amount% &a&lplayers!'
-stats-unknown-player: '&c&lThere''s no player called %target%!'
-personal-stats: '&a&lCurrent blocks: &e%currentBlocks%\n&e&l%target%% &a&lhas found &e&l%percent%% &a&lof all blocks. &e&l(%foundBlocks%/%currentBlocks%)'
-global-stats: '&a&lCurrent blocks: &e%currentBlocks%\n&e&l%percent%% &a&lhas found all blocks. &e&l(%foundAllBlocks%/%currentBlocks%)'
