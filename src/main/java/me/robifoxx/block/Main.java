@@ -1,25 +1,19 @@
 package me.robifoxx.block;
 
-import com.darkblade12.particleeffect.ParticleEffect;
 import me.robifoxx.block.api.Config;
 import me.robifoxx.block.api.FindEffect;
 import me.robifoxx.block.api.Metrics;
 import me.robifoxx.block.api.Skulls;
-import me.robifoxx.block.api.abstracts.IBlockQuest;
-import me.robifoxx.block.api.constructors.HiddenBlock;
 import me.robifoxx.block.command.BlockQuestCommand;
 import me.robifoxx.block.command.BlockQuestTab;
 import me.robifoxx.block.mysql.MySQL;
 import me.robifoxx.block.mysql.SQLPlayer;
 import org.bukkit.*;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -173,23 +167,25 @@ public class Main extends JavaPlugin  {
                                 Location loc = new Location(Bukkit.getWorld(splt[3]), Integer.valueOf(splt[0]) + 0.5, Integer.valueOf(splt[1]) + 0.25, Integer.valueOf(splt[2]) + 0.5);
                                 if(found) {
                                     if(!f_type.equalsIgnoreCase("DISABLED")) {
-                                        ParticleEffect.valueOf(f_type).display(
-                                                f_dx,
-                                                f_dy,
-                                                f_dz,
-                                                f_speed,
-                                                f_quan,
-                                                loc, pl);
+                                        loc.getWorld().spawnParticle(Particle.valueOf(f_type), loc.getX(), loc.getY(), loc.getZ(), f_quan, f_dx, f_dy, f_dz, f_speed);
+//                                        ParticleEffect.valueOf(f_type).display(
+//                                                f_dx,
+//                                                f_dy,
+//                                                f_dz,
+//                                                f_speed,
+//                                                f_quan,
+//                                                loc, pl);
                                     }
                                 } else {
                                     if(!nf_type.equalsIgnoreCase("DISABLED")) {
-                                        ParticleEffect.valueOf(nf_type).display(
-                                                nf_dx,
-                                                nf_dy,
-                                                nf_dz,
-                                                nf_speed,
-                                                nf_quan,
-                                                loc, pl);
+                                        loc.getWorld().spawnParticle(Particle.valueOf(f_type), loc.getX(), loc.getY(), loc.getZ(), nf_quan, nf_dx, nf_dy, nf_dz, nf_speed);
+//                                        ParticleEffect.valueOf(nf_type).display(
+//                                                nf_dx,
+//                                                nf_dy,
+//                                                nf_dz,
+//                                                nf_speed,
+//                                                nf_quan,
+//                                                loc, pl);
                                     }
                                 }
                             }

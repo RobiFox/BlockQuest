@@ -1,0 +1,9 @@
+name: BlockQuest
+version: 2.0-pre1.1
+main: me.robifoxx.block.Main
+softdepend: [PlaceholderAPI]
+api-version: 1.13
+
+commands:
+    blockquest:
+        description: Use this to add/remove blocks

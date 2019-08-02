@@ -1,13 +1,11 @@
 package me.robifoxx.block;
 
-import com.darkblade12.particleeffect.ParticleEffect;
 import me.robifoxx.block.api.FindEffect;
-import me.robifoxx.block.api.Skulls;
 import me.robifoxx.block.events.BlockFindEvent;
 import me.robifoxx.block.mysql.SQLPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.event.EventHandler;
@@ -15,8 +13,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.*;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -292,7 +288,8 @@ public class BlockQuestListener implements Listener {
                 a.teleport(newLoc);
                 String particle = m.getConfig().getString("find-effect.particle");
                 if(!particle.equalsIgnoreCase("DISABLED")) {
-                    ParticleEffect.valueOf(particle).display(0, 0, 0, 0, 1, a.getLocation(), 16);
+                    a.getLocation().getWorld().spawnParticle(Particle.valueOf(particle), a.getLocation().getX(), a.getLocation().getY(), a.getLocation().getZ(), 16);
+//                    ParticleEffect.valueOf(particle).display(0, 0, 0, 0, 1, a.getLocation(), 16);
                 }
             }, i * m.getConfig().getInt("find-effect.scheduler"));
         }
