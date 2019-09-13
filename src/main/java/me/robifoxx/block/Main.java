@@ -168,6 +168,7 @@ public class Main extends JavaPlugin  {
                                 if(found) {
                                     if(!f_type.equalsIgnoreCase("DISABLED")) {
                                         loc.getWorld().spawnParticle(Particle.valueOf(f_type), loc.getX(), loc.getY(), loc.getZ(), f_quan, f_dx, f_dy, f_dz, f_speed);
+                                    }
                                 } else {
                                     if(!nf_type.equalsIgnoreCase("DISABLED")) {
                                         loc.getWorld().spawnParticle(Particle.valueOf(nf_type), loc.getX(), loc.getY(), loc.getZ(), nf_quan, nf_dx, nf_dy, nf_dz, nf_speed);
