@@ -10,5 +10,5 @@ commands:
         permission: blockquest.command
 permissions:
     blockquest.command:
-        description: access to the /blockquest command
+        description: Access to the /blockquest command
         default: op
