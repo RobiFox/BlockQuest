@@ -114,7 +114,7 @@ public class Main extends JavaPlugin  {
         if(getConfig().getString("placeholderapi") != null
                 && getConfig().getString("placeholderapi").equalsIgnoreCase("true")) {
             if(Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-                new Placeholders(this).hook();
+                new Placeholders(this).register();
             } else {
                 getLogger().warning("PlaceholderAPI not found, placeholders will not work.");
                 getLogger().warning("Please install the following plugin:");

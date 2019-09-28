@@ -1,5 +1,6 @@
 package me.robifoxx.block;
 
+import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.clip.placeholderapi.external.EZPlaceholderHook;
 import org.bukkit.entity.Player;
 
@@ -7,11 +8,35 @@ import org.bukkit.entity.Player;
  * Created by RobiFoxx.
  * All rights reserved.
  */
-public class Placeholders extends EZPlaceholderHook {
-    private Main p;
-    public Placeholders(Main p) {
-        super(p, "blockquest");
-        this.p = p;
+public class Placeholders extends PlaceholderExpansion {
+    private Main plugin;
+    public Placeholders(Main plugin) {
+        this.plugin = plugin;
+    }
+
+    @Override
+    public boolean persist(){
+        return true;
+    }
+
+    @Override
+    public boolean canRegister() {
+        return true;
+    }
+
+    @Override
+    public String getIdentifier() {
+        return "blockquest";
+    }
+
+    @Override
+    public String getAuthor() {
+        return plugin.getDescription().getAuthors().toString();
+    }
+
+    @Override
+    public String getVersion() {
+        return plugin.getDescription().getVersion();
     }
 
     @Override
