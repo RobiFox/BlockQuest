@@ -13,6 +13,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.metadata.FixedMetadataValue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -262,6 +263,14 @@ public class BlockQuestListener implements Listener {
         }
     }
 
+    @EventHandler
+    public void click(PlayerInteractAtEntityEvent e) {
+        if(e.getRightClicked() instanceof ArmorStand
+                && e.getRightClicked().hasMetadata("BlockQuest")) {
+            e.setCancelled(true);
+        }
+    }
+
     public void playFindEffect(Location l, FindEffect e) {
         if(!m.findEffect) {
             return;
@@ -280,6 +289,7 @@ public class BlockQuestListener implements Listener {
                 || !m.getConfig().getString("find-effect.sound").equalsIgnoreCase("NONE")) {
             a.getWorld().playSound(a.getLocation(), Sound.valueOf(m.getConfig().getString("find-effect.sound")), 1, m.getConfig().getInt("find-effect.sound-pitch"));
         }
+        a.setMetadata("BlockQuest", new FixedMetadataValue(Main.getPlugin(), true));
         for(int i = 0; i < m.getConfig().getInt("find-effect.loop"); i++) {
             Bukkit.getScheduler().scheduleSyncDelayedTask(m, () -> {
                 Location newLoc = a.getLocation().clone();
