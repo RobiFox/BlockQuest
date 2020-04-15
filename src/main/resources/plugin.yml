@@ -2,7 +2,7 @@ name: BlockQuest
 version: 2.0
 main: me.robifoxx.blockquest.BlockQuest
 softdepend: [PlaceholderAPI]
-api-version: 1  .13
+api-version: 1.13
 
 commands:
     blockquest:
