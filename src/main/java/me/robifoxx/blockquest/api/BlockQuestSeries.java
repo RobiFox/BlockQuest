@@ -3,6 +3,8 @@ package me.robifoxx.blockquest.api;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import java.util.List;
+
 /**
  * A BlockQuest Series consists of
  * hidden blocks.
@@ -15,58 +17,43 @@ public abstract class BlockQuestSeries {
     public abstract String getID();
 
     /**
-     * Whether the Series is enabled or not
-     * @return Return
-     */
-    public abstract boolean isEnabled();
-
-    /**
      * Action that happens, when a player finds a block.
      * @param p The player, that clicked the block.
      * @param blockLocation The location of the block
      */
-    public abstract void getFindBlockAction(Player p, Location blockLocation);
+    public abstract void onFindBlockAction(Player p, Location blockLocation);
 
     /**
      * Action that happens, when a player finds the last block of the series.
      * @param p The player, that clicked the block.
      * @param blockLocation The location of the block
      */
-    public abstract void getFoundAllBlockAction(Player p, Location blockLocation);
+    public abstract void onFoundAllBlockAction(Player p, Location blockLocation);
 
     /**
      * Action that happens, when a player clicks a block that the player has already found.
      * @param p The player, that clicked the block.
      * @param blockLocation The location of the block
      */
-    public abstract void getAlreadyFoundBlockAction(Player p, Location blockLocation);
+    public abstract void onAlreadyFoundBlockAction(Player p, Location blockLocation);
 
     /**
      * Action that happens, when a right clicks a block in a series, when he already found all blocks.
      * @param p The player, that clicked the block.
      * @param blockLocation The location of the block
      */
-    public abstract void getAlreadyFoundAllBlockAction(Player p, Location blockLocation);
+    public abstract void onAlreadyFoundAllBlockAction(Player p, Location blockLocation);
 
     /**
-     * Action, that plays for the player every {@link #getRepeatTime()} ticks for blocks, that are not found in the series.
-     * @param p The player, that hasn't found the block.
-     * @param blockLocation The location of the block
+     * This is the list of the blocks that needs to be found
+     * @return List of block's locations
      */
-    public abstract void playNotFoundEffect(Player p, Location blockLocation);
+    public abstract List<Location> getHiddenBlocks();
 
     /**
-     * Action, that plays for the player every {@link #getRepeatTime()} ticks for blocks, that are found in the series.
-     * @param p The player, that has found the block.
-     * @param blockLocation The location of the block
+     * An optional method, that runs when the series is unregistered
      */
-    public abstract void playFoundEffect(Player p, Location blockLocation);
+    public void onUnregister() {
 
-    /**
-     * The frequency of the block indicator, that shows whether the player found the block or not.
-     * @return Return
-     */
-    public abstract int getRepeatTime();
-
-    // TODO find effect
+    }
 }
