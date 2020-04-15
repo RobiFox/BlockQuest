@@ -1,8 +1,8 @@
 name: BlockQuest
-version: 2.0-pre1.5
-main: me.robifoxx.block.Main
+version: 2.0
+main: me.robifoxx.blockquest.BlockQuest
 softdepend: [PlaceholderAPI]
-api-version: 1.13
+api-version: 1  .13
 
 commands:
     blockquest:
@@ -10,5 +10,5 @@ commands:
         permission: blockquest.command
 permissions:
     blockquest.command:
-        description: access to the /blockquest command
+        description: Access to the /blockquest command
         default: op

@@ -1,12 +1,12 @@
-package me.robifoxx.block.api;
+package me.robifoxx.blockquest;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.ByteStreams;
-import me.robifoxx.block.Main;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginAwareness;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,9 +23,9 @@ public class Config {
 
 	private String path_;
 	private String fileName_;
-	private Main plugin;
+	private JavaPlugin plugin;
 
-	public Config(String path, String fileName, Main plugin) {
+	public Config(String path, String fileName, JavaPlugin plugin) {
 		path_ = path;
 		fileName_ = fileName;
 		this.plugin = plugin;
