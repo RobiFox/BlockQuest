@@ -23,7 +23,7 @@ public class BlockFindListener implements Listener {
         if(e.getAction() == Action.RIGHT_CLICK_BLOCK) {
             try {
                 if(e.getHand() != EquipmentSlot.HAND) return;
-            } catch(Exception ignored) { } // apparently this fixes compatibility issues for 1.8 or lower, not sure which exception to use, NoSuchMethodFound isn't allowed for some reason
+            } catch(NoSuchMethodError ignored) { }
             for(BlockQuestSeries bqs : BlockQuestAPI.getInstance().getSeriesList()) {
                 if(bqs.getHiddenBlocks().contains(e.getClickedBlock().getLocation())) {
                     Player p = e.getPlayer();
