@@ -48,7 +48,10 @@ public class BlockQuestCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String s, @NotNull String[] args) {
-        if(!sender.hasPermission("blockquest.command")) return true;
+        if(!sender.hasPermission("blockquest.command")) {
+            sender.sendMessage(blockQuest.getConfig().getString("no-permission-msg").replace("&", "§"));
+            return true;
+        }
         if(args.length == 0) {
             sender.sendMessage("§7§m----------------------------------------");
             sender.sendMessage(" §2§lWelcome to BlockQuest!");
