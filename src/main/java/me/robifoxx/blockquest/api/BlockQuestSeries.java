@@ -17,6 +17,18 @@ public abstract class BlockQuestSeries {
     public abstract String getID();
 
     /**
+     * If the series is enabled
+     * @return if the series is enabled
+     */
+    public abstract boolean isEnabled();
+
+    /**
+     * Enables or disables the series
+     * @param enabled if it's enabled or not
+     */
+    public abstract void setEnabled(boolean enabled);
+
+    /**
      * Action that happens, when a player finds a block.
      * @param p The player, that clicked the block.
      * @param blockLocation The location of the block

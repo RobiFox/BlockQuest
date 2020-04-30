@@ -52,24 +52,6 @@ public class BlockQuestAPI {
     }
 
     /**
-     * This is used by BlockQuest itself. It registers
-     * using the data from the config
-     * @param id The id of the series
-     * @param instance The instance of the plugin
-     */
-    public void registerDefaultSeries(String id, BlockQuest instance) {
-        registerSeries(
-                new DefaultSeries(instance,
-                        id,
-                        instance.getConfig().getStringList("series." + id + ".blocks"),
-                        instance.getConfig().getStringList("series." + id + ".find-block-commands"),
-                        instance.getConfig().getStringList("series." + id + ".all-blocks-found-commands"),
-                        instance.getConfig().getStringList("series." + id + ".already-found-commands"),
-                        instance.getConfig().getStringList("series." + id + ".already-found-all-blocks")
-                ));
-    }
-
-    /**
      * Unregisters series. Use this if you want
      * to disable a series
      * @param id The id of the series that needs to be unregistered

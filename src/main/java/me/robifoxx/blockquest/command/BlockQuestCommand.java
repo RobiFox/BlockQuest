@@ -90,7 +90,7 @@ public class BlockQuestCommand implements CommandExecutor {
             }
             String id = args[1];
             if(args[2].equalsIgnoreCase("create")) {
-                if(blockQuest.getConfig().get("series." + id) != null) {
+                if(BlockQuestAPI.getInstance().getSeries(id) != null) {
                     sender.sendMessage("§cA series with the id " + id + " already exists!");
                     return true;
                 }
@@ -104,7 +104,7 @@ public class BlockQuestCommand implements CommandExecutor {
                 sender.sendMessage("§aCreated BlockQuest series " + id + "!");
             } else if(args[2].equalsIgnoreCase("delete")) {
                 if(blockQuest.getConfig().get("series." + id) == null) {
-                    sender.sendMessage("§cA series with the id " + id + " doesn't exist!");
+                    sender.sendMessage("§cA §ldefault §cseries with the id " + id + " doesn't exist!");
                     return true;
                 }
                 blockQuest.getConfig().set("series." + id, null);
@@ -115,7 +115,7 @@ public class BlockQuestCommand implements CommandExecutor {
                     sender.sendMessage("§cThis command can't be ran from console!");
                     return true;
                 }
-                if(blockQuest.getConfig().get("series." + id) == null) {
+                if(BlockQuestAPI.getInstance().getSeries(id) == null) {
                     sender.sendMessage("§cA series with the id " + id + " doesn't exist!");
                     return true;
                 }
@@ -124,18 +124,19 @@ public class BlockQuestCommand implements CommandExecutor {
                 sender.sendMessage("§aClick on a block to add it as a Hidden Block.");
                 sender.sendMessage("§aLeft click the air to exit edit mode");
             } else if(args[2].equalsIgnoreCase("toggle")) {
-                boolean exists = BlockQuestAPI.getInstance().isRegistered(id);
-                if(exists) {
+                BlockQuestSeries series = BlockQuestAPI.getInstance().getSeries(id);
+                if(series == null) {
+                    sender.sendMessage("§cA series with the id " + id + " doesn't exist!");
+                    return true;
+                }
+                if(series.isEnabled()) {
                     sender.sendMessage("§cDisabled series " + id + "!");
-                    BlockQuestAPI.getInstance().unregisterSeries(id);
                 } else {
                     sender.sendMessage("§aEnabled series " + id + "!");
-                    BlockQuestAPI.getInstance().registerDefaultSeries(id, blockQuest);
                 }
-                blockQuest.getConfig().set("series." + id + ".enabled", !exists);
-                blockQuest.saveConfig();
+                BlockQuestAPI.getInstance().getSeries(id).setEnabled(!series.isEnabled());
             } else if(args[2].equalsIgnoreCase("stats")) {
-                if(blockQuest.getConfig().get("series." + id) == null) {
+                if(BlockQuestAPI.getInstance().getSeries(id) == null) {
                     sender.sendMessage("§cA series with the id " + id + " doesn't exist!");
                     return true;
                 }
@@ -160,14 +161,9 @@ public class BlockQuestCommand implements CommandExecutor {
                     sender.sendMessage("§cThis command can't be ran from console!");
                     return true;
                 }
-                if(blockQuest.getConfig().get("series." + id) == null) {
-                    sender.sendMessage("§cA series with the id " + id + " doesn't exist!");
-                    return true;
-                }
                 BlockQuestSeries series = BlockQuestAPI.getInstance().getSeries(id);
                 if(series == null) {
-                    sender.sendMessage("§cThe series must be enabled to check its stats.");
-                    sender.sendMessage("§4/blockquest series " + id + "toggle ");
+                    sender.sendMessage("§cA series with the id " + id + " doesn't exist!");
                     return true;
                 }
                 if(args.length < 4) {
@@ -185,7 +181,7 @@ public class BlockQuestCommand implements CommandExecutor {
                 ((Player) sender).teleport(series.getHiddenBlocks().get(index - 1));
                 sender.sendMessage("§aTeleported to the block with id of §e" + index + "§a, out of §e" + max);
             } else if(args[2].equalsIgnoreCase("reset")) {
-                if(blockQuest.getConfig().get("series." + id) == null) {
+                if(BlockQuestAPI.getInstance().getSeries(id) == null) {
                     sender.sendMessage("§cA series with the id " + id + " doesn't exist!");
                     return true;
                 }
@@ -210,13 +206,8 @@ public class BlockQuestCommand implements CommandExecutor {
             }
         } else if(args[0].equalsIgnoreCase("list")) {
             sender.sendMessage("§2BlockQuest series:");
-            ConfigurationSection cs = blockQuest.getConfig().getConfigurationSection("series");
-            if(cs == null) {
-                sender.sendMessage(" §cNone");
-                return true;
-            }
-            for(String series : cs.getKeys(false)) {
-                sender.sendMessage(" " + (blockQuest.getConfig().getBoolean("series." + series + ".enabled") ? "§a" : "§c") + series);
+            for(BlockQuestSeries series : BlockQuestAPI.getInstance().getSeriesList()) {
+                sender.sendMessage(" " + (series.isEnabled() ? "§a" : "§c") + series.getID());
             }
         }
         return true;

@@ -25,7 +25,7 @@ public class BlockFindListener implements Listener {
                 if(e.getHand() != EquipmentSlot.HAND) return;
             } catch(NoSuchMethodError ignored) { }
             for(BlockQuestSeries bqs : BlockQuestAPI.getInstance().getSeriesList()) {
-                if(bqs.getHiddenBlocks().contains(e.getClickedBlock().getLocation())) {
+                if(bqs.isEnabled() && bqs.getHiddenBlocks().contains(e.getClickedBlock().getLocation())) {
                     Player p = e.getPlayer();
                     Location location = e.getClickedBlock().getLocation();
                     String key = BlockQuestAPI.getInstance().getPlayerKey(p);

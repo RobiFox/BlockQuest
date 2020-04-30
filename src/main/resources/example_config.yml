@@ -1,0 +1,48 @@
+placeholderapi: false
+use-uuid: true
+no-permission-msg: '&cYou don''t have permission for this!'
+
+series:
+  id:
+    enabled: false
+    particles:
+      found:
+        enabled: false
+        type: FLAME
+        count: 5
+        xd: 0
+        yd: 0
+        zd: 0
+        speed: 0.025
+        repeat: 20
+      notfound:
+        enabled: true
+        type: FLAME
+        count: 5
+        xd: 0
+        yd: 0
+        zd: 0
+        speed: 0.025
+        repeat: 20
+    find-block-commands:
+      - particle mobSpell %locX% %locY% %locZ% 0.25 0.25 0.25 1 10
+      - rawmsg %player% true &a&lBlock&2&lQUEST
+      - rawmsg %player% false &a
+      - rawmsg %player% true &fYou found a block!
+      - rawmsg %player% true &f%blocksLeft% left.
+      - give %player% diamond 1
+    all-blocks-found-commands:
+      - rawmsg %player% true &a&lBlock&2&lQUEST
+      - rawmsg %player% false &a
+      - rawmsg %player% true &fYou found &lALL &fblocks!
+      - rawmsg %player% true &fNice!
+      - give %player% diamond_block 1
+    already-found-commands:
+      - rawmsg %player% true &a&lBlock&2&lQUEST
+      - rawmsg %player% false &a
+      - rawmsg %player% true &fYou already found this block!
+    already-found-all-blocks:
+      - rawmsg %player% true &a&lBlock&2&lQUEST
+      - rawmsg %player% false &a
+      - rawmsg %player% true &fYou already found all blocks!
+    blocks: []

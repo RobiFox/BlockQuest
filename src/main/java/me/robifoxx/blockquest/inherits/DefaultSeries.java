@@ -18,7 +18,10 @@ import java.util.List;
  * if you want a custom series.
  */
 public class DefaultSeries extends BlockQuestSeries {
+    private BlockQuest blockQuest;
+
     private String id;
+    private boolean enabled;
     private List<String> findBlockCommands;
     private List<String> foundAllBlockCommands;
     private List<String> alreadyFoundBlockCommands;
@@ -27,7 +30,9 @@ public class DefaultSeries extends BlockQuestSeries {
 
     private int particleFoundTaskId;
     private int particleNotFoundTaskId;
-    public DefaultSeries(BlockQuest blockQuest, String id, List<String> blocks, List<String> findBlockCommands, List<String> foundAllBlockCommands, List<String> alreadyFoundBlockCommands, List<String> alreadyFoundAllBlockCommands) {
+    public DefaultSeries(BlockQuest blockQuest, String id, boolean enabled, List<String> blocks, List<String> findBlockCommands, List<String> foundAllBlockCommands, List<String> alreadyFoundBlockCommands, List<String> alreadyFoundAllBlockCommands) {
+        this.blockQuest = blockQuest;
+
         this.id = id;
         this.findBlockCommands = findBlockCommands;
         this.foundAllBlockCommands = foundAllBlockCommands;
@@ -45,56 +50,73 @@ public class DefaultSeries extends BlockQuestSeries {
         }
         this.blocks = blockList;
 
-        BlockQuestAPI instance = BlockQuestAPI.getInstance();
-        BlockQuestDataStorage dataStorage = BlockQuestAPI.getInstance().getDataStorage();
-
-        if(blockQuest.getConfig().getBoolean("series." + id + ".particles.found.enabled", false)) {
-            String type = blockQuest.getConfig().getString("series." + id + ".particles.found.type");
-            int count = blockQuest.getConfig().getInt("series." + id + ".particles.found.count");
-            double xd = blockQuest.getConfig().getDouble("series." + id + ".particles.found.xd");
-            double yd = blockQuest.getConfig().getDouble("series." + id + ".particles.found.yd");
-            double zd = blockQuest.getConfig().getDouble("series." + id + ".particles.found.zd");
-            double speed = blockQuest.getConfig().getDouble("series." + id + ".particles.found.speed");
-            int repeat = blockQuest.getConfig().getInt("series." + id + ".particles.found.repeat");
-            particleFoundTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(blockQuest, () -> {
-                for(Player pl : Bukkit.getOnlinePlayers()) {
-                    for(Location loc : getHiddenBlocks()) {
-                        if(dataStorage.hasFoundBlock(instance.getPlayerKey(pl), getID(), loc)) {
-                            pl.spawnParticle(Particle.valueOf(type), loc.getX() + 0.5d, loc.getY() + 0.5d, loc.getZ() + 0.5d, count, xd, yd, zd, speed);
-                        }
-                    }
-                }
-            }, repeat, repeat);
-        }
-        if(blockQuest.getConfig().getBoolean("series." + id + ".particles.notfound.enabled", false)) {
-            String type = blockQuest.getConfig().getString("series." + id + ".particles.notfound.type");
-            int count = blockQuest.getConfig().getInt("series." + id + ".particles.notfound.count");
-            double xd = blockQuest.getConfig().getDouble("series." + id + ".particles.notfound.xd");
-            double yd = blockQuest.getConfig().getDouble("series." + id + ".particles.notfound.yd");
-            double zd = blockQuest.getConfig().getDouble("series." + id + ".particles.notfound.zd");
-            double speed = blockQuest.getConfig().getDouble("series." + id + ".particles.notfound.speed");
-            int repeat = blockQuest.getConfig().getInt("series." + id + ".particles.notfound.repeat");
-            particleNotFoundTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(blockQuest, () -> {
-                for(Player pl : Bukkit.getOnlinePlayers()) {
-                    for(Location loc : getHiddenBlocks()) {
-                        if(!dataStorage.hasFoundBlock(instance.getPlayerKey(pl), getID(), loc)) {
-                            pl.spawnParticle(Particle.valueOf(type), loc.getX() + 0.5d, loc.getY() + 0.5d, loc.getZ() + 0.5d, count, xd, yd, zd, speed);
-                        }
-                    }
-                }
-            }, repeat, repeat);
-        }
+        if(enabled) setEnabled(true);
     }
 
     @Override
     public void onUnregister() {
-        Bukkit.getScheduler().cancelTask(particleFoundTaskId);
-        Bukkit.getScheduler().cancelTask(particleNotFoundTaskId);
+        setEnabled(false);
     }
 
     @Override
     public String getID() {
         return id;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+        if(enabled) {
+            BlockQuestAPI instance = BlockQuestAPI.getInstance();
+            BlockQuestDataStorage dataStorage = BlockQuestAPI.getInstance().getDataStorage();
+
+            if(blockQuest.getConfig().getBoolean("series." + id + ".particles.found.enabled", false)) {
+                String type = blockQuest.getConfig().getString("series." + id + ".particles.found.type");
+                int count = blockQuest.getConfig().getInt("series." + id + ".particles.found.count");
+                double xd = blockQuest.getConfig().getDouble("series." + id + ".particles.found.xd");
+                double yd = blockQuest.getConfig().getDouble("series." + id + ".particles.found.yd");
+                double zd = blockQuest.getConfig().getDouble("series." + id + ".particles.found.zd");
+                double speed = blockQuest.getConfig().getDouble("series." + id + ".particles.found.speed");
+                int repeat = blockQuest.getConfig().getInt("series." + id + ".particles.found.repeat");
+                particleFoundTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(blockQuest, () -> {
+                    for(Player pl : Bukkit.getOnlinePlayers()) {
+                        for(Location loc : getHiddenBlocks()) {
+                            if(dataStorage.hasFoundBlock(instance.getPlayerKey(pl), getID(), loc)) {
+                                pl.spawnParticle(Particle.valueOf(type), loc.getX() + 0.5d, loc.getY() + 0.5d, loc.getZ() + 0.5d, count, xd, yd, zd, speed);
+                            }
+                        }
+                    }
+                }, repeat, repeat);
+            }
+            if(blockQuest.getConfig().getBoolean("series." + id + ".particles.notfound.enabled", false)) {
+                String type = blockQuest.getConfig().getString("series." + id + ".particles.notfound.type");
+                int count = blockQuest.getConfig().getInt("series." + id + ".particles.notfound.count");
+                double xd = blockQuest.getConfig().getDouble("series." + id + ".particles.notfound.xd");
+                double yd = blockQuest.getConfig().getDouble("series." + id + ".particles.notfound.yd");
+                double zd = blockQuest.getConfig().getDouble("series." + id + ".particles.notfound.zd");
+                double speed = blockQuest.getConfig().getDouble("series." + id + ".particles.notfound.speed");
+                int repeat = blockQuest.getConfig().getInt("series." + id + ".particles.notfound.repeat");
+                particleNotFoundTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(blockQuest, () -> {
+                    for(Player pl : Bukkit.getOnlinePlayers()) {
+                        for(Location loc : getHiddenBlocks()) {
+                            if(!dataStorage.hasFoundBlock(instance.getPlayerKey(pl), getID(), loc)) {
+                                pl.spawnParticle(Particle.valueOf(type), loc.getX() + 0.5d, loc.getY() + 0.5d, loc.getZ() + 0.5d, count, xd, yd, zd, speed);
+                            }
+                        }
+                    }
+                }, repeat, repeat);
+            }
+        } else {
+            Bukkit.getScheduler().cancelTask(particleFoundTaskId);
+            Bukkit.getScheduler().cancelTask(particleNotFoundTaskId);
+        }
+        blockQuest.getConfig().set("series." + id + ".enabled", enabled);
+        blockQuest.saveConfig();
     }
 
     @Override

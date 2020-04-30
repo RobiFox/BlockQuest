@@ -2,6 +2,7 @@ package me.robifoxx.blockquest;
 
 import me.robifoxx.blockquest.api.BlockQuestAPI;
 import me.robifoxx.blockquest.command.BlockQuestCommand;
+import me.robifoxx.blockquest.inherits.DefaultSeries;
 import me.robifoxx.blockquest.inherits.LocalFileDataStorage;
 import me.robifoxx.blockquest.listener.BlockFindListener;
 import me.robifoxx.blockquest.listener.SeriesModifyListener;
@@ -42,14 +43,28 @@ public class BlockQuest extends JavaPlugin {
             }
         }
 
+        BlockQuestAPI instance = BlockQuestAPI.getInstance();
+
         ConfigurationSection cs = getConfig().getConfigurationSection("series");
         if(cs != null)
             for(String id : cs.getKeys(false)) {
-                if(getConfig().getBoolean("series." + id + ".enabled")) {
-                    BlockQuestAPI.getInstance().registerDefaultSeries(id, this);
-                }
+                //BlockQuestAPI.getInstance().registerDefaultSeries(id, this);
+                registerDefaultSeries(id, instance);
             }
 
         new Metrics(this,1695);
+    }
+
+    private void registerDefaultSeries(String id, BlockQuestAPI instance) {
+        instance.registerSeries(
+                new DefaultSeries(this,
+                        id,
+                        getConfig().getBoolean("series." + id + ".enabled"),
+                        getConfig().getStringList("series." + id + ".blocks"),
+                        getConfig().getStringList("series." + id + ".find-block-commands"),
+                        getConfig().getStringList("series." + id + ".all-blocks-found-commands"),
+                        getConfig().getStringList("series." + id + ".already-found-commands"),
+                        getConfig().getStringList("series." + id + ".already-found-all-blocks")
+                ));
     }
 }
