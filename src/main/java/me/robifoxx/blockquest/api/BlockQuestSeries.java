@@ -63,6 +63,18 @@ public abstract class BlockQuestSeries {
     public abstract List<Location> getHiddenBlocks();
 
     /**
+     * Adds a hidden block to the location
+     * @param location The hidden block's location
+     */
+    public abstract void addHiddenBlock(Location location);
+
+    /**
+     * Remove a hidden block to the location
+     * @param location The hidden block's location
+     */
+    public abstract void removeHiddenBlock(Location location);
+
+    /**
      * An optional method, that runs when the series is unregistered
      */
     public void onUnregister() {

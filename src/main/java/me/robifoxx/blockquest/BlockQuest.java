@@ -28,9 +28,11 @@ public class BlockQuest extends JavaPlugin {
 
         BlockQuestAPI.getInstance().setDataStorage(new LocalFileDataStorage(this));
 
-        if(!getConfig().getBoolean("api-only", false)) getCommand("blockquest").setExecutor(new BlockQuestCommand(this));
+        if(!getConfig().getBoolean("api-only", false)) {
+            getCommand("blockquest").setExecutor(new BlockQuestCommand(this));
+            Bukkit.getPluginManager().registerEvents(new SeriesModifyListener(this), this);
+        }
 
-        Bukkit.getPluginManager().registerEvents(new SeriesModifyListener(this), this);
         Bukkit.getPluginManager().registerEvents(new BlockFindListener(this), this);
 
         if(getConfig().getBoolean("placeholderapi")) {

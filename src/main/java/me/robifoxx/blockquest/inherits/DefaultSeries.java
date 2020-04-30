@@ -152,6 +152,30 @@ public class DefaultSeries extends BlockQuestSeries {
         return blocks;
     }
 
+    @Override
+    public void addHiddenBlock(Location location) {
+        List<String> locations = new ArrayList<>(blockQuest.getConfig().getStringList("series." + id + ".blocks"));
+        String convertedLocation = BlockQuestAPI.getInstance().locationToString(location);
+        if(locations.contains(convertedLocation)) return;
+        locations.add(convertedLocation);
+        blockQuest.getConfig().set("series." + id + ".blocks", locations);
+        blockQuest.saveConfig();
+
+        blocks.add(location);
+    }
+
+    @Override
+    public void removeHiddenBlock(Location location) {
+        List<String> locations = new ArrayList<>(blockQuest.getConfig().getStringList("series." + id + ".blocks"));
+        String convertedLocation = BlockQuestAPI.getInstance().locationToString(location);
+        if(!locations.contains(convertedLocation)) return;
+        locations.remove(convertedLocation);
+        blockQuest.getConfig().set("series." + id + ".blocks", locations);
+        blockQuest.saveConfig();
+
+        blocks.remove(location);
+    }
+
     private void runCommand(String s, Player player, Location location) {
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), s.replace("%player%", player.getName())
                 .replace("%pLocX%", "" + player.getLocation().getX())
