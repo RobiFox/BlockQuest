@@ -22,7 +22,6 @@ public class BlockQuestAPI {
         series = new HashMap<>();
     }
 
-    // i might need to seperate an inactive and active series hashmap
     private HashMap<String, BlockQuestSeries> series;
     private BlockQuestDataStorage dataStorage;
 

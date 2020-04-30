@@ -1,3 +1,4 @@
 placeholderapi: false
 use-uuid: true
 no-permission-msg: '&cYou don''t have permission for this!'
+api-only: false
