@@ -57,7 +57,7 @@ public class BlockQuest extends JavaPlugin {
         new Metrics(this,1695);
     }
 
-    private void registerDefaultSeries(String id, BlockQuestAPI instance) {
+    public void registerDefaultSeries(String id, BlockQuestAPI instance) {
         instance.registerSeries(
                 new DefaultSeries(this,
                         id,

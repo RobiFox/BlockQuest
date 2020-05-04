@@ -101,6 +101,7 @@ public class BlockQuestCommand implements CommandExecutor {
                 blockQuest.getConfig().set("series." + id + ".already-found-all-blocks", DEFAULT_ALREADY_FOUND_ALL);
                 blockQuest.getConfig().set("series." + id + ".blocks", new ArrayList<String>());
                 blockQuest.saveConfig();
+                blockQuest.registerDefaultSeries(id, BlockQuestAPI.getInstance());
                 sender.sendMessage("§aCreated BlockQuest series " + id + "!");
             } else if(args[2].equalsIgnoreCase("delete")) {
                 if(blockQuest.getConfig().get("series." + id) == null) {
