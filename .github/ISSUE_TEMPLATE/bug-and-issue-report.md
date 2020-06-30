@@ -13,6 +13,7 @@ assignees: ''
   - If you think it's a problem within BlockQuest, test with the official version, and use those in the issue.
 - The issue is caused by BlockQuest, and can be reproduced with only BlockQuest installed
 
+# Template
 **Describe the issue**
 Clearly describe the issue, including the expected behaviour, and the actual behaviour.
 If the plugin throws an exception, make sure to include it in the Media section.
