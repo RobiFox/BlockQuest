@@ -2,7 +2,7 @@
 name: Bug and Issue report
 about: Report a bug or an issue
 title: "[ISSUE] "
-labels: ''
+labels: 'issue'
 assignees: ''
 
 ---
