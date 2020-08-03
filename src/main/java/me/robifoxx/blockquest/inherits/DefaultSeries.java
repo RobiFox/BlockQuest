@@ -4,10 +4,13 @@ import me.robifoxx.blockquest.BlockQuest;
 import me.robifoxx.blockquest.api.BlockQuestAPI;
 import me.robifoxx.blockquest.api.BlockQuestDataStorage;
 import me.robifoxx.blockquest.api.BlockQuestSeries;
+import me.robifoxx.blockquest.api.FindEffect;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,19 +21,21 @@ import java.util.List;
  * if you want a custom series.
  */
 public class DefaultSeries extends BlockQuestSeries {
-    private BlockQuest blockQuest;
+    private final BlockQuest blockQuest;
 
-    private String id;
+    private final String id;
     private boolean enabled;
-    private List<String> findBlockCommands;
-    private List<String> foundAllBlockCommands;
-    private List<String> alreadyFoundBlockCommands;
-    private List<String> alreadyFoundAllBlockCommands;
-    private List<Location> blocks;
+    private final List<String> findBlockCommands;
+    private final List<String> foundAllBlockCommands;
+    private final List<String> alreadyFoundBlockCommands;
+    private final List<String> alreadyFoundAllBlockCommands;
+    private final List<Location> blocks;
+
+    private final FindEffect findEffect;
 
     private int particleFoundTaskId;
     private int particleNotFoundTaskId;
-    public DefaultSeries(BlockQuest blockQuest, String id, boolean enabled, List<String> blocks, List<String> findBlockCommands, List<String> foundAllBlockCommands, List<String> alreadyFoundBlockCommands, List<String> alreadyFoundAllBlockCommands) {
+    public DefaultSeries(BlockQuest blockQuest, String id, boolean enabled, List<String> blocks, List<String> findBlockCommands, List<String> foundAllBlockCommands, List<String> alreadyFoundBlockCommands, List<String> alreadyFoundAllBlockCommands, FindEffect findEffect) {
         this.blockQuest = blockQuest;
 
         this.id = id;
@@ -49,6 +54,7 @@ public class DefaultSeries extends BlockQuestSeries {
             blockList.add(new Location(Bukkit.getWorld(world), x, y, z));
         }
         this.blocks = blockList;
+        this.findEffect = findEffect;
 
         if(enabled) setEnabled(true);
     }
@@ -124,6 +130,7 @@ public class DefaultSeries extends BlockQuestSeries {
         for(String s : findBlockCommands) {
             runCommand(s, p, blockLocation);
         }
+        playFindEffect(p, blockLocation);
     }
 
     @Override
@@ -131,6 +138,7 @@ public class DefaultSeries extends BlockQuestSeries {
         for(String s : foundAllBlockCommands) {
             runCommand(s, p, blockLocation);
         }
+        playFindEffect(p, blockLocation);
     }
 
     @Override
@@ -189,5 +197,16 @@ public class DefaultSeries extends BlockQuestSeries {
                 .replace("%locZ%", "" + location.getZ())
                 .replace("%blocksLeft%", "" + (getHiddenBlocks().size() - BlockQuestAPI.getInstance().getDataStorage().getFoundBlockCount(BlockQuestAPI.getInstance().getPlayerKey(player), getID())))
         );
+    }
+
+    private void playFindEffect(Player finder, Location blockLocation) {
+        // TODO REMOVE
+        /*new FindEffect(blockQuest,
+                new ItemStack[] {new ItemStack(Material.AIR), new ItemStack(Material.AIR), new ItemStack(Material.AIR), new ItemStack(Material.SLIME_BLOCK)},
+                false,
+                new FindEffect.ParticleData(Particle.FLAME, 2, 0, 1, 0, 0.1, 0.1, 0.1, 0, 0),
+                new FindEffect.MovementData(60, 0.075, 10, 0),
+                null, null).create(finder, blockLocation);*/
+        if(findEffect != null) findEffect.create(finder, blockLocation);
     }
 }

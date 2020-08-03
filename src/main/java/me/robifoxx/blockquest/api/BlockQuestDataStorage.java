@@ -19,6 +19,14 @@ public abstract class BlockQuestDataStorage {
     public abstract void storeFoundBlock(String key, String series, Location location);
 
     /**
+     * Sets all found blocks, overwriting them, in one go. Used for cache.
+     * @param key The user, who found the block. Can be an UUID or a Player Name, depending on the settings.
+     * @param series The series' id where the block belongs to
+     * @param locations List of locations.
+     */
+    public abstract void setFoundBlocks(String key, String series, List<Location> locations);
+
+    /**
      * Whenever a player finds a hidden block, this will run to check
      * if the player has already found the block or not
      * @param key The user, who found the block. Can be an UUID or a Player Name, depending on the settings.

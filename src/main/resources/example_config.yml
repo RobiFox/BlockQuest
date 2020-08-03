@@ -2,6 +2,14 @@ placeholderapi: false
 use-uuid: true
 no-permission-msg: '&cYou don''t have permission for this!'
 
+# If cache is enabled, the plugin stores data temporary, and
+# saves it permanently every interval.
+# This can make your server run faster, but if your server
+# crashes, data might be lost.
+cache:
+  enabled: true
+  autosave-interval: 600 # saves every 10 min
+
 series:
   id:
     enabled: false
@@ -24,6 +32,38 @@ series:
         zd: 0
         speed: 0.025
         repeat: 20
+    find-effect:
+      enabled: true
+      small: false
+      equipment:
+        head: DIRT
+        chest: AIR
+        leg: AIR
+        boot: AIR
+      particle:
+        enabled: true
+        particle: FLAME
+        offset:
+          x: 0
+          y: 1
+          z: 0
+        delta:
+          x: 0.1
+          y: 0.1
+          z: 0.1
+        speed: 0
+        amount: 1
+        delay: 0
+      movement:
+        lifetime: 40
+        float-per-tick: 0.075
+        rotate-per-tick: 10
+        initial-offset: 0
+      commands:
+        begin: []
+        end:
+          - say the begin example is how to make it not run commands
+          - say %x%, %y%, %z%, %player%
     find-block-commands:
       - particle mobSpell %locX% %locY% %locZ% 0.25 0.25 0.25 1 10
       - rawmsg %player% true &a&lBlock&2&lQUEST

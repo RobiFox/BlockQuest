@@ -1,6 +1,7 @@
 package me.robifoxx.blockquest.api;
 
 import me.robifoxx.blockquest.BlockQuest;
+import me.robifoxx.blockquest.inherits.CacheStorage;
 import me.robifoxx.blockquest.inherits.DefaultSeries;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -26,6 +27,7 @@ public class BlockQuestAPI {
     private BlockQuestDataStorage dataStorage;
 
     public boolean useUuid;
+    public boolean cache;
 
     /**
      * Converts Location to String
@@ -94,7 +96,11 @@ public class BlockQuestAPI {
      * @param dataStorage The data storage type
      */
     public void setDataStorage(BlockQuestDataStorage dataStorage) {
-        this.dataStorage = dataStorage;
+        if(cache) {
+            this.dataStorage = new CacheStorage(dataStorage);
+        } else {
+            this.dataStorage = dataStorage;
+        }
     }
 
     /**
