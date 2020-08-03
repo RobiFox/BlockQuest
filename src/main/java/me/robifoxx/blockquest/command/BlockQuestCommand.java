@@ -34,12 +34,12 @@ public class BlockQuestCommand implements CommandExecutor {
     private static final List<String> DEFAULT_ALREADY_FOUND = new ArrayList<>(Arrays.asList(
             "rawmsg %player% true &a&lBlock&2&lQUEST",
             "rawmsg %player% false &a",
-            "rawmsg %player% true &fYou already found this block!"));
+            "rawmsg %player% true &fYou have already found this block!"));
 
     private static final List<String> DEFAULT_ALREADY_FOUND_ALL = new ArrayList<>(Arrays.asList(
             "rawmsg %player% true &a&lBlock&2&lQUEST",
             "rawmsg %player% false &a",
-            "rawmsg %player% true &fYou already found all blocks!"));
+            "rawmsg %player% true &fYou have already found all blocks!"));
 
     private BlockQuest blockQuest;
     public BlockQuestCommand(BlockQuest blockQuest) {
