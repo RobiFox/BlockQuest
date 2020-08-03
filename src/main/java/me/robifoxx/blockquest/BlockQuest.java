@@ -3,7 +3,7 @@ package me.robifoxx.blockquest;
 import me.robifoxx.blockquest.api.BlockQuestAPI;
 import me.robifoxx.blockquest.api.BlockQuestDataStorage;
 import me.robifoxx.blockquest.api.FindEffect;
-import me.robifoxx.blockquest.command.BlockQuestCommand;
+import me.robifoxx.blockquest.command.BlockQuestBaseCommand;
 import me.robifoxx.blockquest.inherits.CacheStorage;
 import me.robifoxx.blockquest.inherits.DefaultSeries;
 import me.robifoxx.blockquest.inherits.LocalFileDataStorage;
@@ -11,17 +11,13 @@ import me.robifoxx.blockquest.listener.BlockFindListener;
 import me.robifoxx.blockquest.listener.CacheListener;
 import me.robifoxx.blockquest.listener.SeriesModifyListener;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -57,7 +53,7 @@ public class BlockQuest extends JavaPlugin {
         }
 
         if(!getConfig().getBoolean("api-only", false)) {
-            getCommand("blockquest").setExecutor(new BlockQuestCommand(this));
+            getCommand("blockquest").setExecutor(new BlockQuestBaseCommand(this));
             Bukkit.getPluginManager().registerEvents(new SeriesModifyListener(this), this);
         }
 
