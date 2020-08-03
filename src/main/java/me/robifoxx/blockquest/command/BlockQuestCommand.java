@@ -197,13 +197,12 @@ public class BlockQuestCommand implements CommandExecutor {
                     for(String key : BlockQuestAPI.getInstance().getDataStorage().getAllUsers(id)) {
                         BlockQuestAPI.getInstance().getDataStorage().clearStats(key, id);
                     }
-                    sender.sendMessage("§aDone.");
                 } else {
                     OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(args[3]);
                     sender.sendMessage("§cClearing " + args[3] + "'s data for " + id);
                     BlockQuestAPI.getInstance().getDataStorage().clearStats(BlockQuestAPI.getInstance().getPlayerKey(offlinePlayer), id);
-                    sender.sendMessage("§aDone.");
                 }
+                sender.sendMessage("§aDone.");
             }
         } else if(args[0].equalsIgnoreCase("list")) {
             sender.sendMessage("§2BlockQuest series:");
