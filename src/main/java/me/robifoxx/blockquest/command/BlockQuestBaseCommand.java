@@ -37,6 +37,7 @@ public class BlockQuestBaseCommand implements CommandExecutor {
             sender.sendMessage("  §aIf this is your first time using BlockQuest,");
             sender.sendMessage("  §ayou might want to run §2/blockquest guide");
             sender.sendMessage("§7§m----------------------------------------");
+            // TODO replace with automatic help list, instead of hard coded
             sender.sendMessage(getHelpFormat("series <id> create", "Creates a new series, which will contain hidden blocks"));
             sender.sendMessage(getHelpFormat("series <id> delete", "Deletes the series which has the specified id"));
             sender.sendMessage(getHelpFormat("series <id> edit", "Add or remove hidden blocks for the specified id"));
