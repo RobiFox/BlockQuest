@@ -1,11 +1,14 @@
 package me.robifoxx.blockquest;
 
 import me.robifoxx.blockquest.api.BlockQuestAPI;
+import me.robifoxx.blockquest.api.BlockQuestDataStorage;
 import me.robifoxx.blockquest.api.FindEffect;
 import me.robifoxx.blockquest.command.BlockQuestCommand;
+import me.robifoxx.blockquest.inherits.CacheStorage;
 import me.robifoxx.blockquest.inherits.DefaultSeries;
 import me.robifoxx.blockquest.inherits.LocalFileDataStorage;
 import me.robifoxx.blockquest.listener.BlockFindListener;
+import me.robifoxx.blockquest.listener.CacheListener;
 import me.robifoxx.blockquest.listener.SeriesModifyListener;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -34,8 +37,24 @@ public class BlockQuest extends JavaPlugin {
 
         playersInEdit = new HashMap<>();
         BlockQuestAPI.getInstance().useUuid = getConfig().getBoolean("use-uuid");
+        BlockQuestAPI.getInstance().cache = getConfig().getBoolean("cache.enabled", false);
 
         BlockQuestAPI.getInstance().setDataStorage(new LocalFileDataStorage(this));
+
+        if(BlockQuestAPI.getInstance().cache) {
+            int interval = getConfig().getInt("cache.autosave-interval", 600) * 20;
+            CacheStorage cacheStorage = (CacheStorage) BlockQuestAPI.getInstance().getDataStorage();
+            Bukkit.getPluginManager().registerEvents(new CacheListener(cacheStorage), this);
+            Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> {
+                Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
+                    long begin = System.currentTimeMillis();
+                    getLogger().info("Saving BlockQuest cache...");
+                    cacheStorage.save();
+                    getLogger().info("Saving done.");
+                    getLogger().info("Took " + (System.currentTimeMillis() - begin) + "ms.");
+                });
+            }, interval, interval);
+        }
 
         if(!getConfig().getBoolean("api-only", false)) {
             getCommand("blockquest").setExecutor(new BlockQuestCommand(this));
@@ -64,6 +83,13 @@ public class BlockQuest extends JavaPlugin {
             }
 
         new Metrics(this,1695);
+    }
+
+    public void onDisable() {
+        BlockQuestDataStorage dataStorage = BlockQuestAPI.getInstance().getDataStorage();
+        if(dataStorage instanceof CacheStorage) {
+            ((CacheStorage) dataStorage).save();
+        }
     }
 
     public void registerDefaultSeries(String id, BlockQuestAPI instance) {

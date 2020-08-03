@@ -32,6 +32,16 @@ public class LocalFileDataStorage extends BlockQuestDataStorage {
     }
 
     @Override
+    public void setFoundBlocks(String key, String series, List<Location> locations) {
+        List<String> stringLocations = new ArrayList<>();
+        for(Location loc : locations) {
+            stringLocations.add(BlockQuestAPI.getInstance().locationToString(loc));
+        }
+        data.getConfig().set("data." + key + "." + series, stringLocations);
+        data.saveConfig();
+    }
+
+    @Override
     public boolean hasFoundBlock(String key, String series, Location location) {
         return data.getConfig().getStringList("data." + key + "." + series).contains(BlockQuestAPI.getInstance().locationToString(location));
     }

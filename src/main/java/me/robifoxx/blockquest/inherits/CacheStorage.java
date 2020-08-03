@@ -3,12 +3,20 @@ package me.robifoxx.blockquest.inherits;
 import me.robifoxx.blockquest.api.BlockQuestAPI;
 import me.robifoxx.blockquest.api.BlockQuestDataStorage;
 import me.robifoxx.blockquest.api.BlockQuestSeries;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * This is the Cache Storage.
+ * If cache is enabled, this storage will be forced,
+ * however, it is still possible to use your own
+ * data storage, as this class keeps track of the registered
+ * storage.
+ */
 public class CacheStorage extends BlockQuestDataStorage {
     private HashMap<String, CachedPlayer> cache;
     private BlockQuestDataStorage original;
@@ -22,6 +30,13 @@ public class CacheStorage extends BlockQuestDataStorage {
     public void storeFoundBlock(String key, String series, Location location) {
         createCacheForSeriesIfAbsent(key, series);
         cache.get(key).foundBlocks.get(series).add(location);
+    }
+
+    @Override
+    public void setFoundBlocks(String key, String series, List<Location> locations) {
+        createCacheForSeriesIfAbsent(key, series);
+        cache.get(key).foundBlocks.get(series).clear();
+        cache.get(key).foundBlocks.get(series).addAll(locations);
     }
 
     @Override
@@ -46,23 +61,30 @@ public class CacheStorage extends BlockQuestDataStorage {
         return original.getAllUsers(series);
     }
 
-    public void save(String key, String series) {
-        for(Location loc : cache.get(key).foundBlocks.get(series)) {
-            if(!original.hasFoundBlock(key, series, loc)) {
-                original.storeFoundBlock(key, series, loc);
-            }
+    public void save() {
+        for(String key : cache.keySet()) {
+            save(key);
         }
     }
 
-    private void createCacheForSeriesIfAbsent(String key, String seriesName) {
+    public void save(String key) {
+        for(String series: cache.get(key).foundBlocks.keySet()) {
+            original.setFoundBlocks(key, series, cache.get(key).foundBlocks.get(series));
+        }
+    }
+
+    public void removeFromCache(String key) {
+        cache.remove(key);
+    }
+
+    public void createCacheForSeriesIfAbsent(String key, String seriesName) {
         cache.putIfAbsent(key, new CachedPlayer());
         CachedPlayer cached = cache.get(key);
         if(cached.foundBlocks.get(seriesName) == null) {
             cached.foundBlocks.put(seriesName, new ArrayList<>());
             BlockQuestSeries series = BlockQuestAPI.getInstance().getSeries(seriesName);
-            BlockQuestDataStorage dataStorage = BlockQuestAPI.getInstance().getDataStorage();
             for(Location loc : series.getHiddenBlocks()) {
-                if(dataStorage.hasFoundBlock(key, seriesName, loc)) {
+                if(original.hasFoundBlock(key, seriesName, loc)) {
                     cached.foundBlocks.get(seriesName).add(loc);
                 }
             }

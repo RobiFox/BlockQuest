@@ -2,6 +2,14 @@ placeholderapi: false
 use-uuid: true
 no-permission-msg: '&cYou don''t have permission for this!'
 
+# If cache is enabled, the plugin stores data temporary, and
+# saves it permanently every interval.
+# This can make your server run faster, but if your server
+# crashes, data might be lost.
+cache:
+  enabled: true
+  autosave-interval: 600 # saves every 10 min
+
 series:
   id:
     enabled: false
