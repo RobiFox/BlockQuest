@@ -53,7 +53,8 @@ public class CacheStorage extends BlockQuestDataStorage {
 
     @Override
     public void clearStats(String key, String series) {
-        cache.get(key).foundBlocks.remove(series);
+        createCacheForSeriesIfAbsent(key, series);
+        cache.get(key).foundBlocks.get(series).clear();
     }
 
     @Override
