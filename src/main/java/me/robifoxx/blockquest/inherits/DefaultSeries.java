@@ -92,6 +92,7 @@ public class DefaultSeries extends BlockQuestSeries {
                 particleFoundTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(blockQuest, () -> {
                     for(Player pl : Bukkit.getOnlinePlayers()) {
                         for(Location loc : getHiddenBlocks()) {
+                            if(loc.getWorld().getName().equalsIgnoreCase(pl.getWorld().getName()))
                             if(dataStorage.hasFoundBlock(instance.getPlayerKey(pl), getID(), loc)) {
                                 pl.spawnParticle(Particle.valueOf(type), loc.getX() + 0.5d, loc.getY() + 0.5d, loc.getZ() + 0.5d, count, xd, yd, zd, speed);
                             }
@@ -110,6 +111,7 @@ public class DefaultSeries extends BlockQuestSeries {
                 particleNotFoundTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(blockQuest, () -> {
                     for(Player pl : Bukkit.getOnlinePlayers()) {
                         for(Location loc : getHiddenBlocks()) {
+                            if(loc.getWorld().getName().equalsIgnoreCase(pl.getWorld().getName()))
                             if(!dataStorage.hasFoundBlock(instance.getPlayerKey(pl), getID(), loc)) {
                                 pl.spawnParticle(Particle.valueOf(type), loc.getX() + 0.5d, loc.getY() + 0.5d, loc.getZ() + 0.5d, count, xd, yd, zd, speed);
                             }
