@@ -40,8 +40,7 @@ public class BlockQuestAPI {
 
     /**
      * Registers a series
-     * If a series is inactive, it isn't registered
-     * You can register a series any time you want to enable them
+     * Must be registered if you want to access the quest from anywhere
      * @param blockQuestSeries The series that you want to register
      */
     public void registerSeries(BlockQuestSeries blockQuestSeries) {
@@ -53,8 +52,7 @@ public class BlockQuestAPI {
     }
 
     /**
-     * Unregisters series. Use this if you want
-     * to disable a series
+     * Unregisters series.
      * @param id The id of the series that needs to be unregistered
      */
     public void unregisterSeries(String id) {
