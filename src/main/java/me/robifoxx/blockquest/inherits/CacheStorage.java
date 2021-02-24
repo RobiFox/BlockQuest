@@ -69,7 +69,8 @@ public class CacheStorage extends BlockQuestDataStorage {
     }
 
     public void save(String key) {
-        for(String series: cache.get(key).foundBlocks.keySet()) {
+        if(cache.get(key) == null || cache.get(key).foundBlocks == null) return;
+        for(String series : cache.get(key).foundBlocks.keySet()) {
             original.setFoundBlocks(key, series, cache.get(key).foundBlocks.get(series));
         }
     }
