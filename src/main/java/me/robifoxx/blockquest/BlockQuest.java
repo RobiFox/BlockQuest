@@ -182,7 +182,7 @@ public class BlockQuest extends JavaPlugin {
         };
     }
 
-    private Object getParticleEffect(String particle) {
+    public Object getParticleEffect(String particle) {
         try {
             Class.forName("org.bukkit.Particle");
             return Particle.valueOf(particle);
@@ -198,22 +198,35 @@ public class BlockQuest extends JavaPlugin {
     public void spawnParticle(Location location, FindEffect.ParticleData data) {
         World world = location.getWorld();
         if (world == null) return;
+        spawnParticle(world,data.getParticle(),
+                data.getOffX(), data.getOffY(), data.getOffZ(),
+                data.getAmount(),
+                data.getDx(), data.getDy(), data.getDz(),
+                data.getSpeed());
+    }
+
+    public void spawnParticle(World world, Object particle, double x, double y, double z, int amt, double dx, double dy, double dz, double speed) {
         try {//1.9+
-            Class.forName("org.bukkit.Particle");
-            world.spawnParticle((Particle) data.getParticle(),
-                    location.add(data.getOffX(), data.getOffY(), data.getOffZ()),
-                    data.getAmount(),
-                    data.getDx(), data.getDy(), data.getDz(),
-                    data.getSpeed());
+            world.spawnParticle((Particle) particle, new Location(world,x,y,z), amt, dx,dy,dz, speed);
         } catch (Exception e) {//1.8.8
-            try {
-                Object packet = packetPlayOutWorldParticles.newInstance(data.getParticle(),true,
-                        (float) data.getOffX(), (float) data.getOffY(), (float) data.getOffZ(),
-                        (float) data.getDx(), (float) data.getDy(), (float) data.getDz(),
-                        (float) data.getSpeed(),
-                        data.getAmount());
-                for (Player p : world.getPlayers()) sendPacket.invoke(playerConnection.get(getHandle.invoke(p)),packet);
-            } catch (Exception ignored) {}
+            for (Player p : world.getPlayers()) spawnParticle(p, particle, x, y, z, amt, dx, dy, dz, speed);
         }
     }
+
+    public void spawnParticle(Player p, Object particle, double x, double y, double z, int amt, double dx, double dy, double dz, double speed) {
+        try {//1.9+
+            p.spawnParticle((Particle) particle, x+ 0.5d, y+ 0.5d, z+ 0.5d, amt, dx, dy, dz, speed);
+        } catch (Exception e) {//1.8.8
+            try {
+                Object packet = packetPlayOutWorldParticles.newInstance(particle, true,
+                        (float) x, (float) y, (float) z,
+                        (float) dx, (float) dy, (float) dz,
+                        (float) speed,
+                        amt);
+                sendPacket.invoke(playerConnection.get(getHandle.invoke(p)), packet);
+            } catch (Exception ignored) {
+            }
+        }
+    }
+
 }

@@ -7,10 +7,7 @@ import me.robifoxx.blockquest.api.BlockQuestSeries;
 import me.robifoxx.blockquest.api.FindEffect;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Particle;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,9 +90,8 @@ public class DefaultSeries extends BlockQuestSeries {
                     for(Player pl : Bukkit.getOnlinePlayers()) {
                         for(Location loc : getHiddenBlocks()) {
                             if(loc.getWorld().getName().equalsIgnoreCase(pl.getWorld().getName()))
-                            if(dataStorage.hasFoundBlock(instance.getPlayerKey(pl), getID(), loc)) {
-                                pl.spawnParticle(Particle.valueOf(type), loc.getX() + 0.5d, loc.getY() + 0.5d, loc.getZ() + 0.5d, count, xd, yd, zd, speed);
-                            }
+                                if (dataStorage.hasFoundBlock(instance.getPlayerKey(pl), getID(), loc))
+                                    blockQuest.spawnParticle(pl,blockQuest.getParticleEffect(type),loc.getX() + 0.5d, loc.getY() + 0.5d, loc.getZ() + 0.5d, count, xd, yd, zd, speed);
                         }
                     }
                 }, repeat, repeat);
@@ -112,9 +108,8 @@ public class DefaultSeries extends BlockQuestSeries {
                     for(Player pl : Bukkit.getOnlinePlayers()) {
                         for(Location loc : getHiddenBlocks()) {
                             if(loc.getWorld().getName().equalsIgnoreCase(pl.getWorld().getName()))
-                            if(!dataStorage.hasFoundBlock(instance.getPlayerKey(pl), getID(), loc)) {
-                                pl.spawnParticle(Particle.valueOf(type), loc.getX() + 0.5d, loc.getY() + 0.5d, loc.getZ() + 0.5d, count, xd, yd, zd, speed);
-                            }
+                                if (!dataStorage.hasFoundBlock(instance.getPlayerKey(pl), getID(), loc))
+                                    blockQuest.spawnParticle(pl,blockQuest.getParticleEffect(type),loc.getX() + 0.5d, loc.getY() + 0.5d, loc.getZ() + 0.5d, count, xd, yd, zd, speed);
                         }
                     }
                 }, repeat, repeat);
