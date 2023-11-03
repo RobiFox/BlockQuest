@@ -217,10 +217,10 @@ public class BlockQuest extends JavaPlugin {
                         (float) x, (float) y, (float) z,
                         (float) dx, (float) dy, (float) dz,
                         (float) speed,
-                        amt);
+                        amt,
+                        new int[0]);
                 sendPacket.invoke(playerConnection.get(getHandle.invoke(p)), packet);
-            } catch (Exception ignored) {
-            }
+            } catch (Exception ignored) {}
         }
     }
 
