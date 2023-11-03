@@ -10,21 +10,44 @@ import me.robifoxx.blockquest.inherits.LocalFileDataStorage;
 import me.robifoxx.blockquest.listener.BlockFindListener;
 import me.robifoxx.blockquest.listener.CacheListener;
 import me.robifoxx.blockquest.listener.SeriesModifyListener;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.Particle;
+import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 
 public class BlockQuest extends JavaPlugin {
     public HashMap<String, String> playersInEdit;
 
+    private Constructor<?> packetPlayOutWorldParticles;
+    private Method getHandle;
+    private Field playerConnection;
+    private Method sendPacket;
+
     public void onEnable() {
+        try {// 1.9+
+            Class.forName("org.bukkit.Particle");
+        } catch (Exception e) {//1.8.8
+            try {
+                String nms = "net.minecraft.server.v1_8_R3.";
+                packetPlayOutWorldParticles = Class.forName(nms+"PacketPlayOutWorldParticles")
+                        .getConstructor(Class.forName(nms + "EnumParticle"), boolean.class, float.class, float.class, float.class, float.class, float.class, float.class, float.class, int.class, int[].class);
+                Class<?> craftPlayer = Class.forName("org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer");
+                getHandle = craftPlayer.getDeclaredMethod("getHandle");
+                Class<?> entityPlayer = Class.forName(nms + "EntityPlayer");
+                playerConnection = entityPlayer.getDeclaredField("playerConnection");
+                sendPacket = Class.forName(nms + "PlayerConnection").getDeclaredMethod("sendPacket",
+                        Class.forName(nms + "Packet"));
+            } catch (Exception ignored) {}
+        }
+
         String fileName = this.getDescription().getName();
         if(!(new File("plugins/" + fileName + "/config.yml").exists())) {
             getConfig().options().copyDefaults(true);
@@ -154,5 +177,27 @@ public class BlockQuest extends JavaPlugin {
                 );
             }
         };
+    }
+
+    public void spawnParticle(Location location, FindEffect.ParticleData data) {
+        World world = location.getWorld();
+        if (world == null) return;
+        try {//1.9+
+            Class.forName("org.bukkit.Particle");
+            world.spawnParticle((Particle) data.getParticle(),
+                    location.add(data.getOffX(), data.getOffY(), data.getOffZ()),
+                    data.getAmount(),
+                    data.getDx(), data.getDy(), data.getDz(),
+                    data.getSpeed());
+        } catch (Exception e) {//1.8.8
+            try {
+                Object packet = packetPlayOutWorldParticles.newInstance(data.getParticle(),true,
+                        (float) data.getOffX(), (float) data.getOffY(), (float) data.getOffZ(),
+                        (float) data.getDx(), (float) data.getDy(), (float) data.getDz(),
+                        (float) data.getSpeed(),
+                        data.getAmount());
+                for (Player p : world.getPlayers()) sendPacket.invoke(playerConnection.get(getHandle.invoke(p)),packet);
+            } catch (Exception ignored) {}
+        }
     }
 }

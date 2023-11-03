@@ -1,12 +1,12 @@
 package me.robifoxx.blockquest.api;
 
+import me.robifoxx.blockquest.BlockQuest;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  * The head that floats when you find a block.
@@ -20,7 +20,7 @@ public class FindEffect {
     private FindEffect.Event beginEvent;
     private FindEffect.Event endEvent;
 
-    private JavaPlugin plugin;
+    private final BlockQuest plugin;
 
     /**
      * The constructor for the FindEffect class
@@ -33,7 +33,7 @@ public class FindEffect {
      * @param beginEvent This interface's method will be called when the FindEffect appears
      * @param endEvent This interface's method will be called when the FindEffect disappears
      */
-    public FindEffect(JavaPlugin plugin, ItemStack[] equipment, boolean small, FindEffect.ParticleData particleData, FindEffect.MovementData movementData, FindEffect.Event beginEvent, FindEffect.Event endEvent) {
+    public FindEffect(BlockQuest plugin, ItemStack[] equipment, boolean small, FindEffect.ParticleData particleData, FindEffect.MovementData movementData, FindEffect.Event beginEvent, FindEffect.Event endEvent) {
         this.equipment = equipment;
         this.small = small;
         this.particleData = particleData;
@@ -118,15 +118,8 @@ public class FindEffect {
                 location.add(0, movementData.getFloatPerTick(), 0);
                 location.setYaw(location.getYaw() + movementData.getRotatePerTick());
                 a.teleport(location);
-                if(particleData != null && finalI % particleData.delay == 0) {
-                    location.getWorld().spawnParticle(particleData.getParticle(),
-                            location.add(particleData.getOffX(), particleData.getOffY(), particleData.getOffZ()),
-                            particleData.getAmount(),
-                            particleData.getDx(),
-                            particleData.getDy(),
-                            particleData.getDz(),
-                            particleData.getSpeed());
-                }
+                if (particleData != null && finalI % particleData.delay == 0)
+                    plugin.spawnParticle(location,particleData);
             }, i);
         }
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
@@ -136,7 +129,7 @@ public class FindEffect {
     }
 
     public static class ParticleData {
-        private Particle particle;
+        private Object particle;
         private int amount;
         private double offX;
         private double offY;
@@ -201,7 +194,7 @@ public class FindEffect {
             return dz;
         }
 
-        public Particle getParticle() {
+        public Object getParticle() {
             return particle;
         }
 
@@ -237,7 +230,7 @@ public class FindEffect {
             this.offZ = offZ;
         }
 
-        public void setParticle(Particle particle) {
+        public void setParticle(Object particle) {
             this.particle = particle;
         }
 
