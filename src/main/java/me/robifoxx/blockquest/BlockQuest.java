@@ -183,15 +183,10 @@ public class BlockQuest extends JavaPlugin {
     }
 
     public Object getParticleEffect(String particle) {
-        try {
-            Class.forName("org.bukkit.Particle");
-            return Particle.valueOf(particle);
-        } catch (Exception e) {
-            try {
-                return enumParticleValueOf.invoke(null,particle);
-            } catch (Exception ex) {
-                return null;
-            }
+        try {return Particle.valueOf(particle);}
+        catch (NoClassDefFoundError e) {
+            try {return enumParticleValueOf.invoke(null,particle);}
+            catch (Exception ignored) {return null;}
         }
     }
 
@@ -208,7 +203,7 @@ public class BlockQuest extends JavaPlugin {
     public void spawnParticle(World world, Object particle, double x, double y, double z, int amt, double dx, double dy, double dz, double speed) {
         try {//1.9+
             world.spawnParticle((Particle) particle, new Location(world,x,y,z), amt, dx,dy,dz, speed);
-        } catch (Exception e) {//1.8.8
+        } catch (NoClassDefFoundError e) {//1.8.8
             for (Player p : world.getPlayers()) spawnParticle(p, particle, x, y, z, amt, dx, dy, dz, speed);
         }
     }
@@ -216,7 +211,7 @@ public class BlockQuest extends JavaPlugin {
     public void spawnParticle(Player p, Object particle, double x, double y, double z, int amt, double dx, double dy, double dz, double speed) {
         try {//1.9+
             p.spawnParticle((Particle) particle, x+ 0.5d, y+ 0.5d, z+ 0.5d, amt, dx, dy, dz, speed);
-        } catch (Exception e) {//1.8.8
+        } catch (NoClassDefFoundError e) {//1.8.8
             try {
                 Object packet = packetPlayOutWorldParticles.newInstance(particle, true,
                         (float) x, (float) y, (float) z,
