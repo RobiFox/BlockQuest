@@ -27,6 +27,7 @@ public class BlockQuest extends JavaPlugin {
     public HashMap<String, String> playersInEdit;
 
     private Constructor<?> packetPlayOutWorldParticles;
+    private Method enumParticleValueOf;
     private Method getHandle;
     private Field playerConnection;
     private Method sendPacket;
@@ -37,8 +38,10 @@ public class BlockQuest extends JavaPlugin {
         } catch (Exception e) {//1.8.8
             try {
                 String nms = "net.minecraft.server.v1_8_R3.";
+                Class<?> enumParticle = Class.forName(nms + "EnumParticle");
+                enumParticleValueOf = enumParticle.getMethod("valueOf",String.class);
                 packetPlayOutWorldParticles = Class.forName(nms+"PacketPlayOutWorldParticles")
-                        .getConstructor(Class.forName(nms + "EnumParticle"), boolean.class, float.class, float.class, float.class, float.class, float.class, float.class, float.class, int.class, int[].class);
+                        .getConstructor(enumParticle, boolean.class, float.class, float.class, float.class, float.class, float.class, float.class, float.class, int.class, int[].class);
                 Class<?> craftPlayer = Class.forName("org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer");
                 getHandle = craftPlayer.getDeclaredMethod("getHandle");
                 Class<?> entityPlayer = Class.forName(nms + "EntityPlayer");
@@ -117,7 +120,7 @@ public class BlockQuest extends JavaPlugin {
             FindEffect.ParticleData particleData;
             if(getConfig().getBoolean("series." + id + ".find-effect.particle.enabled", false)) {
                 particleData = new FindEffect.ParticleData(
-                        Particle.valueOf(getConfig().getString("series." + id + ".find-effect.particle.particle", "FLAME")),
+                        getParticleEffect(getConfig().getString("series." + id + ".find-effect.particle.particle", "FLAME")),
                         getConfig().getInt("series." + id + ".find-effect.particle.amount", 1),
                         getConfig().getDouble("series." + id + ".find-effect.particle.offset.x", 0),
                         getConfig().getDouble("series." + id + ".find-effect.particle.offset.y", 1),
@@ -177,6 +180,19 @@ public class BlockQuest extends JavaPlugin {
                 );
             }
         };
+    }
+
+    private Object getParticleEffect(String particle) {
+        try {
+            Class.forName("org.bukkit.Particle");
+            return Particle.valueOf(particle);
+        } catch (Exception e) {
+            try {
+                return enumParticleValueOf.invoke(null,particle);
+            } catch (Exception ex) {
+                return null;
+            }
+        }
     }
 
     public void spawnParticle(Location location, FindEffect.ParticleData data) {

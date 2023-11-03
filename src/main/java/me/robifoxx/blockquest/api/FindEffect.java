@@ -3,7 +3,6 @@ package me.robifoxx.blockquest.api;
 import me.robifoxx.blockquest.BlockQuest;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Particle;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -153,7 +152,7 @@ public class FindEffect {
          * @param speed The speed of the particle. 0 will spread the particle across dx, dy, dz, everything above will send towards the dx, dy, dz with the specified speed.
          * @param delay The delay between each particle.
          */
-        public ParticleData(Particle particle, int amount, double offX, double offY, double offZ, double dx, double dy, double dz, double speed, double delay) {
+        public ParticleData(Object particle, int amount, double offX, double offY, double offZ, double dx, double dy, double dz, double speed, double delay) {
             this.particle = particle;
             this.amount = amount;
             this.offX = offX;
