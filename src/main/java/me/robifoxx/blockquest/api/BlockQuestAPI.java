@@ -35,7 +35,7 @@ public class BlockQuestAPI {
      * @return Location converted to String
      */
     public String locationToString(Location loc) {
-        return loc.getBlockX() + ";" + loc.getBlockY() + ";" + loc.getBlockZ() + ";" + loc.getWorld().getName();
+        return loc.getBlockX() + ";" + loc.getBlockY() + ";" + loc.getBlockZ() + ";" + (loc.getWorld() != null ? loc.getWorld().getName() : "");
     }
 
     /**

@@ -47,8 +47,11 @@ public class DefaultSeries extends BlockQuestSeries {
             int x = Integer.parseInt(split[0]);
             int y = Integer.parseInt(split[1]);
             int z = Integer.parseInt(split[2]);
-            String world = split[3];
-            blockList.add(new Location(Bukkit.getWorld(world), x, y, z));
+            if (split.length > 3) {
+                blockList.add(new Location(Bukkit.getWorld(split[4]), x, y, z));
+            } else {
+                blockList.add(new Location(null, x, y, z));
+            }
         }
         this.blocks = blockList;
         this.findEffect = findEffect;
