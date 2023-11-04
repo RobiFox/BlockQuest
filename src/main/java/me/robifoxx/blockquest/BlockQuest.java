@@ -10,21 +10,47 @@ import me.robifoxx.blockquest.inherits.LocalFileDataStorage;
 import me.robifoxx.blockquest.listener.BlockFindListener;
 import me.robifoxx.blockquest.listener.CacheListener;
 import me.robifoxx.blockquest.listener.SeriesModifyListener;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.Particle;
+import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 
 public class BlockQuest extends JavaPlugin {
     public HashMap<String, String> playersInEdit;
 
+    private Constructor<?> packetPlayOutWorldParticles;
+    private Method enumParticleValueOf;
+    private Method getHandle;
+    private Field playerConnection;
+    private Method sendPacket;
+
     public void onEnable() {
+        try {// 1.9+
+            Class.forName("org.bukkit.Particle");
+        } catch (Exception e) {//1.8.8
+            try {
+                String nms = "net.minecraft.server.v1_8_R3.";
+                Class<?> enumParticle = Class.forName(nms + "EnumParticle");
+                enumParticleValueOf = enumParticle.getMethod("valueOf",String.class);
+                packetPlayOutWorldParticles = Class.forName(nms+"PacketPlayOutWorldParticles")
+                        .getConstructor(enumParticle, boolean.class, float.class, float.class, float.class, float.class, float.class, float.class, float.class, int.class, int[].class);
+                Class<?> craftPlayer = Class.forName("org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer");
+                getHandle = craftPlayer.getDeclaredMethod("getHandle");
+                Class<?> entityPlayer = Class.forName(nms + "EntityPlayer");
+                playerConnection = entityPlayer.getDeclaredField("playerConnection");
+                sendPacket = Class.forName(nms + "PlayerConnection").getDeclaredMethod("sendPacket",
+                        Class.forName(nms + "Packet"));
+            } catch (Exception ignored) {}
+        }
+
         String fileName = this.getDescription().getName();
         if(!(new File("plugins/" + fileName + "/config.yml").exists())) {
             getConfig().options().copyDefaults(true);
@@ -94,7 +120,7 @@ public class BlockQuest extends JavaPlugin {
             FindEffect.ParticleData particleData;
             if(getConfig().getBoolean("series." + id + ".find-effect.particle.enabled", false)) {
                 particleData = new FindEffect.ParticleData(
-                        Particle.valueOf(getConfig().getString("series." + id + ".find-effect.particle.particle", "FLAME")),
+                        getParticleEffect(getConfig().getString("series." + id + ".find-effect.particle.particle", "FLAME")),
                         getConfig().getInt("series." + id + ".find-effect.particle.amount", 1),
                         getConfig().getDouble("series." + id + ".find-effect.particle.offset.x", 0),
                         getConfig().getDouble("series." + id + ".find-effect.particle.offset.y", 1),
@@ -155,4 +181,47 @@ public class BlockQuest extends JavaPlugin {
             }
         };
     }
+
+    public Object getParticleEffect(String particle) {
+        try {return Particle.valueOf(particle);}
+        catch (NoClassDefFoundError e) {
+            try {return enumParticleValueOf.invoke(null,particle);}
+            catch (Exception ignored) {return null;}
+        }
+    }
+
+    public void spawnParticle(Location location, FindEffect.ParticleData data) {
+        World world = location.getWorld();
+        if (world == null) return;
+        spawnParticle(world,data.getParticle(),
+                data.getOffX(), data.getOffY(), data.getOffZ(),
+                data.getAmount(),
+                data.getDx(), data.getDy(), data.getDz(),
+                data.getSpeed());
+    }
+
+    public void spawnParticle(World world, Object particle, double x, double y, double z, int amt, double dx, double dy, double dz, double speed) {
+        try {//1.9+
+            world.spawnParticle((Particle) particle, new Location(world,x,y,z), amt, dx,dy,dz, speed);
+        } catch (NoClassDefFoundError e) {//1.8.8
+            for (Player p : world.getPlayers()) spawnParticle(p, particle, x, y, z, amt, dx, dy, dz, speed);
+        }
+    }
+
+    public void spawnParticle(Player p, Object particle, double x, double y, double z, int amt, double dx, double dy, double dz, double speed) {
+        try {//1.9+
+            p.spawnParticle((Particle) particle, x+ 0.5d, y+ 0.5d, z+ 0.5d, amt, dx, dy, dz, speed);
+        } catch (NoClassDefFoundError e) {//1.8.8
+            try {
+                Object packet = packetPlayOutWorldParticles.newInstance(particle, true,
+                        (float) x, (float) y, (float) z,
+                        (float) dx, (float) dy, (float) dz,
+                        (float) speed,
+                        amt,
+                        new int[0]);
+                sendPacket.invoke(playerConnection.get(getHandle.invoke(p)), packet);
+            } catch (Exception ignored) {}
+        }
+    }
+
 }
